@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
-import { login, signup } from "../../api/auth";
+import { login } from "../../api/auth";
 import styles from "../../styles/LoginPage.module.css";
+import { signup } from "../../api/user";
 
 const LoginPage = () => {
   const [activeTab, setActiveTab] = useState("login");
@@ -65,7 +66,8 @@ const LoginPage = () => {
 
       // 에러 메시지 처리
       if (error.response) {
-        const errorMessage = error.response.data?.message || "로그인에 실패했습니다.";
+        const errorMessage =
+          error.response.data?.message || "로그인에 실패했습니다.";
         toast.error(errorMessage);
       } else if (error.request) {
         toast.error("서버와 연결할 수 없습니다.");
