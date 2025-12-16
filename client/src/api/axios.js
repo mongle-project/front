@@ -1,9 +1,10 @@
 import axios from "axios";
+import config from "../config/config";
 
 // Axios 인스턴스 생성
 const instance = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || "http://localhost:8080", // 백엔드 서버 주소
-  timeout: 10000, // 요청 타임아웃 (10초)
+  baseURL: config.apiUrl, // 백엔드 서버 주소
+  timeout: config.apiTimeout, // 요청 타임아웃
   headers: {
     "Content-Type": "application/json",
   },
