@@ -1,13 +1,13 @@
-import React from 'react';
-import { useParams } from 'react-router-dom';
-import PetForm from '../../components/pet/PetForm';
+import React from "react";
+import { useParams } from "react-router-dom";
+import PetForm from "../../components/pet/PetForm";
 
 const EditPetPage = () => {
   const { id } = useParams();
 
   const handleSubmit = (petData) => {
     // Edit pet logic
-    console.log('Editing pet:', id, petData);
+    console.log("Editing pet:", id, petData);
   };
 
   return (
