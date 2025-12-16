@@ -1,4 +1,4 @@
-export const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+export const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 export const PET_TYPES = {
   DOG: 'dog',
@@ -32,9 +32,13 @@ export const ROUTES = {
   SIGNUP: '/signup',
   DASHBOARD: '/dashboard',
   PETS: '/pets',
+  PETS_ADD: '/pets/add',
   COMMUNITY: '/community',
   CALENDAR: '/calendar',
+  CALENDAR_ADD: '/calendar/add',
   DICTIONARY: '/dictionary',
   MAP: '/map',
   NEWS: '/news',
+  HEALTH_CONSULT: '/health/consult',
+  HEALTH_RESULT: '/health/result',
 };
