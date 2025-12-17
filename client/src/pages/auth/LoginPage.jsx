@@ -1,10 +1,14 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
-import { login } from "../../api/auth";
+// import { login } from "../../api/auth";
 import styles from "../../styles/LoginPage.module.css";
 import { signup } from "../../api/user";
+import { useAuthContext } from "../../contexts/AuthContext";
 
 const LoginPage = () => {
+  const navigate = useNavigate();
+  const { login: authLogin } = useAuthContext();
   const [activeTab, setActiveTab] = useState("login");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -48,18 +52,23 @@ const LoginPage = () => {
     setIsLoading(true);
 
     try {
-      const response = await login(loginId, loginPassword);
+      // const response = await login(loginId, loginPassword);
 
-      // 로그인 성공 시 토큰 저장 (서버 응답에 따라 수정 필요)
-      if (response.token) {
-        localStorage.setItem("token", response.token);
-      }
+      // 로그인 성공 시 토큰 저장 및 사용자 정보 업데이트
+      // if (response.token) {
+      //   localStorage.setItem("token", response.token);
+      //   // AuthContext의 user 상태 업데이트
+      //   await authLogin(response);
+      // }
+
+      // TODO: API 없이 로그인 처리 (개발용)
+      await authLogin({ id: loginId, name: loginId });
 
       toast.success("로그인 성공! 🎉");
 
       // 메인 페이지로 이동
       setTimeout(() => {
-        window.location.href = "/";
+        navigate("/dashboard");
       }, 1000);
     } catch (error) {
       console.error("Login error:", error);

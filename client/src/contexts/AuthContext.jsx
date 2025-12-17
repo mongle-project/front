@@ -14,8 +14,9 @@ export const AuthProvider = ({ children }) => {
   // const [user, setUser] = useState(null);
   const [user, setUser] = useState({ name: "Apple 님" }); // 임시로 로그인된 상태로 설정
 
-  const login = async (credentials) => {
-    // Login logic
+  const login = async (userData) => {
+    // user 상태 업데이트
+    setUser(userData);
   };
 
   const logout = () => {
