@@ -276,6 +276,26 @@
   color: #bdbdbd;
 }
 
+.resetPasswordContainer {
+  display: flex;
+  flex-direction: row-reverse;
+  margin-top: -0.5rem;
+}
+
+.resetPasswordLink {
+  color: #2e7d32;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.resetPasswordLink:hover {
+  color: #43a047;
+  text-decoration: underline;
+}
+
 .passwordStrength {
   height: 4px;
   background: #e0e0e0;

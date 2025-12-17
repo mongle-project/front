@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 // import { login } from "../../api/auth";
 import styles from "../../styles/LoginPage.module.css";
@@ -35,8 +35,6 @@ const LoginPage = () => {
     if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
     if (password.match(/[0-9]/)) strength++;
     if (password.match(/[^a-zA-Z0-9]/)) strength++;
-
-    console.log(strength);
 
     if (strength <= 1) {
       setPasswordStrength({ level: 1, text: "약함" });
@@ -256,6 +254,15 @@ const LoginPage = () => {
                     onChange={(e) => setLoginPassword(e.target.value)}
                     required
                   />
+                </div>
+
+                <div className={styles.resetPasswordContainer}>
+                  <Link
+                    to="/find-password"
+                    className={styles.resetPasswordLink}
+                  >
+                    비밀번호 재설정
+                  </Link>
                 </div>
 
                 <button
