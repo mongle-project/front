@@ -2,17 +2,9 @@ import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import "../../styles/Header.css";
 import { ROUTES } from "../../utils/constants";
+import { NAV_LINKS } from "../../utils/navLinks";
 
-const navLinks = [
-  { label: "동물 사전", path: ROUTES.DICTIONARY },
-  { label: "정보 공유", path: ROUTES.COMMUNITY },
-  { label: "내 반려동물", path: ROUTES.PETS },
-  { label: "캘린더", path: ROUTES.CALENDAR },
-  { label: "건강/영양", path: "/health/consult" },
-  { label: "병원/보호소", path: ROUTES.MAP },
-  { label: "뉴스", path: ROUTES.NEWS },
-  { label: "로그아웃", action: "logout" },
-];
+const navLinks = [...NAV_LINKS, { label: "로그아웃", action: "logout" }];
 
 const NavBar = ({ onLogout }) => {
   const [isOpen, setIsOpen] = useState(false);
