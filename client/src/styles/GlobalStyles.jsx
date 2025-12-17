@@ -1,6 +1,34 @@
 import { createGlobalStyle } from "styled-components";
 
 const GlobalStyles = createGlobalStyle`
+  @font-face {
+    font-family: 'GyeonggiMillenniumTitle';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2410-3@1.0/Title_Light.woff') format('woff');
+    font-weight: 300;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'GyeonggiMillenniumTitle';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2410-3@1.0/Title_Medium.woff') format('woff');
+    font-weight: 500;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'GyeonggiMillenniumTitle';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2410-3@1.0/Title_Bold.woff') format('woff');
+    font-weight: 700;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'GyeonggiMillenniumTitle';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2410-3@1.0/TitleV.woff') format('woff');
+    font-weight: 800;
+    font-display: swap;
+  }
+
   * {
     margin: 0;
     padding: 0;
@@ -13,7 +41,7 @@ const GlobalStyles = createGlobalStyle`
   }
 
   body {
-    font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-family: 'GyeonggiMillenniumTitle', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     background: ${({ theme }) => theme.colors.background};
     color: ${({ theme }) => theme.colors.text.primary};
     line-height: 1.6;

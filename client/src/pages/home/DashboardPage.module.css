@@ -1,8 +1,41 @@
+@font-face {
+  font-family: "GyeonggiMillenniumTitle";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2410-3@1.0/Title_Light.woff")
+    format("woff");
+  font-weight: 300;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "GyeonggiMillenniumTitle";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2410-3@1.0/Title_Medium.woff")
+    format("woff");
+  font-weight: 500;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "GyeonggiMillenniumTitle";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2410-3@1.0/Title_Bold.woff")
+    format("woff");
+  font-weight: 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "GyeonggiMillenniumTitle";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2410-3@1.0/TitleV.woff")
+    format("woff");
+  font-weight: 800;
+  font-display: swap;
+}
+
 .dashboardPage {
   min-height: 100vh;
   background: linear-gradient(180deg, #e8f5e9 0%, #c8e6c9 100%);
   padding-bottom: 3rem;
-  font-family: "Noto Sans KR", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: "GyeonggiMillenniumTitle" -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
 }
 
 .header {
@@ -131,13 +164,13 @@
 }
 
 .welcomeTitle {
-  font-size: 2.5rem;
-  font-weight: 700;
+  font-size: 2.3rem;
+  font-weight: 600;
   margin-bottom: 0.5rem;
 }
 
 .welcomeSubtitle {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   opacity: 0.9;
 }
 
@@ -203,7 +236,8 @@
 .myPetsSection,
 .scheduleSection,
 .activitySection,
-.popularPosts {
+.popularPosts,
+.newsSection {
   background: #fff;
   border-radius: 25px;
   padding: 2rem;
@@ -386,37 +420,33 @@
   gap: 2rem;
 }
 
-.weatherWidget {
-  background: linear-gradient(135deg, #42a5f5 0%, #1e88e5 100%);
-  border-radius: 25px;
-  padding: 2rem;
-  color: #fff;
-  box-shadow: 0 4px 20px rgba(33, 150, 243, 0.3);
+.newsList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
-.weatherIcon {
-  font-size: 4rem;
-  margin-bottom: 1rem;
+.newsItem {
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e8f5e9;
+  cursor: pointer;
 }
 
-.weatherTemp {
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin-bottom: 0.5rem;
+.newsItem:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
 }
 
-.weatherDesc {
-  font-size: 1.1rem;
-  opacity: 0.9;
-  margin-bottom: 1rem;
+.newsItem h3 {
+  font-size: 1rem;
+  color: #1b5e20;
+  margin-bottom: 0.4rem;
 }
 
-.weatherTip {
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(10px);
-  padding: 1rem;
-  border-radius: 15px;
-  font-size: 0.9rem;
+.newsItem p {
+  font-size: 0.88rem;
+  color: #6aa36f;
+  line-height: 1.4;
 }
 
 .heroActions {
