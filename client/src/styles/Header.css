@@ -1,0 +1,237 @@
+.mg-header {
+  background: rgba(255, 255, 255, 0.95);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(102, 187, 106, 0.2);
+}
+
+.mg-header__inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1.25rem 2rem;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  grid-template-areas: "logo nav actions";
+  align-items: center;
+  column-gap: 2rem;
+  position: relative;
+}
+
+.mg-logo {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #2e7d32;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.mg-logo::before {
+  content: "🐾";
+  font-size: 2rem;
+}
+
+.mg-nav-wrapper {
+  grid-area: nav;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  position: relative;
+}
+
+.mg-logo {
+  grid-area: logo;
+}
+
+.mg-nav {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.mg-nav__link {
+  text-decoration: none;
+  color: #2e7d32;
+  font-weight: 600;
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.mg-nav li {
+  display: flex;
+  align-items: center;
+}
+
+.mg-nav__link.is-active,
+.mg-nav__link:hover {
+  background: rgba(102, 187, 106, 0.15);
+  color: #1b5e20;
+}
+
+.mg-nav__button {
+  border: none;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+}
+
+.mg-nav__toggle {
+  display: none;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid rgba(102, 187, 106, 0.4);
+  background: #fff;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.mg-nav__toggle span {
+  display: block;
+  width: 18px;
+  height: 2px;
+  background: #2e7d32;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.mg-nav__toggle.is-open span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.mg-nav__toggle.is-open span:nth-child(2) {
+  opacity: 0;
+}
+
+.mg-nav__toggle.is-open span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+.mg-header__actions {
+  grid-area: actions;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-self: end;
+}
+
+.mg-user-menu {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #f1f8e9;
+  border-radius: 999px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.mg-user-menu:hover {
+  background: #e1f3d8;
+}
+
+.mg-user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #66bb6a 0%, #43a047 100%);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+.mg-user-name {
+  font-weight: 600;
+  color: #2e7d32;
+}
+
+@media (max-width: 1024px) {
+  .mg-header__inner {
+    grid-template-columns: auto 1fr auto auto;
+    grid-template-areas: "logo spacer actions nav";
+    column-gap: 0.5rem;
+    row-gap: 0.5rem;
+  }
+
+  .mg-nav-wrapper {
+    grid-area: nav;
+    justify-content: flex-end;
+    width: auto;
+  }
+
+  .mg-header__actions {
+    grid-area: actions;
+    justify-self: end;
+  }
+
+  .mg-nav__toggle {
+    display: flex;
+  }
+
+  .mg-nav {
+    display: none;
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    right: 0;
+    flex-direction: column;
+    align-items: flex-start;
+    width: min(320px, 80vw);
+    padding: 1rem;
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(102, 187, 106, 0.15);
+    z-index: 10;
+  }
+
+  .mg-nav.is-open {
+    display: flex;
+  }
+
+  .mg-nav li {
+    width: 100%;
+  }
+
+  .mg-nav__link {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+  }
+
+  .mg-nav__link.is-active,
+  .mg-nav__link:hover {
+    background: rgba(102, 187, 106, 0.12);
+  }
+
+  .mg-nav__button {
+    width: 100%;
+    text-align: left;
+  }
+
+  /* Ensure user chip and hamburger stay flush right on small screens */
+  .mg-header__actions,
+  .mg-nav-wrapper {
+    justify-self: end;
+  }
+
+  .mg-header__actions {
+    margin-right: 0.5rem;
+  }
+
+  .mg-user-menu {
+    padding: 0.4rem 0.85rem;
+  }
+}

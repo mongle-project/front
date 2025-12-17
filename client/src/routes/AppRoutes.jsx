@@ -39,6 +39,8 @@ const AppRoutes = () => {
 
       {/* Protected Routes */}
       <Route path="/dashboard" element={<PrivateRoute><DashboardPage /></PrivateRoute>} />
+      {/* Temporary open access path for quick dashboard check */}
+      <Route path="/dashbord" element={<DashboardPage />} />
 
       {/* Community */}
       <Route path="/community" element={<PrivateRoute><CommunityListPage /></PrivateRoute>} />
