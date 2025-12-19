@@ -2,6 +2,7 @@ import React, { useEffect, useId, useState } from "react";
 import { NavLink } from "react-router-dom";
 import "../../styles/Header.css";
 import { ROUTES } from "../../utils/constants";
+import { NAV_LINKS } from "../../utils/navLinks";
 
 const DEFAULT_NAV_LINKS = [
   { label: "동물 사전", path: ROUTES.DICTIONARY },

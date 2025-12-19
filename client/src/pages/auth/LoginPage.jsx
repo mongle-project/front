@@ -10,6 +10,7 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { login: authLogin } = useAuthContext();
+  const location = useLocation();
   const [activeTab, setActiveTab] = useState("login");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -35,8 +36,6 @@ const LoginPage = () => {
     if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
     if (password.match(/[0-9]/)) strength++;
     if (password.match(/[^a-zA-Z0-9]/)) strength++;
-
-    console.log(strength);
 
     if (strength <= 1) {
       setPasswordStrength({ level: 1, text: "약함" });
@@ -258,6 +257,15 @@ const LoginPage = () => {
                     onChange={(e) => setLoginPassword(e.target.value)}
                     required
                   />
+                </div>
+
+                <div className={styles.resetPasswordContainer}>
+                  <Link
+                    to="/find-password"
+                    className={styles.resetPasswordLink}
+                  >
+                    비밀번호 재설정
+                  </Link>
                 </div>
 
                 <button
