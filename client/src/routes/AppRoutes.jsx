@@ -28,7 +28,7 @@ const AppRoutes = () => {
   return (
     <Routes>
       {/* Public Routes */}
-      <Route path="/" element={<PublicRoute><LandingPage /></PublicRoute>} />
+      <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
       <Route path="/signup" element={<PublicRoute><SignupPage /></PublicRoute>} />
       <Route path="/find-password" element={<PublicRoute><FindPasswordPage /></PublicRoute>} />

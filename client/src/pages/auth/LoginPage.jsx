@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 // import { login } from "../../api/auth";
 import styles from "../../styles/LoginPage.module.css";
@@ -8,6 +8,7 @@ import { useAuthContext } from "../../contexts/AuthContext";
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { login: authLogin } = useAuthContext();
   const [activeTab, setActiveTab] = useState("login");
   const [isLoading, setIsLoading] = useState(false);
@@ -143,6 +144,16 @@ const LoginPage = () => {
     if (passwordStrength.level === 3) return "strong";
     return "";
   };
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const tab = params.get("tab");
+    if (tab === "signup") {
+      setActiveTab("signup");
+    } else if (tab === "login") {
+      setActiveTab("login");
+    }
+  }, [location.search]);
 
   return (
     <div className={styles.pageContainer}>
@@ -375,4 +386,3 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
-
