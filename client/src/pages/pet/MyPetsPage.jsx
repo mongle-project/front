@@ -67,6 +67,10 @@ const MyPetsPage = () => {
   };
 
   const openModal = (mode = "add", pet = null) => {
+    if (mode === "add") {
+      navigate(ROUTES.PETS_ADD);
+      return;
+    }
     setModalMode(mode);
     setSelectedPet(pet);
     setIsModalOpen(true);
@@ -102,12 +106,8 @@ const MyPetsPage = () => {
               소중한 우리 아이들을 관리하고 기록하세요
             </p>
           </div>
-          <button
-            className={styles.addPetBtn}
-            onClick={() => openModal("add")}
-          >
-            <span>➕</span>
-            새 반려동물 등록
+          <button className={styles.addPetBtn} onClick={() => openModal("add")}>
+            <span>➕</span>새 반려동물 등록
           </button>
         </div>
 
@@ -205,9 +205,7 @@ const MyPetsPage = () => {
         ) : (
           <div className={styles.emptyState}>
             <div className={styles.emptyIcon}>🐾</div>
-            <h2 className={styles.emptyTitle}>
-              아직 등록된 반려동물이 없어요
-            </h2>
+            <h2 className={styles.emptyTitle}>아직 등록된 반려동물이 없어요</h2>
             <p className={styles.emptyText}>
               새로운 가족을 등록하고 소중한 추억을 기록해보세요!
             </p>
@@ -215,8 +213,7 @@ const MyPetsPage = () => {
               className={styles.addPetBtn}
               onClick={() => openModal("add")}
             >
-              <span>➕</span>
-              첫 반려동물 등록하기
+              <span>➕</span>첫 반려동물 등록하기
             </button>
           </div>
         )}
