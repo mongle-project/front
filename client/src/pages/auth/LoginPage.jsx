@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 // import { login } from "../../api/auth";
-import styles from "../../styles/LoginPage.module.css";
+import styles from "./LoginPage.module.css";
 import { signup } from "../../api/user";
 import { useAuthContext } from "../../contexts/AuthContext";
 
@@ -10,7 +10,6 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { login: authLogin } = useAuthContext();
-  const location = useLocation();
   const [activeTab, setActiveTab] = useState("login");
   const [isLoading, setIsLoading] = useState(false);
 

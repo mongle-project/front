@@ -1,0 +1,596 @@
+@font-face {
+  font-family: "GyeonggiMillenniumTitle";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2410-3@1.0/Title_Light.woff")
+    format("woff");
+  font-weight: 300;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "GyeonggiMillenniumTitle";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2410-3@1.0/Title_Medium.woff")
+    format("woff");
+  font-weight: 500;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "GyeonggiMillenniumTitle";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2410-3@1.0/Title_Bold.woff")
+    format("woff");
+  font-weight: 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "GyeonggiMillenniumTitle";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2410-3@1.0/TitleV.woff")
+    format("woff");
+  font-weight: 800;
+  font-display: swap;
+}
+
+.page {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #e8f5e9 0%, #c8e6c9 100%);
+  padding-bottom: 3rem;
+  font-family: "GyeonggiMillenniumTitle", sans-serif;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 2rem auto;
+  padding: 0 2rem;
+}
+
+/* 페이지 헤더 */
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 3rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.headerLeft {
+  flex: 1;
+}
+
+.pageTitle {
+  font-size: 2.5rem;
+  color: #1b5e20;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+}
+
+.pageSubtitle {
+  font-size: 1.1rem;
+  color: #66bb6a;
+}
+
+.addPetBtn {
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, #ff8a65 0%, #ff7043 100%);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.addPetBtn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(255, 112, 67, 0.4);
+}
+
+/* 통계 섹션 */
+.statsSection {
+  background: white;
+  border-radius: 25px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 20px rgba(76, 175, 80, 0.1);
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+}
+
+.statCard {
+  background: linear-gradient(135deg, #f1f8e9 0%, #e8f5e9 100%);
+  padding: 1.5rem;
+  border-radius: 20px;
+  text-align: center;
+  border: 2px solid #c8e6c9;
+}
+
+.statIcon {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.statValue {
+  font-size: 2rem;
+  color: #1b5e20;
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+}
+
+.statLabel {
+  font-size: 0.9rem;
+  color: #66bb6a;
+  font-weight: 600;
+}
+
+/* 반려동물 카드 그리드 */
+.petsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.petCard {
+  background: white;
+  border-radius: 25px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(76, 175, 80, 0.1);
+  transition: all 0.3s ease;
+}
+
+.petCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 30px rgba(76, 175, 80, 0.2);
+}
+
+.petImageWrapper {
+  position: relative;
+  height: 280px;
+  overflow: hidden;
+}
+
+.petImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.petBadge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.petInfo {
+  padding: 2rem;
+}
+
+.petName {
+  font-size: 1.8rem;
+  color: #1b5e20;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.petBreed {
+  font-size: 1rem;
+  color: #81c784;
+  margin-bottom: 1.5rem;
+}
+
+.petDetails {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.detailItem {
+  background: #f1f8e9;
+  padding: 0.8rem;
+  border-radius: 12px;
+  border-left: 3px solid #66bb6a;
+}
+
+.detailLabel {
+  font-size: 0.8rem;
+  color: #81c784;
+  margin-bottom: 0.2rem;
+}
+
+.detailValue {
+  font-size: 1rem;
+  color: #2e7d32;
+  font-weight: 600;
+}
+
+.petMemo {
+  background: #fffde7;
+  padding: 1rem;
+  border-radius: 12px;
+  border-left: 3px solid #fdd835;
+  margin-bottom: 1.5rem;
+}
+
+.memoLabel {
+  font-size: 0.85rem;
+  color: #f9a825;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.memoContent {
+  font-size: 0.9rem;
+  color: #757575;
+  line-height: 1.6;
+}
+
+.petActions {
+  display: flex;
+  gap: 0.8rem;
+}
+
+.actionBtn {
+  flex: 1;
+  padding: 0.8rem;
+  border: none;
+  border-radius: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.btnView {
+  background: #e8f5e9;
+  color: #43a047;
+}
+
+.btnView:hover {
+  background: #c8e6c9;
+}
+
+.btnEdit {
+  background: #e3f2fd;
+  color: #1976d2;
+}
+
+.btnEdit:hover {
+  background: #bbdefb;
+}
+
+.btnDelete {
+  background: #ffebee;
+  color: #e53935;
+}
+
+.btnDelete:hover {
+  background: #ffcdd2;
+}
+
+/* 빈 상태 */
+.emptyState {
+  background: white;
+  border-radius: 25px;
+  padding: 4rem 2rem;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(76, 175, 80, 0.1);
+}
+
+.emptyIcon {
+  font-size: 5rem;
+  margin-bottom: 1rem;
+}
+
+.emptyTitle {
+  font-size: 1.5rem;
+  color: #2e7d32;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.emptyText {
+  font-size: 1rem;
+  color: #81c784;
+  margin-bottom: 2rem;
+}
+
+/* 모달 */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.modal.active {
+  display: flex;
+}
+
+.modalContent {
+  background: white;
+  border-radius: 30px;
+  padding: 3rem;
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #e8f5e9;
+}
+
+.modalTitle {
+  font-size: 1.8rem;
+  color: #1b5e20;
+  font-weight: 700;
+}
+
+.modalClose {
+  background: #f1f8e9;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.5rem;
+  color: #66bb6a;
+  transition: all 0.3s ease;
+}
+
+.modalClose:hover {
+  background: #e8f5e9;
+  transform: rotate(90deg);
+}
+
+.formGroup {
+  margin-bottom: 1.5rem;
+}
+
+.formLabel {
+  display: block;
+  color: #2e7d32;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+}
+
+.required {
+  color: #ff5252;
+}
+
+.formInput,
+.formSelect,
+.formTextarea {
+  width: 100%;
+  padding: 1rem 1.5rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 15px;
+  font-size: 1rem;
+  font-family: "GyeonggiMillenniumTitle", sans-serif;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.formInput:focus,
+.formSelect:focus,
+.formTextarea:focus {
+  border-color: #66bb6a;
+  box-shadow: 0 0 0 3px rgba(102, 187, 106, 0.1);
+}
+
+.formTextarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.formSelect {
+  cursor: pointer;
+}
+
+.radioGroup {
+  display: flex;
+  gap: 1rem;
+}
+
+.radioOption {
+  flex: 1;
+}
+
+.radioInput {
+  display: none;
+}
+
+.radioLabel {
+  display: block;
+  padding: 0.8rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 15px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  color: #616161;
+}
+
+.radioInput:checked + .radioLabel {
+  background: linear-gradient(135deg, #66bb6a 0%, #43a047 100%);
+  color: white;
+  border-color: #43a047;
+}
+
+.modalActions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.modalBtn {
+  flex: 1;
+  padding: 1rem;
+  border: none;
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.modalBtnPrimary {
+  background: linear-gradient(135deg, #66bb6a 0%, #43a047 100%);
+  color: white;
+}
+
+.modalBtnPrimary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+}
+
+.modalBtnSecondary {
+  background: #f1f8e9;
+  color: #43a047;
+}
+
+.modalBtnSecondary:hover {
+  background: #e8f5e9;
+}
+
+/* 삭제 확인 모달 */
+.deleteModalContent {
+  background: white;
+  border-radius: 30px;
+  padding: 2.5rem;
+  max-width: 450px;
+  width: 100%;
+  position: relative;
+}
+
+.deleteModalHeader {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.deleteIcon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.deleteModalTitle {
+  font-size: 1.5rem;
+  color: #d32f2f;
+  font-weight: 700;
+}
+
+.deleteModalBody {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.deleteMessage {
+  font-size: 1.1rem;
+  color: #424242;
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.deleteMessage strong {
+  color: #1b5e20;
+  font-weight: 700;
+}
+
+.deleteWarning {
+  font-size: 0.9rem;
+  color: #d32f2f;
+  font-weight: 600;
+}
+
+.deleteModalActions {
+  display: flex;
+  gap: 1rem;
+}
+
+.modalBtnDanger {
+  background: linear-gradient(135deg, #ef5350 0%, #d32f2f 100%);
+  color: white;
+}
+
+.modalBtnDanger:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(211, 47, 47, 0.4);
+}
+
+/* 반응형 */
+@media (max-width: 1024px) {
+  .petsGrid {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0 1rem;
+  }
+
+  .pageHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .addPetBtn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .petsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .modalContent {
+    padding: 2rem;
+  }
+
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .petDetails {
+    grid-template-columns: 1fr;
+  }
+
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+}
