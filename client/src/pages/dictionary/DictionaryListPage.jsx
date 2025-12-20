@@ -98,9 +98,21 @@ const DictionaryListPage = () => {
                       ? "🐕"
                       : todayAnimal.category === "고양이"
                       ? "🐈"
-                      : todayAnimal.category === "조류"
+                      : todayAnimal.category === "토끼"
+                      ? "🐰"
+                      : todayAnimal.category === "햄스터"
+                      ? "🐹"
+                      : todayAnimal.category === "기니피그"
+                      ? "🐹"
+                      : todayAnimal.category === "새"
                       ? "🐦"
-                      : "🐰"}{" "}
+                      : todayAnimal.category === "거북이"
+                      ? "🐢"
+                      : todayAnimal.category === "파충류"
+                      ? "🦎"
+                      : todayAnimal.category === "어류"
+                      ? "🐠"
+                      : "🐾"}{" "}
                     {todayAnimal.category}
                   </span>
                   <h2 className={styles.todayTitle}>
