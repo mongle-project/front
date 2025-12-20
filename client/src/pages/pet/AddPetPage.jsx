@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
 import DashboardHeader from "../../components/header/Header";
 import { useAuthContext } from "../../contexts/AuthContext";
 import { ROUTES } from "../../utils/constants";
@@ -80,6 +81,19 @@ const AddPetPage = () => {
 
     // 생일이 변경되면 자동으로 나이 계산
     if (name === "birthday") {
+      // 미래 날짜 검증
+      const selectedDate = new Date(value);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // 시간 부분 제거하여 날짜만 비교
+
+      if (selectedDate > today) {
+        toast.error("생일은 오늘 이전 날짜여야 합니다.", {
+          duration: 3000,
+          position: "top-center",
+        });
+        return;
+      }
+
       const calculatedAge = calculateAge(value);
       setFormData((prev) => ({
         ...prev,
@@ -114,7 +128,11 @@ const AddPetPage = () => {
     const file = e.target.files[0];
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
-        alert("파일 크기는 5MB 이하여야 합니다.");
+        toast.error("파일 크기는 5MB 이하여야 합니다.", {
+          duration: 3000,
+          position: "top-center",
+        });
+        e.target.value = ""; // 파일 입력 초기화
         return;
       }
 
@@ -125,6 +143,10 @@ const AddPetPage = () => {
           imageFile: file,
           imagePreview: event.target.result,
         }));
+        toast.success("이미지가 업로드되었습니다.", {
+          duration: 2000,
+          position: "top-center",
+        });
       };
       reader.readAsDataURL(file);
     }
@@ -142,17 +164,26 @@ const AddPetPage = () => {
     e.preventDefault();
 
     if (!formData.name.trim()) {
-      alert("이름을 입력해주세요.");
+      toast.error("이름을 입력해주세요.", {
+        duration: 3000,
+        position: "top-center",
+      });
       return;
     }
 
     if (!formData.birthday) {
-      alert("생일을 선택해주세요.");
+      toast.error("생일을 선택해주세요.", {
+        duration: 3000,
+        position: "top-center",
+      });
       return;
     }
 
     if (!formData.age) {
-      alert("나이를 입력해주세요.");
+      toast.error("나이를 입력해주세요.", {
+        duration: 3000,
+        position: "top-center",
+      });
       return;
     }
 
@@ -169,8 +200,14 @@ const AddPetPage = () => {
     };
 
     console.log("반려동물 데이터:", petData);
-    alert(`${formData.name} 등록 완료! 🎉`);
-    navigate(ROUTES.PETS);
+    toast.success(`${formData.name} 등록 완료! 🎉`, {
+      duration: 3000,
+      position: "top-center",
+    });
+
+    setTimeout(() => {
+      navigate(ROUTES.PETS);
+    }, 1000);
   };
 
   const handleCancel = () => {
@@ -183,6 +220,7 @@ const AddPetPage = () => {
 
   return (
     <div className={styles.page}>
+      <Toaster />
       <DashboardHeader displayName={displayName} onLogout={handleLogout} />
 
       <div className={styles.container}>
@@ -272,6 +310,7 @@ const AddPetPage = () => {
                   className={styles.formInput}
                   value={formData.birthday}
                   onChange={handleInputChange}
+                  max={new Date().toISOString().split("T")[0]}
                   required
                 />
               </div>
