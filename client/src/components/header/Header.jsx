@@ -11,7 +11,7 @@ const DashboardHeader = ({ displayName = "집사님", onLogout }) => {
   return (
     <header className="mg-header">
       <div className="mg-header__inner">
-        <div className="mg-logo" onClick={() => navigate(ROUTES.DASHBOARD)}>
+        <div className="mg-logo" onClick={() => navigate(ROUTES.HOME)}>
           몽글몽글
         </div>
         <NavBar onLogout={onLogout} />

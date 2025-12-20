@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useLocation, Link } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 // import { login } from "../../api/auth";
 import styles from "../../styles/LoginPage.module.css";
@@ -8,6 +8,7 @@ import { useAuthContext } from "../../contexts/AuthContext";
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { login: authLogin } = useAuthContext();
   const location = useLocation();
   const [activeTab, setActiveTab] = useState("login");
@@ -148,6 +149,8 @@ const LoginPage = () => {
     const tab = params.get("tab");
     if (tab === "signup") {
       setActiveTab("signup");
+    } else if (tab === "login") {
+      setActiveTab("login");
     }
   }, [location.search]);
 

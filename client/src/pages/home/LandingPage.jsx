@@ -1,177 +1,220 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import styles from "./LandingPage.module.css";
 import { ROUTES } from "../../utils/constants";
-import { NAV_LINKS } from "../../utils/navLinks";
+import NavBar from "../../components/header/NavBar";
+import styles from "./LandingPage.module.css";
 
-const heroHighlights = [
-  { icon: "🐕", title: "품종 사전", desc: "반려동물 품종별 정보" },
-  { icon: "📝", title: "성장 기록", desc: "우리 아이 기록하기" },
-  { icon: "💬", title: "정보 공유", desc: "경험과 팁 공유" },
+const navLinks = [
+  { label: "동물 사전", path: ROUTES.DICTIONARY },
+  { label: "정보 공유", path: ROUTES.COMMUNITY },
+  { label: "내 반려동물", path: ROUTES.PETS },
+  { label: "캘린더", path: ROUTES.CALENDAR },
+  { label: "건강/영양", path: ROUTES.HEALTH_CONSULT },
+  { label: "병원/보호소", path: ROUTES.MAP },
+  { label: "뉴스", path: ROUTES.NEWS },
 ];
 
-const features = [
+const heroCards = [
   {
-    title: "돌봄 사전",
-    desc: "강아지, 고양이, 소동물까지 돌봄 정보를 한눈에 정리했어요.",
-    icon: "📚",
+    icon: "🐕",
+    title: "동물 사전",
+    desc: "품종별 상세 정보",
+    className: "card1",
   },
   {
-    title: "내 반려동물",
-    desc: "우리 아이들의 성장 스토리와 추억을 사진과 함께 저장해요.",
-    icon: "🏡",
-  },
-  {
+    icon: "💬",
     title: "정보 공유",
-    desc: "다른 집사들과 유익한 팁과 경험을 나누며 함께 성장해요.",
-    icon: "☁️",
+    desc: "경험과 팁 공유",
+    className: "card2",
   },
   {
-    title: "동물병원 찾기",
-    desc: "가까운 동물병원과 보호소 정보를 지도와 리뷰로 확인해요.",
+    icon: "📝",
+    title: "성장 기록",
+    desc: "우리 아이 기록하기",
+    className: "card3",
+  },
+];
+
+const featureData = [
+  {
+    icon: "📚",
+    title: "동물 사전",
+    desc: "강아지, 고양이 등 다양한 품종의 특징과 관리 팁을 확인하세요",
+  },
+  {
+    icon: "🏠",
+    title: "내 반려동물",
+    desc: "우리 아이의 성장과 특별한 순간을 기록하고 관리하세요",
+  },
+  {
+    icon: "💭",
+    title: "정보 공유",
+    desc: "다른 집사들과 유용한 정보와 경험을 나누며 함께 성장하세요",
+  },
+  {
     icon: "🏥",
+    title: "동물병원 찾기",
+    desc: "가까운 동물병원을 찾고 영업 시간을 확인하세요",
   },
   {
-    title: "건강 일정",
-    desc: "예방접종, 건강검진, 산책 일정까지 스마트하게 관리해요.",
     icon: "📅",
+    title: "건강 캘린더",
+    desc: "예방접종, 병원 예약 등 중요한 일정을 관리하세요",
   },
   {
-    title: "유기동물 정보",
-    desc: "새로운 가족을 기다리는 반려동물들의 정보를 확인해요.",
     icon: "🤝",
+    title: "유기동물 정보",
+    desc: "새로운 가족을 기다리는 아이들의 정보를 확인하세요",
   },
 ];
 
 const stats = [
-  { label: "등록된 돌봄 정보", value: "500+" },
-  { label: "커뮤니티 활동", value: "1,000+" },
-  { label: "돌봄 일정", value: "5,000+" },
-  { label: "상담 센터", value: "24/7" },
+  { value: "500+", label: "동물 품종 정보" },
+  { value: "1,000+", label: "커뮤니티 회원" },
+  { value: "5,000+", label: "공유된 경험담" },
+  { value: "24/7", label: "언제나 함께" },
+];
+
+const footerLinks = [
+  { label: "서비스 소개", target: "about" },
+  { label: "이용약관", target: "terms" },
+  { label: "개인정보처리방침", target: "privacy" },
+  { label: "GitHub", target: "github" },
+  { label: "문의하기", target: "contact" },
 ];
 
 const LandingPage = () => {
   const navigate = useNavigate();
 
+  const handleNavClick = (target, route) => {
+    if (route) {
+      navigate(route);
+    } else {
+      const element = document.getElementById(target);
+      element?.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <div className={styles.page}>
-      <header className={styles.header}>
-        <div className={styles.headerInner}>
-          <div className={styles.logo} onClick={() => navigate(ROUTES.HOME)}>
-            <span role="img" aria-hidden="true">
-              🐾
-            </span>
-            <span>몽글몽글</span>
+      <div className={`${styles.decoration} ${styles.decoOne}`}>🌿</div>
+      <div className={`${styles.decoration} ${styles.decoTwo}`}>🐾</div>
+
+      <header className="mg-header">
+        <div className="mg-header__inner">
+          <div
+            className="mg-logo"
+            onClick={() => handleNavClick(null, ROUTES.HOME)}
+          >
+            몽글몽글
           </div>
-          <nav className={styles.nav}>
-            {NAV_LINKS.map((link) => (
-              <button
-                key={link.label}
-                type="button"
-                onClick={() => navigate(link.path)}
-              >
-                {link.label}
-              </button>
-            ))}
-          </nav>
-          <div className={styles.authButtons}>
+          <NavBar links={navLinks} />
+          <div className={`mg-header__actions ${styles.authButtons}`}>
             <button
-              className={styles.ghostButton}
-              onClick={() => navigate(ROUTES.LOGIN)}
               type="button"
+              onClick={() => handleNavClick(null, ROUTES.LOGIN)}
             >
               로그인
             </button>
             <button
-              className={styles.primaryButton}
-              onClick={() => navigate(`${ROUTES.LOGIN}?tab=signup`)}
               type="button"
+              className={styles.signupButton}
+              onClick={() => handleNavClick(null, `${ROUTES.LOGIN}?tab=signup`)}
             >
               회원가입
-            </button>
-            <button
-              type="button"
-              className={`${styles.navToggle} ${styles.hide}`}
-            >
-              <span>☰</span>
             </button>
           </div>
         </div>
       </header>
 
-      <main className={styles.main}>
-        <section className={styles.hero}>
-          <div className={styles.heroCopy}>
-            <h1>반려동물과 함께하는 행복한 일상</h1>
-            <p>
-              돌봄 사전, 반려동물 기록, 그리고 커뮤니티까지.
-              <br />
-              Petzip에서 모든 정보를 한눈에!
-            </p>
-            <div className={styles.heroButtons}>
-              <button
-                className={styles.primaryButton}
-                onClick={() => navigate(`${ROUTES.LOGIN}?tab=signup`)}
-                type="button"
-              >
-                시작하기
-              </button>
-              <button
-                className={styles.secondaryButton}
-                onClick={() => navigate(ROUTES.LOGIN)}
-                type="button"
-              >
-                더 알아보기
-              </button>
-            </div>
-          </div>
-          <div className={styles.heroCards}>
-            {heroHighlights.map((item, idx) => (
-              <article
-                key={item.title}
-                className={`${styles.heroCard} ${styles[`card${idx + 1}`]}`}
-              >
-                <span>{item.icon}</span>
-                <strong>{item.title}</strong>
-                <p>{item.desc}</p>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <section className={styles.featureSection}>
-          <h2>몽글몽글의 핵심 기능</h2>
-          <div className={styles.featureGrid}>
-            {features.map((feature) => (
-              <article key={feature.title} className={styles.featureCard}>
-                <div className={styles.featureIcon}>{feature.icon}</div>
-                <h3>{feature.title}</h3>
-                <p>{feature.desc}</p>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <section className={styles.statsSection}>
-          {stats.map((item) => (
-            <div key={item.label} className={styles.statCard}>
-              <strong>{item.value}</strong>
-              <span>{item.label}</span>
-            </div>
-          ))}
-        </section>
-      </main>
-
-      <footer className={styles.footer}>
-        <div>
-          <div className={styles.footerLogo}>
-            <span role="img" aria-hidden="true">
-              🐾
-            </span>
-            몽글몽글
+      <section className={styles.hero}>
+        <div className={styles.heroContent}>
+          <h1>
+            반려동물과 함께하는
+            <br />
+            행복한 일상
+          </h1>
+          <p>
+            동물 사전, 반려동물 기록, 그리고 커뮤니티까지.
+            <br />
+            몽글몽글에서 모든 정보를 한눈에!
+          </p>
+          <div className={styles.ctaButtons}>
+            <button
+              type="button"
+              className={`${styles.btn} ${styles.primary}`}
+              onClick={() => handleNavClick(null, ROUTES.LOGIN)}
+            >
+              시작하기
+            </button>
+            <button
+              type="button"
+              className={`${styles.btn} ${styles.secondary}`}
+              onClick={() =>
+                handleNavClick(
+                  null,
+                  ROUTES.SIGNUP ?? `${ROUTES.LOGIN}?tab=signup`
+                )
+              }
+            >
+              더 알아보기
+            </button>
           </div>
         </div>
-        <small>© 2025 Monggle. 반려동물과 함께하는 행복한 일상</small>
+        <div className={styles.heroImage}>
+          {heroCards.map((card) => (
+            <div
+              key={card.title}
+              className={`${styles.floatingCard} ${styles[card.className]}`}
+            >
+              <div className={styles.petIcon}>{card.icon}</div>
+              <div className={styles.cardTitle}>{card.title}</div>
+              <div className={styles.cardDesc}>{card.desc}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className={styles.features} id="dictionary">
+        <h2 className={styles.sectionTitle}>몽글몽글의 핵심 기능</h2>
+        <div className={styles.featureGrid}>
+          {featureData.map((feature) => (
+            <div className={styles.featureCard} key={feature.title}>
+              <div className={styles.featureIcon}>{feature.icon}</div>
+              <h3>{feature.title}</h3>
+              <p>{feature.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className={styles.stats} id="community">
+        <div className={styles.statsContainer}>
+          {stats.map((stat) => (
+            <div className={styles.statItem} key={stat.label}>
+              <div className={styles.statNumber}>{stat.value}</div>
+              <div className={styles.statLabel}>{stat.label}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <footer className={styles.footer}>
+        <div className={styles.footerContent}>
+          <div className={styles.logo}>🐾 몽글몽글</div>
+          <div className={styles.footerLinks}>
+            {footerLinks.map((link) => (
+              <button
+                type="button"
+                key={link.label}
+                onClick={() => handleNavClick(link.target)}
+              >
+                {link.label}
+              </button>
+            ))}
+          </div>
+          <p>© 2025 몽글몽글. 반려동물과 함께하는 행복한 일상</p>
+        </div>
       </footer>
     </div>
   );

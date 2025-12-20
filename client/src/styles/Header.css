@@ -118,6 +118,10 @@
   transform: translateY(-7px) rotate(-45deg);
 }
 
+.mg-nav__backdrop {
+  display: none;
+}
+
 .mg-header__actions {
   grid-area: actions;
   display: flex;
@@ -195,10 +199,34 @@
     box-shadow: 0 12px 35px rgba(0, 0, 0, 0.1);
     border: 1px solid rgba(102, 187, 106, 0.15);
     z-index: 10;
+    opacity: 0;
+    transform: translateY(-10px);
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
   }
 
   .mg-nav.is-open {
     display: flex;
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  .mg-nav-wrapper.is-open .mg-nav {
+    display: flex;
+  }
+
+  .mg-nav__backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.15);
+    z-index: 5;
+    cursor: pointer;
+  }
+
+  .mg-nav__backdrop:focus-visible {
+    outline: none;
   }
 
   .mg-nav li {
@@ -234,4 +262,42 @@
   .mg-user-menu {
     padding: 0.4rem 0.85rem;
   }
+}
+
+/* Force desktop layout (used on LandingPage) */
+.mg-nav-wrapper.force-desktop {
+  justify-content: center;
+}
+
+.mg-nav-wrapper.force-desktop .mg-nav {
+  display: flex !important;
+  position: static;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+  gap: 1.25rem;
+}
+
+.mg-nav-wrapper.force-desktop .mg-nav li {
+  width: auto;
+}
+
+.mg-nav-wrapper.force-desktop .mg-nav__link {
+  width: auto;
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+}
+
+.mg-nav-wrapper.force-desktop .mg-nav__toggle,
+.mg-nav-wrapper.force-desktop .mg-nav__backdrop {
+  display: none !important;
 }
