@@ -1,46 +1,53 @@
-import React from 'react';
-import styles from './AnimalFilter.module.css';
+import React from "react";
+import styles from "./AnimalFilter.module.css";
 
 const AnimalFilter = ({
   selectedCategory,
   onCategoryChange,
   searchQuery,
   onSearchChange,
-  onSearch
+  onSearch,
 }) => {
   const categories = [
-    { name: '전체', icon: '🌟' },
-    { name: '강아지', icon: '🐕' },
-    { name: '고양이', icon: '🐈' },
-    { name: '소형동물', icon: '🐰' },
-    { name: '조류', icon: '🐦' },
-    { name: '파충류', icon: '🦎' },
-    { name: '어류', icon: '🐠' }
+    { name: "전체", icon: "🌟" },
+    { name: "강아지" },
+    { name: "고양이" },
+    { name: "토끼" },
+    { name: "기니피그" },
+    { name: "햄스터" },
+    { name: "새" },
+    { name: "파충류" },
+    { name: "어류" },
+    { name: "거북이" },
   ];
 
   const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       onSearch();
     }
   };
 
   return (
-    <div className={styles.filterSection}>
-      <div className={styles.filterTop}>
-        <div className={styles.categoryFilters}>
-          {categories.map((category) => (
-            <button
-              key={category.name}
-              className={`${styles.filterBtn} ${
-                selectedCategory === category.name ? styles.active : ''
-              }`}
-              onClick={() => onCategoryChange(category.name)}
-            >
-              <span>{category.icon}</span>
-              {category.name}
-            </button>
-          ))}
+    <>
+      <div className={styles.filterSection}>
+        <div className={styles.filterTop}>
+          <div className={styles.categoryFilters}>
+            {categories.map((category) => (
+              <button
+                key={category.name}
+                className={`${styles.filterBtn} ${
+                  selectedCategory === category.name ? styles.active : ""
+                }`}
+                onClick={() => onCategoryChange(category.name)}
+              >
+                {category.icon && <span>{category.icon}</span>}
+                {category.name}
+              </button>
+            ))}
+          </div>
         </div>
+      </div>
+      <div className={styles.searchBoxSpace}>
         <div className={styles.searchBox}>
           <input
             type="text"
@@ -55,7 +62,7 @@ const AnimalFilter = ({
           </button>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

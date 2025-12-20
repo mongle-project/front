@@ -1,7 +1,10 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from './AnimalCard.module.css';
 
 const AnimalCard = ({ animal }) => {
+  const navigate = useNavigate();
+
   const getCategoryIcon = (category) => {
     switch (category) {
       case '강아지':
@@ -21,8 +24,12 @@ const AnimalCard = ({ animal }) => {
     }
   };
 
+  const handleCardClick = () => {
+    navigate(`/dictionary/${animal.id}`);
+  };
+
   return (
-    <div className={styles.animalCard}>
+    <div className={styles.animalCard} onClick={handleCardClick}>
       <img
         src={animal.image}
         alt={animal.name}
