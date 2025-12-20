@@ -1,0 +1,294 @@
+.page {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #e8f5e9 0%, #c8e6c9 100%);
+  padding-bottom: 3rem;
+  font-family: "GyeonggiMillenniumTitle", sans-serif;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 2rem auto;
+  padding: 0 2rem;
+}
+
+.backBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.5rem;
+  background: white;
+  border: 2px solid #a5d6a7;
+  border-radius: 50px;
+  color: #43a047;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 1.5rem;
+  text-decoration: none;
+  font-size: 1rem;
+}
+
+.backBtn:hover {
+  background: #f1f8e9;
+  transform: translateY(-2px);
+}
+
+.pageHeader {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.pageIcon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.pageTitle {
+  font-size: 2.5rem;
+  color: #1b5e20;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+}
+
+.pageSubtitle {
+  font-size: 1.1rem;
+  color: #66bb6a;
+}
+
+/* 상담 정보 */
+.consultationInfo {
+  background: white;
+  border-radius: 25px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(76, 175, 80, 0.1);
+  margin-bottom: 2rem;
+}
+
+.infoTitle {
+  font-size: 1.3rem;
+  color: #1b5e20;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+
+.infoGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.infoItem {
+  background: #f1f8e9;
+  padding: 1rem;
+  border-radius: 15px;
+  border-left: 4px solid #66bb6a;
+}
+
+.infoLabel {
+  font-size: 0.85rem;
+  color: #81c784;
+  margin-bottom: 0.3rem;
+}
+
+.infoValue {
+  font-size: 1.1rem;
+  color: #2e7d32;
+  font-weight: 600;
+}
+
+.questionBox {
+  background: #fff9c4;
+  padding: 1.5rem;
+  border-radius: 15px;
+  border-left: 4px solid #fdd835;
+  margin-top: 1.5rem;
+}
+
+.questionLabel {
+  font-size: 0.9rem;
+  color: #f9a825;
+  font-weight: 700;
+  margin-bottom: 0.8rem;
+}
+
+.questionText {
+  font-size: 1rem;
+  color: #424242;
+  line-height: 1.7;
+}
+
+/* AI 응답 */
+.aiResponse {
+  background: white;
+  border-radius: 25px;
+  padding: 3rem;
+  box-shadow: 0 4px 20px rgba(76, 175, 80, 0.1);
+  margin-bottom: 2rem;
+}
+
+.responseHeader {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid #e8f5e9;
+}
+
+.aiAvatar {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #66bb6a 0%, #43a047 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+}
+
+.responseTitle {
+  font-size: 1.8rem;
+  color: #1b5e20;
+  font-weight: 700;
+}
+
+.responseContent {
+  font-size: 1.05rem;
+  line-height: 1.9;
+  color: #2e7d32;
+}
+
+.responseContent h3 {
+  color: #1b5e20;
+  font-size: 1.5rem;
+  margin: 2rem 0 1rem 0;
+  font-weight: 700;
+}
+
+.responseContent p {
+  margin-bottom: 1.5rem;
+}
+
+.responseContent ul {
+  margin: 1rem 0 1.5rem 2rem;
+}
+
+.responseContent li {
+  margin-bottom: 0.8rem;
+  line-height: 1.7;
+}
+
+.responseContent strong {
+  color: #1b5e20;
+  font-weight: 700;
+}
+
+/* 경고 박스 */
+.warningBox {
+  background: #fff3e0;
+  border-left: 4px solid #ff9800;
+  padding: 1.5rem;
+  border-radius: 15px;
+  margin: 2rem 0;
+}
+
+.warningTitle {
+  font-weight: 700;
+  color: #f57c00;
+  margin-bottom: 0.8rem;
+  font-size: 1.1rem;
+}
+
+.warningContent {
+  color: #e65100;
+  line-height: 1.7;
+}
+
+/* 하이라이트 박스 */
+.highlightBox {
+  background: #e3f2fd;
+  border-left: 4px solid #2196f3;
+  padding: 1.5rem;
+  border-radius: 15px;
+  margin: 2rem 0;
+}
+
+.highlightTitle {
+  font-weight: 700;
+  color: #1976d2;
+  margin-bottom: 0.8rem;
+  font-size: 1.1rem;
+}
+
+.highlightContent {
+  color: #0d47a1;
+  line-height: 1.7;
+}
+
+/* 면책 조항 */
+.disclaimer {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 2px solid #e8f5e9;
+  color: #9e9e9e;
+  font-size: 0.9rem;
+}
+
+/* 액션 버튼들 */
+.actionButtons {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.actionBtn {
+  padding: 1.2rem;
+  border: 2px solid #e0e0e0;
+  background: white;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #2e7d32;
+}
+
+.actionBtn:hover {
+  border-color: #66bb6a;
+  background: #f1f8e9;
+  transform: translateY(-3px);
+  box-shadow: 0 4px 10px rgba(76, 175, 80, 0.2);
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 1rem;
+  }
+
+  .aiResponse {
+    padding: 2rem 1.5rem;
+  }
+
+  .pageTitle {
+    font-size: 2rem;
+  }
+
+  .pageSubtitle {
+    font-size: 1rem;
+  }
+
+  .responseTitle {
+    font-size: 1.5rem;
+  }
+
+  .responseContent h3 {
+    font-size: 1.3rem;
+  }
+
+  .actionButtons {
+    grid-template-columns: 1fr;
+  }
+}

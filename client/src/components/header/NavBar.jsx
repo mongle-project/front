@@ -2,14 +2,13 @@ import React, { useEffect, useId, useState } from "react";
 import { NavLink } from "react-router-dom";
 import "../../styles/Header.css";
 import { ROUTES } from "../../utils/constants";
-import { NAV_LINKS } from "../../utils/navLinks";
 
 const DEFAULT_NAV_LINKS = [
   { label: "동물 사전", path: ROUTES.DICTIONARY },
   { label: "정보 공유", path: ROUTES.COMMUNITY },
   { label: "내 반려동물", path: ROUTES.PETS },
   { label: "캘린더", path: ROUTES.CALENDAR },
-  { label: "건강/영양", path: "/health/consult" },
+  { label: "건강/영양", path: ROUTES.HEALTH_CONSULT },
   { label: "병원/보호소", path: ROUTES.MAP },
   { label: "뉴스", path: ROUTES.NEWS },
   { label: "로그아웃", action: "logout" },
@@ -21,7 +20,8 @@ const NavBar = ({
   forceDesktop = false,
   desktopBreakpoint = 1024,
 }) => {
-  const isBrowser = typeof window !== "undefined" && typeof document !== "undefined";
+  const isBrowser =
+    typeof window !== "undefined" && typeof document !== "undefined";
   const [isOpen, setIsOpen] = useState(false);
   const [viewportWidth, setViewportWidth] = useState(() =>
     isBrowser ? window.innerWidth : desktopBreakpoint
