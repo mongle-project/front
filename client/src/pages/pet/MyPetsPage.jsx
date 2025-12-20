@@ -12,6 +12,8 @@ const MyPetsPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState("add");
   const [selectedPet, setSelectedPet] = useState(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [petToDelete, setPetToDelete] = useState(null);
 
   // 임시 반려동물 데이터
   const [pets, setPets] = useState([
@@ -71,6 +73,10 @@ const MyPetsPage = () => {
       navigate(ROUTES.PETS_ADD);
       return;
     }
+    if (mode === "edit" && pet) {
+      navigate(`/pets/edit/${pet.id}`);
+      return;
+    }
     setModalMode(mode);
     setSelectedPet(pet);
     setIsModalOpen(true);
@@ -81,9 +87,20 @@ const MyPetsPage = () => {
     setSelectedPet(null);
   };
 
-  const handleDelete = (id) => {
-    if (window.confirm("정말 삭제하시겠습니까?")) {
-      setPets(pets.filter((pet) => pet.id !== id));
+  const openDeleteModal = (pet) => {
+    setPetToDelete(pet);
+    setIsDeleteModalOpen(true);
+  };
+
+  const closeDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+    setPetToDelete(null);
+  };
+
+  const confirmDelete = () => {
+    if (petToDelete) {
+      setPets(pets.filter((pet) => pet.id !== petToDelete.id));
+      closeDeleteModal();
     }
   };
 
@@ -179,10 +196,6 @@ const MyPetsPage = () => {
                   </div>
 
                   <div className={styles.petActions}>
-                    <button className={`${styles.actionBtn} ${styles.btnView}`}>
-                      <span>📋</span>
-                      상세보기
-                    </button>
                     <button
                       className={`${styles.actionBtn} ${styles.btnEdit}`}
                       onClick={() => openModal("edit", pet)}
@@ -192,7 +205,7 @@ const MyPetsPage = () => {
                     </button>
                     <button
                       className={`${styles.actionBtn} ${styles.btnDelete}`}
-                      onClick={() => handleDelete(pet.id)}
+                      onClick={() => openDeleteModal(pet)}
                     >
                       <span>🗑️</span>
                       삭제
@@ -416,6 +429,42 @@ const MyPetsPage = () => {
               </button>
             </div>
           </form>
+        </div>
+      </div>
+
+      {/* 삭제 확인 모달 */}
+      <div className={`${styles.modal} ${isDeleteModalOpen ? styles.active : ""}`}>
+        <div className={styles.deleteModalContent}>
+          <div className={styles.deleteModalHeader}>
+            <div className={styles.deleteIcon}>⚠️</div>
+            <h2 className={styles.deleteModalTitle}>반려동물 삭제</h2>
+          </div>
+
+          <div className={styles.deleteModalBody}>
+            <p className={styles.deleteMessage}>
+              정말로 <strong>{petToDelete?.name}</strong>의 정보를 삭제하시겠습니까?
+            </p>
+            <p className={styles.deleteWarning}>
+              삭제된 정보는 복구할 수 없습니다.
+            </p>
+          </div>
+
+          <div className={styles.deleteModalActions}>
+            <button
+              type="button"
+              className={`${styles.modalBtn} ${styles.modalBtnSecondary}`}
+              onClick={closeDeleteModal}
+            >
+              취소
+            </button>
+            <button
+              type="button"
+              className={`${styles.modalBtn} ${styles.modalBtnDanger}`}
+              onClick={confirmDelete}
+            >
+              삭제
+            </button>
+          </div>
         </div>
       </div>
     </div>
