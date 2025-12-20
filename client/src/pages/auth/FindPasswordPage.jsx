@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
-import styles from "../../styles/FindPasswordPage.module.css";
+import styles from "./FindPasswordPage.module.css";
 
 const FindPasswordPage = () => {
   const [step, setStep] = useState(1); // 1: 아이디 입력, 2: 이메일 입력
