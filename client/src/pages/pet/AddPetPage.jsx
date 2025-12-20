@@ -49,12 +49,49 @@ const AddPetPage = () => {
     navigate(ROUTES.LOGIN);
   };
 
+  const calculateAge = (birthday) => {
+    if (!birthday) return "";
+
+    const today = new Date();
+    const birthDate = new Date(birthday);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+
+    // 생일이 아직 안 지났으면 나이에서 1을 뺌
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+
+    // 1살 미만인 경우
+    if (age === 0) {
+      const months = monthDiff + (today.getDate() < birthDate.getDate() ? 0 : 1);
+      if (months === 0) {
+        const days = Math.floor((today - birthDate) / (1000 * 60 * 60 * 24));
+        return `${days}일`;
+      }
+      return `${months}개월`;
+    }
+
+    return `${age}살`;
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+
+    // 생일이 변경되면 자동으로 나이 계산
+    if (name === "birthday") {
+      const calculatedAge = calculateAge(value);
+      setFormData((prev) => ({
+        ...prev,
+        birthday: value,
+        age: calculatedAge,
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
 
   const handleSpeciesClick = (value) => {
@@ -247,9 +284,9 @@ const AddPetPage = () => {
                   id="age"
                   name="age"
                   className={styles.formInput}
-                  placeholder="예: 3살"
+                  placeholder="생일을 선택하면 자동으로 계산됩니다"
                   value={formData.age}
-                  onChange={handleInputChange}
+                  readOnly
                   required
                 />
               </div>
