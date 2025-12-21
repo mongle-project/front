@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import styles from "./PostWritePage.module.css";
 import DashboardHeader from "../../components/header/Header";
 import { ROUTES } from "../../utils/constants";
@@ -25,8 +25,10 @@ const topicOptions = [
 
 const PostWritePage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const fileInputRef = useRef(null);
   const { user, logout } = useAuthContext();
+  const isEdit = Boolean(new URLSearchParams(location.search).get("edit"));
 
   const [selectedCategory, setSelectedCategory] = useState("dog");
   const [topic, setTopic] = useState("info");
@@ -104,7 +106,7 @@ const PostWritePage = () => {
       image: imagePreview || null,
     });
 
-    alert("게시글이 등록되었습니다! 🎉");
+    alert(isEdit ? "게시글이 수정되었습니다! 🎉" : "게시글이 등록되었습니다! 🎉");
     localStorage.removeItem("community_post_draft");
     navigate(ROUTES.COMMUNITY);
   };
@@ -138,9 +140,13 @@ const PostWritePage = () => {
         </div>
 
         <header className={styles.pageHeader}>
-          <h1 className={styles.pageTitle}>✏️ 게시글 작성</h1>
+          <h1 className={styles.pageTitle}>
+            {isEdit ? "✏️ 게시글 수정" : "✏️ 게시글 작성"}
+          </h1>
           <p className={styles.pageSubtitle}>
-            다른 집사님들과 소중한 경험을 나눠주세요
+            {isEdit
+              ? "작성한 내용을 수정해 주세요"
+              : "다른 집사님들과 소중한 경험을 나눠주세요"}
           </p>
         </header>
 
@@ -280,7 +286,7 @@ const PostWritePage = () => {
                 취소
               </button>
               <button type="submit" className={styles.submitBtn}>
-                게시하기
+                {isEdit ? "수정하기" : "게시하기"}
               </button>
             </div>
           </form>
