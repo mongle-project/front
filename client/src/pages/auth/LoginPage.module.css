@@ -262,7 +262,7 @@
   border: 2px solid #e0e0e0;
   border-radius: 15px;
   font-size: 1rem;
-  font-family: "Noto Sans KR", sans-serif;
+  font-family: "GyeonggiMillenniumTitle", "Noto Sans KR", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   outline: none;
   transition: all 0.3s ease;
 }
@@ -274,6 +274,26 @@
 
 .formInput::placeholder {
   color: #bdbdbd;
+}
+
+.resetPasswordContainer {
+  display: flex;
+  flex-direction: row-reverse;
+  margin-top: -0.5rem;
+}
+
+.resetPasswordLink {
+  color: #2e7d32;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.resetPasswordLink:hover {
+  color: #43a047;
+  text-decoration: underline;
 }
 
 .passwordStrength {

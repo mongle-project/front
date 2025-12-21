@@ -47,9 +47,18 @@ const GlobalStyles = createGlobalStyle`
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
+    overflow-y: auto;
   }
 
   #root {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .App {
+    flex: 1;
     min-height: 100vh;
     display: flex;
     flex-direction: column;

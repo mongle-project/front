@@ -1,13 +1,14 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 // import { login } from "../../api/auth";
-import styles from "../../styles/LoginPage.module.css";
+import styles from "./LoginPage.module.css";
 import { signup } from "../../api/user";
 import { useAuthContext } from "../../contexts/AuthContext";
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { login: authLogin } = useAuthContext();
   const [activeTab, setActiveTab] = useState("login");
   const [isLoading, setIsLoading] = useState(false);
@@ -34,8 +35,6 @@ const LoginPage = () => {
     if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
     if (password.match(/[0-9]/)) strength++;
     if (password.match(/[^a-zA-Z0-9]/)) strength++;
-
-    console.log(strength);
 
     if (strength <= 1) {
       setPasswordStrength({ level: 1, text: "약함" });
@@ -144,6 +143,16 @@ const LoginPage = () => {
     return "";
   };
 
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const tab = params.get("tab");
+    if (tab === "signup") {
+      setActiveTab("signup");
+    } else if (tab === "login") {
+      setActiveTab("login");
+    }
+  }, [location.search]);
+
   return (
     <div className={styles.pageContainer}>
       <Toaster position="top-center" reverseOrder={false} />
@@ -247,6 +256,15 @@ const LoginPage = () => {
                     onChange={(e) => setLoginPassword(e.target.value)}
                     required
                   />
+                </div>
+
+                <div className={styles.resetPasswordContainer}>
+                  <Link
+                    to="/find-password"
+                    className={styles.resetPasswordLink}
+                  >
+                    비밀번호 재설정
+                  </Link>
                 </div>
 
                 <button
@@ -375,4 +393,3 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
-
