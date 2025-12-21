@@ -1,0 +1,372 @@
+@font-face {
+  font-family: "GyeonggiMillenniumTitle";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2410-3@1.0/Title_Light.woff")
+    format("woff");
+  font-weight: 300;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "GyeonggiMillenniumTitle";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2410-3@1.0/Title_Medium.woff")
+    format("woff");
+  font-weight: 500;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "GyeonggiMillenniumTitle";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2410-3@1.0/Title_Bold.woff")
+    format("woff");
+  font-weight: 700;
+  font-display: swap;
+}
+
+.page {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #e8f5e9 0%, #c8e6c9 100%);
+  font-family: "GyeonggiMillenniumTitle", "Noto Sans KR", sans-serif;
+  padding-bottom: 3rem;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem 3rem;
+}
+
+.backRow {
+  margin-bottom: 1rem;
+}
+
+.backBtn {
+  border: 1px solid #d2e7d4;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 0.6rem 1.2rem;
+  color: #2e7d32;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.12);
+  transition: all 0.2s ease;
+}
+
+.backBtn:hover {
+  transform: translateY(-1px);
+}
+
+.pageHeader {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.pageTitle {
+  font-size: 2.3rem;
+  color: #1b5e20;
+  font-weight: 800;
+}
+
+.pageSubtitle {
+  color: #66bb6a;
+  margin-top: 0.35rem;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 28px;
+  box-shadow: 0 12px 38px rgba(76, 175, 80, 0.16);
+  padding: 2.5rem;
+  border: 1px solid #dce7d8;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.8rem;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.label {
+  color: #2e7d32;
+  font-weight: 800;
+  font-size: 1.05rem;
+}
+
+.required {
+  color: #ff5252;
+  font-weight: 800;
+}
+
+.categoryRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.categoryChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.8rem 1.15rem;
+  border-radius: 999px;
+  border: 1px solid #d8ead8;
+  background: #f8fbf7;
+  color: #4b5a4f;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.categoryChip:hover {
+  border-color: #66bb6a;
+  transform: translateY(-1px);
+}
+
+.categoryChip.active {
+  background: linear-gradient(135deg, #66bb6a 0%, #43a047 100%);
+  color: #ffffff;
+  border-color: #43a047;
+  box-shadow: 0 10px 24px rgba(76, 175, 80, 0.25);
+}
+
+.categoryIcon {
+  font-size: 1.1rem;
+}
+
+.topicSelect {
+  margin-top: 0.4rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #f8fbf7;
+  border: 1px solid #dce7d8;
+  padding: 0.65rem 0.8rem;
+  border-radius: 12px;
+  color: #4b5a4f;
+  font-weight: 700;
+  width: fit-content;
+}
+
+.topicSelect select {
+  border: none;
+  background: transparent;
+  font: inherit;
+  color: #2e7d32;
+  padding: 0.2rem 0.4rem;
+}
+
+.input,
+.textarea {
+  width: 100%;
+  border-radius: 16px;
+  border: 1px solid #dce7d8;
+  background: #f8fbf7;
+  padding: 1rem 1.05rem;
+  font-size: 1rem;
+  color: #2f3d2f;
+  transition: all 0.2s ease;
+}
+
+.input:focus,
+.textarea:focus,
+.topicSelect select:focus {
+  border-color: #66bb6a;
+  box-shadow: 0 0 0 4px rgba(102, 187, 106, 0.12);
+  background: #ffffff;
+}
+
+.textarea {
+  min-height: 320px;
+  resize: vertical;
+  line-height: 1.7;
+}
+
+.charCounter {
+  text-align: right;
+  color: #99a6a1;
+  font-size: 0.9rem;
+}
+
+.tipBox {
+  background: #e7f6ef;
+  border: 1px solid #b7e0c3;
+  border-radius: 14px;
+  padding: 1rem;
+}
+
+.tipTitle {
+  font-weight: 800;
+  color: #1f7a3f;
+  margin-bottom: 0.4rem;
+}
+
+.tipList {
+  list-style: none;
+  padding-left: 0.2rem;
+  margin: 0;
+  color: #4f6b54;
+  line-height: 1.6;
+}
+
+.uploadArea {
+  width: 100%;
+  border: 2px dashed #b7d9b9;
+  background: #f7fbf6;
+  border-radius: 18px;
+  padding: 2.4rem 1.2rem;
+  text-align: center;
+  color: #1f7a3f;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.uploadArea:hover {
+  background: #eef8ef;
+  border-color: #66bb6a;
+}
+
+.uploadIcon {
+  font-size: 2.4rem;
+  margin-bottom: 0.3rem;
+}
+
+.uploadText {
+  font-weight: 800;
+  margin-bottom: 0.25rem;
+}
+
+.uploadHint {
+  color: #6b8d6e;
+  font-size: 0.92rem;
+}
+
+.hiddenInput {
+  display: none;
+}
+
+.imagePreview {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid #dce7d8;
+  box-shadow: 0 10px 24px rgba(76, 175, 80, 0.15);
+}
+
+.imagePreview img {
+  width: 100%;
+  max-height: 420px;
+  object-fit: cover;
+  display: block;
+}
+
+.removeImage {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 42px;
+  height: 42px;
+  background: rgba(255, 82, 82, 0.92);
+  color: #ffffff;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 24px rgba(229, 57, 53, 0.35);
+  transition: transform 0.2s ease;
+}
+
+.removeImage:hover {
+  transform: scale(1.05);
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.8rem;
+  margin-top: 0.5rem;
+}
+
+.cancelBtn,
+.submitBtn {
+  min-width: 140px;
+  padding: 0.9rem 1.6rem;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: 1rem;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.cancelBtn {
+  background: #ffffff;
+  color: #2e7d32;
+  border: 1px solid #a5d6a7;
+}
+
+.cancelBtn:hover {
+  background: #f3fbf4;
+  transform: translateY(-2px);
+}
+
+.submitBtn {
+  background: linear-gradient(135deg, #66bb6a 0%, #43a047 100%);
+  color: #ffffff;
+  box-shadow: 0 10px 26px rgba(76, 175, 80, 0.32);
+}
+
+.submitBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 32px rgba(67, 160, 71, 0.4);
+}
+
+@media (max-width: 900px) {
+  .card {
+    padding: 2rem 1.5rem;
+  }
+
+  .pageTitle {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .container {
+    padding: 1rem 1rem 2.5rem;
+  }
+
+  .card {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .categoryChip {
+    padding: 0.7rem 1rem;
+  }
+
+  .textarea {
+    min-height: 240px;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  .cancelBtn,
+  .submitBtn {
+    width: 100%;
+  }
+}

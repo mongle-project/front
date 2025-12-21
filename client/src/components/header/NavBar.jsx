@@ -19,6 +19,7 @@ const NavBar = ({
   links = DEFAULT_NAV_LINKS,
   forceDesktop = false,
   desktopBreakpoint = 1024,
+  showLogout = true,
 }) => {
   const isBrowser =
     typeof window !== "undefined" && typeof document !== "undefined";
