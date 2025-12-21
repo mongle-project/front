@@ -14,7 +14,7 @@ const navLinks = [
   { label: "로그아웃", action: "logout" },
 ];
 
-const NavBar = ({ onLogout }) => {
+const NavBar = ({ onLogout, showLogout = true }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleMenu = () => setIsOpen((prev) => !prev);
@@ -43,6 +43,7 @@ const NavBar = ({ onLogout }) => {
       <ul className={`mg-nav ${isOpen ? "is-open" : ""}`}>
         {navLinks.map((link) => {
           if (link.action === "logout") {
+            if (!showLogout) return null;
             return (
               <li key={link.label}>
                 <button
