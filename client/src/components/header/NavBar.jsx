@@ -19,6 +19,7 @@ const NavBar = ({
   links = DEFAULT_NAV_LINKS,
   forceDesktop = false,
   desktopBreakpoint = 1024,
+  showLogout = true,
 }) => {
   const isBrowser =
     typeof window !== "undefined" && typeof document !== "undefined";
@@ -118,6 +119,7 @@ const NavBar = ({
       <ul id={menuId} className={`mg-nav ${isMenuOpen ? "is-open" : ""}`}>
         {links.map((link) => {
           if (link.action === "logout") {
+            if (!showLogout) return null;
             return (
               <li key={link.label}>
                 <button
