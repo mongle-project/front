@@ -22,15 +22,6 @@ export const changePassword = async (currentPassword, newPassword) => {
   return response.data;
 };
 
-// 아이디 찾기 API
-export const findEmail = async (phone) => {
-  const response = await axios.post("/users/find-email", {
-    phone,
-  });
-
-  return response.data;
-};
-
 // 아이디/이메일 확인 API (비밀번호 재설정용)
 export const findUser = async (userid, email) => {
   const response = await axios.post("/users/find-email", {
