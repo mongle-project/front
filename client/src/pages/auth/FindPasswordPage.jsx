@@ -1,14 +1,17 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
+import { findUser, resetPassword } from "../../api/users";
 import styles from "./FindPasswordPage.module.css";
 
 const FindPasswordPage = () => {
-  const [step, setStep] = useState(1); // 1: 아이디 입력, 2: 이메일 입력
+  const navigate = useNavigate();
+  const [step, setStep] = useState(1); // 1: 아이디/이메일 입력, 2: 비밀번호 재설정
   const [userId, setUserId] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState({
     level: 0,
     text: "",
@@ -38,7 +41,7 @@ const FindPasswordPage = () => {
     }
   };
 
-  const handleStep1Submit = (e) => {
+  const handleStep1Submit = async (e) => {
     e.preventDefault();
 
     if (!userId.trim()) {
@@ -46,26 +49,84 @@ const FindPasswordPage = () => {
       return;
     }
 
-    // TODO: 아이디 확인 API 호출
-    // 임시로 다음 단계로 이동
-    setStep(2);
-    toast.success("아이디가 확인되었습니다.");
-  };
-
-  const handleStep2Submit = (e) => {
-    e.preventDefault();
-
     if (!email.trim()) {
       toast.error("이메일을 입력해주세요.");
       return;
     }
 
-    if (password != passwordConfirm) {
+    setIsLoading(true);
+
+    try {
+      // 아이디와 이메일이 일치하는지 확인
+      await findUser(userId, email);
+
+      // 확인 성공 시 다음 단계로 이동
+      setStep(2);
+      toast.success("사용자 확인이 완료되었습니다.");
+    } catch (error) {
+      console.error("find user error:", error);
+
+      // 에러 메시지 처리
+      if (error.response) {
+        const errorMessage =
+          error.response.data?.message || "일치하는 사용자 정보가 없습니다.";
+        toast.error(errorMessage);
+      } else if (error.request) {
+        toast.error("서버와 연결할 수 없습니다.");
+      } else {
+        toast.error("사용자 확인 중 오류가 발생했습니다.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleStep2Submit = async (e) => {
+    e.preventDefault();
+
+    if (!password.trim()) {
+      toast.error("새 비밀번호를 입력해주세요.");
+      return;
+    }
+
+    if (password !== passwordConfirm) {
       toast.error("비밀번호가 일치하지 않습니다.");
       return;
     }
-    // TODO: 비밀번호 재설정 이메일 발송 API 호출
-    toast.success("비밀번호 재설정 되었습니다.");
+
+    if (password.length < 8) {
+      toast.error("비밀번호는 8자 이상이어야 합니다.");
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      // 비밀번호 재설정 API 호출
+      await resetPassword(userId, email, password);
+
+      toast.success("비밀번호가 재설정되었습니다. 로그인 페이지로 이동합니다.");
+
+      // 로그인 페이지로 이동
+      setTimeout(() => {
+        navigate("/login");
+      }, 1500);
+    } catch (error) {
+      console.error("Reset password error:", error);
+
+      // 에러 메시지 처리
+      if (error.response) {
+        const errorMessage =
+          error.response.data?.message || "비밀번호 재설정에 실패했습니다.";
+        toast.error(errorMessage);
+      } else if (error.request) {
+        toast.error("서버와 연결할 수 없습니다.");
+      } else {
+        toast.error("비밀번호 재설정 중 오류가 발생했습니다.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -120,8 +181,14 @@ const FindPasswordPage = () => {
                   />
                 </div>
 
-                <button type="submit" className={styles.submitBtn}>
-                  비밀번호 재설정하기
+                <button
+                  type="submit"
+                  className={`${styles.submitBtn} ${
+                    isLoading ? styles.loading : ""
+                  }`}
+                  disabled={isLoading}
+                >
+                  {isLoading ? "확인 중..." : "비밀번호 재설정하기"}
                 </button>
 
                 <Link to="/login" className={styles.backLink}>
@@ -182,8 +249,14 @@ const FindPasswordPage = () => {
                   )}
                 </div>
 
-                <button type="submit" className={styles.submitBtn}>
-                  비밀번호 재설정
+                <button
+                  type="submit"
+                  className={`${styles.submitBtn} ${
+                    isLoading ? styles.loading : ""
+                  }`}
+                  disabled={isLoading}
+                >
+                  {isLoading ? "재설정 중..." : "비밀번호 재설정"}
                 </button>
 
                 <Link to="/login" className={styles.backLink}>
