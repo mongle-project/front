@@ -1,0 +1,293 @@
+@font-face {
+  font-family: "GyeonggiMillenniumTitle";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2410-3@1.0/Title_Light.woff")
+    format("woff");
+  font-weight: 300;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "GyeonggiMillenniumTitle";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2410-3@1.0/Title_Medium.woff")
+    format("woff");
+  font-weight: 500;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "GyeonggiMillenniumTitle";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2410-3@1.0/Title_Bold.woff")
+    format("woff");
+  font-weight: 700;
+  font-display: swap;
+}
+
+.page {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #e8f5e9 0%, #c8e6c9 100%);
+  font-family: "GyeonggiMillenniumTitle", "Noto Sans KR", sans-serif;
+  padding-bottom: 3rem;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem 3rem;
+}
+
+.backRow {
+  margin-bottom: 1rem;
+}
+
+.backBtn {
+  border: 1px solid #d2e7d4;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 0.6rem 1.2rem;
+  color: #2e7d32;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.12);
+  transition: all 0.2s ease;
+}
+
+.backBtn:hover {
+  transform: translateY(-1px);
+}
+
+.postCard {
+  background: #ffffff;
+  border-radius: 28px;
+  box-shadow: 0 12px 36px rgba(76, 175, 80, 0.16);
+  padding: 2.3rem;
+  border: 1px solid #dce7d8;
+}
+
+.postHeader {
+  border-bottom: 2px solid #e8f5e9;
+  padding-bottom: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.category {
+  display: inline-block;
+  padding: 0.45rem 1.1rem;
+  background: #ffe0b2;
+  color: #f57c00;
+  border-radius: 16px;
+  font-weight: 800;
+  margin-bottom: 1rem;
+}
+
+.title {
+  font-size: 2rem;
+  color: #1b5e20;
+  font-weight: 800;
+  line-height: 1.4;
+  margin-bottom: 1.2rem;
+}
+
+.metaRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.authorBox {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #66bb6a 0%, #43a047 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 1.2rem;
+}
+
+.authorInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.authorName {
+  font-weight: 700;
+  color: #2e7d32;
+}
+
+.date {
+  color: #81c784;
+  font-size: 0.95rem;
+}
+
+.stats {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: #e53935;
+  font-weight: 800;
+}
+
+.content {
+  color: #2e7d32;
+  line-height: 1.75;
+  font-size: 1.02rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.content h3 {
+  color: #2e7d32;
+  font-size: 1.3rem;
+  margin-top: 0.8rem;
+}
+
+.tipBox {
+  background: #e8f5e9;
+  border-radius: 16px;
+  border-left: 4px solid #66bb6a;
+  padding: 1.2rem 1.3rem;
+  line-height: 1.6;
+  color: #2e7d32;
+}
+
+.tipBox p {
+  margin-top: 0.6rem;
+}
+
+.imageBox {
+  margin-top: 0.5rem;
+  border: 1px dashed #b7d9b9;
+  background: #f7fbf6;
+  border-radius: 16px;
+  padding: 1rem;
+}
+
+.imageBox img {
+  width: 100%;
+  border-radius: 12px;
+  display: block;
+}
+
+.actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  margin: 1.5rem 0;
+  padding: 1.2rem 0;
+  border-top: 2px solid #e8f5e9;
+  border-bottom: 2px solid #e8f5e9;
+  flex-wrap: wrap;
+}
+
+.actionBtn {
+  padding: 0.75rem 1.8rem;
+  border: 1px solid #a5d6a7;
+  background: #ffffff;
+  border-radius: 999px;
+  font-weight: 700;
+  color: #2e7d32;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.actionBtn:hover {
+  background: #f1f8e9;
+  transform: translateY(-2px);
+}
+
+.liked {
+  background: #ffe0e0;
+  border-color: #ff5252;
+  color: #ff5252;
+}
+
+.bookmarked {
+  background: #e8f5e9;
+  border-color: #66bb6a;
+  color: #2e7d32;
+}
+
+.footerActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  margin-top: 0.5rem;
+}
+
+.grayBtn,
+.greenBtn {
+  padding: 0.7rem 1.4rem;
+  border-radius: 999px;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.grayBtn {
+  background: #f5f5f5;
+  color: #555555;
+}
+
+.grayBtn:hover {
+  background: #e0e0e0;
+}
+
+.greenBtn {
+  background: linear-gradient(135deg, #66bb6a 0%, #43a047 100%);
+  color: #ffffff;
+  box-shadow: 0 10px 24px rgba(76, 175, 80, 0.28);
+}
+
+.greenBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(67, 160, 71, 0.32);
+}
+
+@media (max-width: 960px) {
+  .postCard {
+    padding: 1.8rem;
+  }
+
+  .title {
+    font-size: 1.7rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .container {
+    padding: 1rem 1rem 2rem;
+  }
+
+  .postCard {
+    padding: 1.4rem;
+  }
+
+  .metaRow {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  .actionBtn,
+  .grayBtn,
+  .greenBtn {
+    width: 100%;
+    text-align: center;
+  }
+}
