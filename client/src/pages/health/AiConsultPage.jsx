@@ -4,6 +4,7 @@ import toast, { Toaster } from "react-hot-toast";
 import DashboardHeader from "../../components/header/Header";
 import { useAuthContext } from "../../contexts/AuthContext";
 import { ROUTES } from "../../utils/constants";
+import { aiHealthConsult } from "../../api/health";
 import styles from "./AiConsultPage.module.css";
 
 const AiConsultPage = () => {
@@ -61,7 +62,7 @@ const AiConsultPage = () => {
     setCharCount(0);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!formData.breed || !formData.age || !formData.consultation) {
@@ -72,21 +73,58 @@ const AiConsultPage = () => {
       return;
     }
 
-    // AI 상담 로직 (추후 API 연동)
-    console.log("AI 상담 요청:", formData);
+    try {
+      // 동물 종류 레이블 가져오기
+      const animalTypeLabel = animalTypes.find(
+        (animal) => animal.id === formData.animalType
+      )?.label;
 
-    // 동물 종류 레이블 가져오기
-    const animalTypeLabel = animalTypes.find(
-      (animal) => animal.id === formData.animalType
-    )?.label;
+      // API 요청 데이터 구성
+      const consultData = {
+        animalType: animalTypeLabel?.split(" ")[1] || formData.animalType,
+        breed: formData.breed,
+        age: formData.age,
+        weight: formData.weight || "",
+        gender: formData.gender === "male" ? "남아" : formData.gender === "female" ? "여아" : "중성화 완료",
+        existingDiseases: formData.diseases.map(
+          (diseaseId) => diseases.find((d) => d.id === diseaseId)?.label || ""
+        ),
+        medications: formData.medications || "",
+        consultContent: formData.consultation,
+      };
 
-    // 결과 페이지로 이동하면서 데이터 전달
-    navigate(ROUTES.HEALTH_RESULT, {
-      state: {
-        ...formData,
-        animalTypeLabel,
-      },
-    });
+      toast.loading("AI 상담 중입니다...", {
+        position: "top-center",
+      });
+
+      // AI 상담 API 호출
+      const response = await aiHealthConsult(consultData);
+
+      toast.dismiss();
+      toast.success("상담이 완료되었습니다.", {
+        duration: 2000,
+        position: "top-center",
+      });
+
+      // 결과 페이지로 이동하면서 데이터 전달
+      navigate(ROUTES.HEALTH_RESULT, {
+        state: {
+          ...formData,
+          animalTypeLabel,
+          aiResponse: response.data?.aiResponse,
+        },
+      });
+    } catch (error) {
+      toast.dismiss();
+      toast.error(
+        error.response?.data?.message || "상담 요청에 실패했습니다. 다시 시도해주세요.",
+        {
+          duration: 3000,
+          position: "top-center",
+        }
+      );
+      console.error("AI 상담 요청 실패:", error);
+    }
   };
 
   const exampleQuestions = [

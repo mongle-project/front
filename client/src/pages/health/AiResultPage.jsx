@@ -15,17 +15,20 @@ const AiResultPage = () => {
   const displayName = user?.name ?? "집사님";
   const contentRef = useRef();
 
-  // 상담 데이터 (실제로는 location.state나 API에서 받아옴)
-  const consultationData = location.state || {
-    animalType: "dog",
-    animalTypeLabel: "🐕 강아지",
-    breed: "말티즈",
-    age: "3살 (성인)",
-    weight: "3kg",
-    gender: "남아",
-    consultation:
-      "우리 강아지가 최근 식욕이 떨어졌는데 어떻게 해야 할까요? 평소에는 사료를 잘 먹었는데 어제부터 밥그릇만 보면 관심이 없어요.",
-  };
+  // 상담 데이터 및 AI 응답 가져오기
+  const consultationData = location.state || null;
+  const aiResponse = consultationData?.aiResponse || null;
+
+  // 상담 데이터가 없으면 상담 페이지로 리디렉션
+  React.useEffect(() => {
+    if (!consultationData) {
+      toast.error("상담 데이터를 찾을 수 없습니다. 다시 시도해주세요.", {
+        duration: 2000,
+        position: "top-center",
+      });
+      navigate(ROUTES.HEALTH_CONSULT);
+    }
+  }, [consultationData, navigate]);
 
   const handleBackToConsult = () => {
     navigate(ROUTES.HEALTH_CONSULT);
@@ -81,6 +84,11 @@ const AiResultPage = () => {
       toast.error("PDF 생성 중 오류가 발생했습니다.", { id: "pdf-loading" });
     }
   };
+
+  // 상담 데이터가 없으면 렌더링하지 않음 (리디렉션 처리됨)
+  if (!consultationData) {
+    return null;
+  }
 
   return (
     <div className={styles.page}>
@@ -143,87 +151,68 @@ const AiResultPage = () => {
           </div>
 
           <div className={styles.responseContent}>
-            <p>안녕하세요! 말티즈의 식욕 저하 문제에 대해 상담드리겠습니다.</p>
+            {aiResponse ? (
+              <>
+                {/* API에서 받은 AI 응답 표시 */}
+                <div className={styles.responseSection}>
+                  <h3>🔍 {aiResponse.subtitle1}</h3>
+                  <p>{aiResponse.text1}</p>
+                </div>
 
-            <h3>🔍 1. 식욕 저하의 주요 원인</h3>
-            <ul>
-              <li>
-                <strong>환경 변화:</strong> 최근 집안 환경이나 일상 루틴에
-                변화가 있었나요?
-              </li>
-              <li>
-                <strong>건강 문제:</strong> 치아 문제, 소화기 질환의 초기
-                증상일 수 있습니다.
-              </li>
-              <li>
-                <strong>사료 문제:</strong> 사료가 상했거나 맛이 변했을
-                가능성이 있습니다.
-              </li>
-              <li>
-                <strong>과도한 간식:</strong> 간식을 너무 많이 주면 정규 식사에
-                흥미를 잃습니다.
-              </li>
-            </ul>
+                <div className={styles.responseSection}>
+                  <h3>💡 {aiResponse.subtitle2}</h3>
+                  <p style={{ whiteSpace: "pre-line" }}>{aiResponse.text2}</p>
+                </div>
 
-            <div className={styles.warningBox}>
-              <div className={styles.warningTitle}>
-                ⚠️ 즉시 병원을 방문해야 하는 경우
-              </div>
-              <div className={styles.warningContent}>
-                • 24시간 이상 아무것도 먹지 않는 경우
-                <br />
-                • 구토나 설사를 동반하는 경우
-                <br />
-                • 기력이 현저히 떨어진 경우
-                <br />
-                <br />위 증상이 있다면 즉시 동물병원을 방문하세요!
-              </div>
-            </div>
+                <div className={styles.responseSection}>
+                  <h3>⚕️ {aiResponse.subtitle3}</h3>
+                  <p style={{ whiteSpace: "pre-line" }}>{aiResponse.text3}</p>
+                </div>
 
-            <h3>💡 2. 집에서 시도해볼 수 있는 방법</h3>
-            <ul>
-              <li>
-                <strong>사료에 토핑 추가:</strong> 소고기 육수를 소량
-                섞어주세요.
-              </li>
-              <li>
-                <strong>사료를 살짝 데워주기:</strong> 10-15초 정도 데우면 향이
-                강해집니다.
-              </li>
-              <li>
-                <strong>급여 환경 개선:</strong> 조용하고 편안한 장소에서
-                식사하게 해주세요.
-              </li>
-              <li>
-                <strong>운동량 증가:</strong> 식사 전 20-30분 산책으로 에너지를
-                소비시키세요.
-              </li>
-            </ul>
+                <div className={styles.responseSection}>
+                  <h3>🏥 {aiResponse.subtitle4}</h3>
+                  <p style={{ whiteSpace: "pre-line" }}>{aiResponse.text4}</p>
+                </div>
 
-            <div className={styles.highlightBox}>
-              <div className={styles.highlightTitle}>💡 사료 교체 시 주의사항</div>
-              <div className={styles.highlightContent}>
-                사료를 바꿀 때는 7-10일에 걸쳐 점진적으로 새 사료의 비율을
-                늘려가세요:
-                <br />
-                • 1-3일: 기존 75% + 새 사료 25%
-                <br />
-                • 4-6일: 기존 50% + 새 사료 50%
-                <br />• 7-9일: 기존 25% + 새 사료 75%
-              </div>
-            </div>
+                <p className={styles.disclaimer}>
+                  ※ 이 상담 내용은 AI가 제공하는 일반적인 정보이며, 수의사의
+                  전문적인 진단을 대체할 수 없습니다. 심각한 증상이 있다면 반드시
+                  동물병원을 방문하세요.
+                </p>
+              </>
+            ) : (
+              <>
+                {/* AI 응답을 받아오지 못한 경우 */}
+                <div className={styles.warningBox}>
+                  <div className={styles.warningTitle}>⚠️ 상담 결과를 불러올 수 없습니다</div>
+                  <div className={styles.warningContent}>
+                    AI 건강/영양 상담 결과를 받아오는 중 문제가 발생했습니다.
+                    <br />
+                    <br />
+                    다음과 같은 이유일 수 있습니다:
+                    <br />
+                    • 건강/영양 상담과 관련되지 않은 질문
+                    <br />
+                    • 서버와의 연결 문제
+                    <br />
+                    • 일시적인 오류
+                    <br />
+                    <br />
+                    반려동물의 건강이나 영양과 관련된 질문으로 다시 시도해주세요.
+                  </div>
+                </div>
 
-            <h3>🏥 3. 동물병원 방문이 필요한 시점</h3>
-            <ul>
-              <li>3일 이상 식욕이 회복되지 않는 경우</li>
-              <li>체중이 5% 이상 감소한 경우</li>
-              <li>다른 증상(구토, 설사)이 동반되는 경우</li>
-            </ul>
-
-            <p className={styles.disclaimer}>
-              ※ 이 상담 내용은 AI가 제공하는 일반적인 정보이며, 수의사의
-              전문적인 진단을 대체할 수 없습니다.
-            </p>
+                <div style={{ marginTop: "2rem", textAlign: "center" }}>
+                  <button
+                    className={styles.actionBtn}
+                    onClick={handleBackToConsult}
+                    style={{ display: "inline-block" }}
+                  >
+                    🔄 다시 상담하기
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         </div>
 
