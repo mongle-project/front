@@ -80,6 +80,7 @@
   min-height: 400px;
   object-fit: cover;
   background: linear-gradient(135deg, #0288d1 0%, #0277bd 100%);
+  max-height: 500px;
 }
 
 .heroInfo {
