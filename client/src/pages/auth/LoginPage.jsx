@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
-// import { login } from "../../api/auth";
+import { login } from "../../api/auth";
 import styles from "./LoginPage.module.css";
-import { signup } from "../../api/user";
+import { signup } from "../../api/users";
 import { useAuthContext } from "../../contexts/AuthContext";
 
 const LoginPage = () => {
@@ -51,16 +51,15 @@ const LoginPage = () => {
     setIsLoading(true);
 
     try {
-      // const response = await login(loginId, loginPassword);
+      const response = await login(loginId, loginPassword);
 
       // 로그인 성공 시 토큰 저장 및 사용자 정보 업데이트
-      // if (response.token) {
-      //   localStorage.setItem("token", response.token);
-      //   // AuthContext의 user 상태 업데이트
-      //   await authLogin(response);
-      // }
+      if (response.token) {
+        localStorage.setItem("token", response.token);
+        // AuthContext의 user 상태 업데이트
+        await authLogin(response);
+      }
 
-      // TODO: API 없이 로그인 처리 (개발용)
       await authLogin({ id: loginId, name: loginId });
 
       toast.success("로그인 성공! 🎉");
@@ -104,7 +103,12 @@ const LoginPage = () => {
     setIsLoading(true);
 
     try {
-      await signup(signupId, signupEmail, signupPassword);
+      await signup(
+        signupId,
+        signupEmail,
+        signupPassword,
+        signupPasswordConfirm
+      );
 
       toast.success("회원가입 완료! 🎉");
 
