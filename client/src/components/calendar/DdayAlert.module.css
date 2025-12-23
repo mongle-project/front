@@ -1,0 +1,116 @@
+.alert {
+  background: linear-gradient(135deg, #fff3f5 0%, #ffe9ec 100%);
+  border-radius: 18px;
+  padding: 1.1rem 1.2rem;
+  box-shadow: 0 10px 24px rgba(229, 57, 53, 0.18);
+  border: 1px solid rgba(229, 57, 53, 0.2);
+  display: grid;
+  gap: 0.5rem;
+}
+
+.alertTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.badge {
+  padding: 0.4rem 0.8rem;
+  border-radius: 12px;
+  background: #e53935;
+  color: #ffffff;
+  font-weight: 800;
+  border: 1px solid rgba(229, 57, 53, 0.2);
+}
+
+.urgency {
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  font-weight: 800;
+}
+
+.urgentTag {
+  background: #e53935;
+  color: #fff;
+}
+
+.warnTag {
+  background: #ffc107;
+  color: #4e3400;
+}
+
+.normalTag {
+  background: #f0f8f0;
+  color: #2e7d32;
+}
+
+.titleRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.title {
+  margin: 0;
+  color: #1b5e20;
+  font-weight: 800;
+  font-size: 1.05rem;
+}
+
+.petChip {
+  padding: 0.3rem 0.8rem;
+  border-radius: 12px;
+  background: #f1f8e9;
+  color: #2e7d32;
+  font-weight: 700;
+  border: 1px solid #c8e6c9;
+}
+
+.metaRow {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.dday {
+  padding: 0.4rem 0.8rem;
+  border-radius: 10px;
+  background: #e53935;
+  color: #fff;
+  font-weight: 800;
+}
+
+.date {
+  color: #66bb6a;
+  font-weight: 700;
+}
+
+.warn {
+  background: linear-gradient(135deg, #fff8e1 0%, #ffedc2 100%);
+  border-color: rgba(255, 193, 7, 0.4);
+  box-shadow: 0 12px 28px rgba(255, 193, 7, 0.25);
+}
+
+.urgent {
+  background: linear-gradient(135deg, #fff0f0 0%, #ffe3df 100%);
+  border-color: rgba(229, 57, 53, 0.35);
+  box-shadow: 0 12px 28px rgba(229, 57, 53, 0.25);
+}
+
+.normal {
+  background: linear-gradient(135deg, #f1fff1 0%, #e7f6e7 100%);
+  border-color: rgba(102, 187, 106, 0.35);
+  box-shadow: 0 12px 28px rgba(102, 187, 106, 0.2);
+}
+
+@media (max-width: 768px) {
+  .titleRow {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .petChip {
+    align-self: flex-start;
+  }
+}

@@ -1,125 +1,122 @@
 import React, { useMemo } from "react";
 import styles from "./CalendarGrid.module.css";
 
-const WEEKDAYS = ["일", "월", "화", "수", "목", "금", "토"];
+const weekdays = ["일", "월", "화", "수", "목", "금", "토"];
 
-const CalendarGrid = ({ year, month, events = [], highlightDate }) => {
-  const calendarCells = useMemo(() => {
-    const firstDay = new Date(year, month - 1, 1);
-    const startWeekday = firstDay.getDay(); // 0 (Sun) - 6 (Sat)
-    const daysInMonth = new Date(year, month, 0).getDate();
-    const prevMonthDays = new Date(year, month - 1, 0).getDate();
+const typeIcons = {
+  vaccination: "💉",
+  hospital: "🏥",
+  grooming: "✂️",
+  medication: "💊",
+};
+
+const CalendarGrid = ({ events = [], month = new Date() }) => {
+  const monthData = useMemo(() => {
+    const year = month.getFullYear();
+    const monthIndex = month.getMonth();
+    const start = new Date(year, monthIndex, 1);
+    const end = new Date(year, monthIndex + 1, 0);
+    const prevEnd = new Date(year, monthIndex, 0);
+
+    const startOffset = start.getDay(); // 0 (Sun) - 6 (Sat)
+    const totalDays = end.getDate();
+    const totalCells = Math.ceil((startOffset + totalDays) / 7) * 7;
 
     const cells = [];
-
-    // Previous month trailing days
-    for (let i = startWeekday - 1; i >= 0; i -= 1) {
+    const today = new Date();
+    for (let i = startOffset - 1; i >= 0; i -= 1) {
+      const day = prevEnd.getDate() - i;
       cells.push({
-        date: new Date(year, month - 2, prevMonthDays - i),
+        day,
+        isoDate: new Date(year, monthIndex - 1, day).toISOString(),
+        events: [],
+        isToday: false,
+        isOtherMonth: true,
+      });
+    }
+    for (let day = 1; day <= totalDays; day += 1) {
+      const date = new Date(year, monthIndex, day);
+      const isoDate = `${year}-${String(monthIndex + 1).padStart(
+        2,
+        "0"
+      )}-${String(day).padStart(2, "0")}`;
+      const dayEvents = events.filter((evt) => evt.date === isoDate);
+      const isToday = date.toDateString() === today.toDateString();
+      cells.push({ day, isoDate, events: dayEvents, isToday, isOtherMonth: false });
+    }
+
+    while (cells.length < totalCells) {
+      const day = cells.length - (startOffset + totalDays) + 1;
+      cells.push({
+        day,
+        isoDate: new Date(year, monthIndex + 1, day).toISOString(),
+        events: [],
+        isToday: false,
         isOtherMonth: true,
       });
     }
 
-    // Current month days
-    for (let day = 1; day <= daysInMonth; day += 1) {
-      cells.push({
-        date: new Date(year, month - 1, day),
-        isOtherMonth: false,
-      });
+    const weeks = [];
+    for (let i = 0; i < cells.length; i += 7) {
+      weeks.push(cells.slice(i, i + 7));
     }
 
-    // Next month leading days
-    while (cells.length % 7 !== 0) {
-      const nextDay = cells.length - (startWeekday + daysInMonth) + 1;
-      cells.push({
-        date: new Date(year, month, nextDay),
-        isOtherMonth: true,
-      });
-    }
+    return {
+      weeks,
+    };
+  }, [events, month]);
 
-    if (cells.length < 35) {
-      const base = cells.length;
-      for (let i = 0; i < 35 - base; i += 1) {
-        const nextDay = cells.length - (startWeekday + daysInMonth) + 1;
-        cells.push({
-          date: new Date(year, month, nextDay),
-          isOtherMonth: true,
-        });
-      }
-    }
-
-    return cells;
-  }, [year, month]);
-
-  const eventMap = useMemo(() => {
-    const map = {};
-    events.forEach((event) => {
-      const key = event.date;
-      if (!map[key]) {
-        map[key] = [];
-      }
-      map[key].push(event);
-    });
-    return map;
-  }, [events]);
-
-  const highlightedKey = highlightDate;
-  const todayKey = new Date().toISOString().slice(0, 10);
+  const getTypeClass = (type) => {
+    if (type === "vaccination") return styles.vaccination;
+    if (type === "hospital") return styles.hospital;
+    if (type === "grooming") return styles.grooming;
+    if (type === "medication") return styles.medication;
+    return "";
+  };
 
   return (
-    <div className={styles.grid}>
+    <div className={styles.calendar}>
       <div className={styles.weekdays}>
-        {WEEKDAYS.map((day) => (
-          <div
-            key={day}
-            className={`${styles.weekday} ${
-              day === "일"
-                ? styles.sunday
-                : day === "토"
-                ? styles.saturday
-                : ""
-            }`}
-          >
+        {weekdays.map((day) => (
+          <div key={day} className={styles.weekday}>
             {day}
           </div>
         ))}
       </div>
 
-      <div className={styles.days}>
-        {calendarCells.map(({ date, isOtherMonth }) => {
-          const key = date.toISOString().slice(0, 10);
-          const dayNumber = date.getDate();
-          const dayEvents = eventMap[key] || [];
-          const isToday = key === (highlightedKey || todayKey);
-
-          return (
-            <div
-              key={key}
-              className={`${styles.day} ${
-                isOtherMonth ? styles.otherMonth : ""
-              } ${isToday ? styles.today : ""}`}
-            >
-              <div className={styles.dayHeader}>
-                <span className={styles.dayNumber}>{dayNumber}</span>
-                {dayEvents.length > 0 && (
-                  <span className={styles.eventCount}>• {dayEvents.length}</span>
-                )}
+      <div className={styles.grid}>
+        {monthData.weeks.map((week, idx) => (
+          <div key={idx} className={styles.weekRow}>
+            {week.map((cell, cellIdx) => (
+              <div
+                key={cell.isoDate ?? `empty-${cellIdx}`}
+                className={`${styles.cell} ${cell.isToday ? styles.today : ""} ${
+                  cell.events.length
+                    ? `${styles.hasEvents} ${getTypeClass(cell.events[0]?.type)}`
+                    : ""
+                } ${cell.isOtherMonth ? styles.otherMonth : ""}`}
+              >
+                <div className={styles.dateHeader}>
+                  <span className={styles.dayNumber}>{cell.day}</span>
+                  {cell.isToday && (
+                    <span className={styles.todayBadge}>Today</span>
+                  )}
+                </div>
+                <div className={styles.events}>
+                  {cell.events.map((event) => (
+                    <span
+                      key={event.id}
+                      className={`${styles.eventLine} ${
+                        styles[`${event.type}Line`]
+                      }`}
+                      aria-label={`${event.title} (${typeIcons[event.type] || ""})`}
+                    />
+                  ))}
+                </div>
               </div>
-
-              <div className={styles.eventList}>
-                {dayEvents.map((event) => (
-                  <div
-                    key={`${key}-${event.title}`}
-                    className={`${styles.eventTag} ${styles[event.type] || ""}`}
-                  >
-                    <span>{event.title}</span>
-                    {event.time && <small>{event.time}</small>}
-                  </div>
-                ))}
-              </div>
-            </div>
-          );
-        })}
+            ))}
+          </div>
+        ))}
       </div>
     </div>
   );

@@ -22,460 +22,534 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: "GyeonggiMillenniumTitle";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2410-3@1.0/TitleV.woff")
+    format("woff");
+  font-weight: 800;
+  font-display: swap;
+}
+
 .page {
   min-height: 100vh;
-  background: linear-gradient(180deg, #e8f5e9 0%, #c8e6c9 100%);
-  padding-bottom: 40px;
-  font-family: "GyeonggiMillenniumTitle", "Noto Sans KR", sans-serif;
+  background: linear-gradient(180deg, #e8f4e7 0%, #cfe1d3 100%);
+  padding-bottom: 2.5rem;
+  font-family: "GyeonggiMillenniumTitle", -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
 }
 
 .container {
-  max-width: 1360px;
-  margin: 0 auto;
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+  max-width: 1400px;
+  margin: 1.5rem auto 0;
+  padding: 0 2rem 2.5rem;
 }
 
 .pageHeader {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 16px;
+  gap: 1rem;
+  padding: 1.2rem 1.4rem;
+  border-radius: 22px;
+  background: linear-gradient(135deg, #f5fcf5 0%, #dbeedb 100%);
+  box-shadow: 0 10px 28px rgba(76, 175, 80, 0.18);
+  border: 1px solid rgba(102, 187, 106, 0.15);
 }
 
-.titleGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 14px;
-  padding: 8px 12px;
-  background: #f1f8e9;
-  border-radius: 999px;
-  color: #2e7d32;
-  width: fit-content;
+.breadcrumb {
+  color: #81c784;
+  margin: 0 0 0.35rem;
 }
 
 .title {
-  font-size: 28px;
+  margin: 0;
+  font-size: 2.1rem;
   color: #1b5e20;
-  display: flex;
-  align-items: center;
-  gap: 8px;
 }
 
 .subtitle {
+  margin: 0.2rem 0 0;
   color: #66bb6a;
-  font-size: 16px;
 }
 
-.addButton {
-  padding: 12px 18px;
-  background: #66bb6a;
-  color: #fff;
+.actions {
+  display: flex;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+}
+
+.button {
+  padding: 0.85rem 1.4rem;
   border-radius: 999px;
-  border: 1px solid #5baa61;
-  font-weight: 700;
-  box-shadow: 0 8px 20px rgba(76, 175, 80, 0.25);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  font-weight: 800;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.08);
 }
 
-.addButton:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 26px rgba(76, 175, 80, 0.35);
+.primary {
+  background: linear-gradient(135deg, #ff9a73 0%, #ff7b4e 100%);
+  color: #fff;
 }
 
-.layout {
+.outline {
+  background: #fff;
+  color: #2e7d32;
+  border: 2px solid #b5d9b5;
+}
+
+.contentGrid {
   display: grid;
-  grid-template-columns: 1.6fr 0.8fr;
-  gap: 18px;
+  grid-template-columns: 1fr 350px;
+  gap: 2rem;
+  margin-top: 1.2rem;
   align-items: start;
+}
+
+.leftColumn {
+  display: grid;
+  gap: 1rem;
+}
+
+.rightColumn {
+  display: grid;
+  gap: 1rem;
 }
 
 .calendarCard {
   background: #fff;
-  border-radius: 22px;
-  padding: 22px;
-  box-shadow: 0 6px 24px rgba(76, 175, 80, 0.14);
-  border: 1px solid #e0e0e0;
+  border-radius: 25px;
+  padding: 2rem;
+  box-shadow: 0 12px 30px rgba(76, 175, 80, 0.12);
+  border: 1px solid rgba(102, 187, 106, 0.1);
+  width: 100%;
+  overflow: hidden;
+  min-width: 0;
 }
 
 .calendarHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 16px;
+  gap: 1rem;
+  margin-bottom: 0.6rem;
 }
 
-.monthControl {
+.monthMeta {
+  margin: 0;
+  color: #81c784;
+  font-weight: 700;
+}
+
+.monthTitleRow {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 0.6rem;
 }
 
-.monthTitle {
-  display: flex;
-  align-items: baseline;
-  gap: 6px;
-  font-weight: 700;
+.monthTitleRow h2 {
+  margin: 0.1rem 0 0;
   color: #1b5e20;
 }
 
-.monthYear {
-  font-size: 17px;
-  color: #66bb6a;
+.monthBadge {
+  padding: 0.3rem 0.75rem;
+  border-radius: 12px;
+  background: #f1f8e9;
+  color: #2e7d32;
+  font-weight: 800;
 }
 
-.monthValue {
-  font-size: 22px;
-}
-
-.navGroup {
+.monthControls {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 0.4rem;
 }
 
 .navButton {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  border: 1px solid #dceadf;
-  background: #f7fbf8;
+  padding: 0.55rem 0.9rem;
+  border-radius: 12px;
+  border: 1px solid #dfe8df;
+  background: #fff;
+  cursor: pointer;
+  font-weight: 800;
   color: #2e7d32;
-  font-weight: 700;
-  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
 }
 
-.navButton:hover {
-  background: #e8f5e9;
-  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.15);
-  transform: translateY(-1px);
-}
-
-.todayButton {
-  padding: 9px 14px;
-  background: #f1f8e9;
-  border-radius: 10px;
-  border: 1px solid #dceadf;
-  color: #2e7d32;
-  font-weight: 600;
-}
-
-.legend {
+.legendRow {
   display: flex;
-  align-items: center;
-  gap: 12px;
   flex-wrap: wrap;
-  justify-content: flex-end;
+  gap: 0.7rem;
+  margin: 0.2rem 0 0.4rem;
+  color: #66bb6a;
+  font-weight: 700;
 }
 
 .legendItem {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 10px;
-  background: #f7fbf8;
-  border: 1px solid #e0e0e0;
-  border-radius: 10px;
-  font-size: 13px;
-  color: #2e7d32;
+  gap: 0.4rem;
 }
 
 .legendDot {
-  width: 12px;
-  height: 12px;
-  border-radius: 4px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  display: inline-block;
 }
 
-.sidebar {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+.vaccination {
+  background: #ff5252;
 }
 
-.card {
+.hospital {
+  background: #42a5f5;
+}
+
+.grooming {
+  background: #ab47bc;
+}
+
+.medication {
+  background: #66bb6a;
+}
+
+.monthListCard {
   background: #fff;
-  border-radius: 18px;
-  padding: 18px;
-  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.12);
-  border: 1px solid #e0e0e0;
+  border-radius: 20px;
+  padding: 1.3rem;
+  box-shadow: 0 14px 32px rgba(76, 175, 80, 0.14);
+  border: 1px solid rgba(102, 187, 106, 0.12);
 }
 
-.cardHeader {
+.monthListHeader {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
-  gap: 10px;
-}
-
-.cardTitle {
-  font-size: 17px;
-  font-weight: 700;
-  color: #1b5e20;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.badge {
-  padding: 6px 10px;
-  background: #e8f5e9;
-  color: #2e7d32;
-  border-radius: 12px;
-  font-size: 13px;
-  font-weight: 700;
-}
-
-.ddayList {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.ddayItem {
-  padding: 12px;
-  border-radius: 12px;
-  border: 1px solid #e0e0e0;
-  background: #f9fbf9;
-  display: grid;
-  grid-template-columns: 62px 1fr;
-  gap: 10px;
-  align-items: center;
-}
-
-.ddayBadge {
-  width: 62px;
-  height: 62px;
-  border-radius: 14px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: #1b5e20;
-  font-weight: 800;
-  border: 2px solid #66bb6a;
-  background: #e8f5e9;
-}
-
-.danger {
-  border-color: #ff7043;
-  background: #fff3e0;
-  color: #e64a19;
-}
-
-.ddayMeta {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.ddayTitle {
-  font-weight: 700;
-  color: #1b5e20;
-}
-
-.ddayDesc {
-  color: #66bb6a;
-  font-size: 14px;
-}
-
-.ddayDate {
-  color: #8c8c8c;
-  font-size: 13px;
-}
-
-.tasks {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.taskRow {
-  padding: 10px 12px;
-  border-radius: 12px;
-  border: 1px dashed #dceadf;
-  background: #f9fbf9;
-  color: #66bb6a;
-  font-weight: 600;
-}
-
-.taskRow.empty {
-  color: #9e9e9e;
-}
-
-.monthSection {
-  margin-top: 14px;
-  background: #fff;
-  border-radius: 18px;
-  padding: 18px;
-  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.12);
-  border: 1px solid #e0e0e0;
-}
-
-.sectionHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
+  gap: 1rem;
+  align-items: flex-start;
   flex-wrap: wrap;
+  margin-bottom: 0.9rem;
 }
 
-.filterChips {
+.sectionEyebrow {
+  margin: 0;
+  color: #81c784;
+  font-weight: 700;
+}
+
+.monthListHeader h3 {
+  margin: 0.2rem 0 0;
+  color: #1b5e20;
+}
+
+.chips {
   display: flex;
-  gap: 8px;
+  gap: 0.45rem;
   flex-wrap: wrap;
 }
 
 .chip {
-  padding: 7px 12px;
-  border-radius: 12px;
-  border: 1px solid #dceadf;
-  background: #f7fbf8;
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  background: #f3f8f3;
   color: #2e7d32;
-  font-weight: 600;
-  transition: all 0.2s ease;
+  border: 1px solid #d9ead9;
+  font-weight: 800;
+  cursor: pointer;
 }
 
-.chip.active {
+.activeChip {
   background: #66bb6a;
   color: #fff;
-  border-color: #5baa61;
+  border-color: #66bb6a;
+  box-shadow: 0 10px 20px rgba(102, 187, 106, 0.22);
 }
 
-.eventsList {
-  margin-top: 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+.eventCards {
+  display: grid;
+  gap: 0.8rem;
 }
 
 .eventCard {
-  border-radius: 14px;
-  padding: 14px;
-  border: 1px solid #e0e0e0;
-  background: linear-gradient(90deg, #f9fbf9 0%, #fefefe 100%);
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 10px;
-  align-items: start;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.95rem 1.1rem;
+  border-radius: 16px;
+  background: #f9fbf9;
+  border: 1.5px solid #e1efe1;
+  border-left: 6px solid #e1efe1;
+  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.05);
 }
 
-.eventInfo {
+.eventLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.typeBadge {
+  padding: 0.45rem 0.8rem;
+  border-radius: 12px;
+  color: #fff;
+  font-weight: 800;
+  min-width: 84px;
+  text-align: center;
+  display: inline-block;
+}
+
+.eventCardTitle {
+  margin: 0;
+  color: #1b5e20;
+  font-weight: 800;
+}
+
+.eventCardMeta {
+  margin: 0.15rem 0 0;
+  color: #81c784;
+}
+
+.eventRight {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.petBadge {
+  padding: 0.45rem 0.9rem;
+  border-radius: 12px;
+  background: #f1f8e9;
+  color: #2e7d32;
+  font-weight: 800;
+  border: 1px solid #c8e6c9;
+}
+
+.cardActions {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.cardActions button {
+  border: 1px solid #dfe8df;
+  background: #fff;
+  border-radius: 10px;
+  padding: 0.35rem 0.55rem;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+}
+
+.vaccination {
+  border-color: rgba(255, 82, 82, 0.28);
+  border-left-color: #ff8a80;
+  background: #fff3f3;
+}
+
+.vaccination .typeBadge {
+  background: #ff8a80;
+}
+
+.hospital {
+  border-color: rgba(66, 165, 245, 0.28);
+  border-left-color: #64b5f6;
+  background: #f2f8ff;
+}
+
+.hospital .typeBadge {
+  background: #64b5f6;
+}
+
+.grooming {
+  border-color: rgba(171, 71, 188, 0.28);
+  border-left-color: #ce93d8;
+  background: #f8f1fb;
+}
+
+.grooming .typeBadge {
+  background: #ce93d8;
+}
+
+.medication {
+  border-color: rgba(102, 187, 106, 0.28);
+  border-left-color: #81c784;
+  background: #f1fbf1;
+}
+
+.medication .typeBadge {
+  background: #81c784;
+}
+
+.sideCard {
+  background: #fff;
+  border-radius: 24px;
+  padding: 1.4rem 1.5rem;
+  box-shadow: 0 14px 30px rgba(76, 175, 80, 0.14);
+  border: 1px solid rgba(102, 187, 106, 0.08);
+}
+
+.sideCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.9rem;
+}
+
+.sideCard h3 {
+  margin: 0;
+  color: #1b5e20;
+  font-size: 1.15rem;
+}
+
+.sideBadge {
+  background: #e8f5e9;
+  color: #2e7d32;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  font-weight: 800;
+}
+
+.sideList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.sideItemCard {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  align-items: flex-start;
+  gap: 0.55rem;
+  padding: 0.95rem 1rem;
+  border-radius: 16px;
+  border-left: 5px solid transparent;
 }
 
-.eventTitle {
-  font-size: 16px;
-  font-weight: 700;
+.sideDayBadge {
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  font-weight: 800;
+  color: #fff;
+  display: inline-block;
+  min-width: 56px;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.sideItemBody {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.sideTitle {
+  margin: 0;
   color: #1b5e20;
+  font-weight: 800;
 }
 
-.eventMeta {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: #66bb6a;
-  font-size: 14px;
-  flex-wrap: wrap;
+.sideMeta {
+  margin: 0;
+  color: #757575;
+  font-weight: 600;
+  font-size: 0.95rem;
 }
 
-.eventTime {
-  color: #8c8c8c;
-  font-size: 13px;
+.vaccinationCard {
+  background: #fde9e9;
+  border-left-color: #ff6f61;
 }
 
-.eventBadge {
-  padding: 6px 10px;
-  border-radius: 12px;
-  font-weight: 700;
-  font-size: 13px;
-  border: 1px solid transparent;
+.vaccinationCard .sideDayBadge {
+  background: #ff6f61;
 }
 
-.eventAction {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.hospitalCard {
+  background: #e5f1f9;
+  border-left-color: #42a5f5;
 }
 
-.eventButton {
-  padding: 8px 10px;
-  background: #f7fbf8;
-  border-radius: 10px;
-  border: 1px solid #dceadf;
+.hospitalCard .sideDayBadge {
+  background: #f6a700;
+}
+
+.groomingCard {
+  background: #f2e9f8;
+  border-left-color: #ab47bc;
+}
+
+.groomingCard .sideDayBadge {
+  background: #ab47bc;
+}
+
+.medicationCard {
+  background: #eaf5e9;
+  border-left-color: #66bb6a;
+}
+
+.medicationCard .sideDayBadge {
+  background: #66bb6a;
+}
+
+.emptyText {
+  color: #81c784;
+  margin: 0.3rem 0 0.6rem;
+}
+
+.todayEmpty {
+  background: #f6fbf6;
+  border-radius: 14px;
+  padding: 0.9rem 1.2rem;
+  text-align: center;
   color: #2e7d32;
-  font-weight: 700;
-  transition: background 0.2s ease, transform 0.2s ease;
+  font-weight: 800;
+  margin: 0.2rem 0;
 }
 
-.eventButton:hover {
-  background: #e8f5e9;
-  transform: translateY(-1px);
+.emptyState {
+  color: #81c784;
+  margin: 0;
 }
 
-.badgeHospital {
-  background: #e3f2fd;
-  color: #1a73e8;
-  border-color: #90caf9;
-}
-
-.badgeGrooming {
-  background: #f3e5f5;
-  color: #8e24aa;
-  border-color: #ce93d8;
-}
-
-.badgeVaccine {
-  background: #ffebee;
-  color: #e53935;
-  border-color: #ffcdd2;
-}
-
-.badgeCheckup {
-  background: #e8f5e9;
+.secondaryButton {
+  margin-top: 0.6rem;
+  width: 100%;
+  border: 2px solid #a5d6a7;
+  background: #fff;
   color: #2e7d32;
-  border-color: #a5d6a7;
+  padding: 0.85rem 1rem;
+  border-radius: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-@media (max-width: 1180px) {
-  .layout {
+.secondaryButton:hover {
+  background: #f1f8e9;
+}
+
+@media (max-width: 1200px) {
+  .contentGrid {
     grid-template-columns: 1fr;
-  }
-
-  .sidebar {
-    grid-row: 2;
   }
 }
 
 @media (max-width: 768px) {
   .container {
-    padding: 16px;
+    padding: 0 1.2rem 2rem;
   }
 
   .pageHeader {
     flex-direction: column;
-    align-items: flex-start;
   }
 
-  .addButton {
-    align-self: flex-end;
+  .actions {
+    width: 100%;
   }
 
-  .calendarCard,
-  .monthSection,
-  .card {
-    padding: 16px;
+  .button {
+    flex: 1;
+    text-align: center;
   }
 }
