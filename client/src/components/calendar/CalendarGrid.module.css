@@ -1,0 +1,193 @@
+.calendar {
+  display: grid;
+  gap: 0.6rem;
+  width: 100%;
+  max-width: 100%;
+}
+
+.weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  color: #5fa15f;
+  font-weight: 700;
+  text-align: center;
+  padding: 0 0.2rem;
+}
+
+.grid {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.weekRow {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(105px, 1fr));
+  gap: 0.4rem;
+}
+
+.cell,
+.emptyCell {
+  height: clamp(105px, 10.5vw, 135px);
+  border-radius: 15px;
+  background: #ffffff;
+  border: 2px solid #e5efe5;
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease,
+    transform 0.15s ease;
+}
+
+.emptyCell {
+  background: #f9f9f9;
+  border: 2px dashed #e0e0e0;
+}
+
+.cell:hover {
+  transform: translateY(-2px);
+  border-color: #66bb6a;
+  background: #f1f8e9;
+}
+
+.today {
+  border: 2px solid #43a047;
+  box-shadow: 0 10px 24px rgba(102, 187, 106, 0.16);
+  background: linear-gradient(135deg, #66bb6a 0%, #43a047 100%);
+}
+
+.dateHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dayNumber {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #1b5e20;
+}
+
+.todayBadge {
+  padding: 0.25rem 0.6rem;
+  background: #66bb6a;
+  color: #fff;
+  border-radius: 10px;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.events {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  margin-top: auto;
+  padding-bottom: 0.25rem;
+  align-items: center;
+}
+
+.otherMonth {
+  color: #bdbdbd;
+  background: #fafafa;
+}
+
+.eventLine {
+  height: 2.5px;
+  width: 58%;
+  border-radius: 2.5px;
+  display: inline-block;
+  margin: 2px auto 0;
+}
+
+.eventTypeLabel {
+  min-width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: #f9fbf9;
+  border: 2px solid currentColor;
+  font-size: 0.9rem;
+}
+
+.hasEvents {
+  border-width: 2px;
+  border-color: #ff7043;
+  background: #fff;
+}
+
+.vaccination,
+.hospital,
+.grooming,
+.medication {
+  border-color: #ff7043;
+}
+
+.eventIcon {
+  font-size: 1.05rem;
+}
+
+.eventText {
+  display: grid;
+  gap: 0.1rem;
+  line-height: 1.2;
+}
+
+.eventTitle {
+  font-weight: 800;
+  color: #1b5e20;
+  font-size: 0.92rem;
+}
+
+.eventMeta {
+  color: #7ab57a;
+  font-size: 0.86rem;
+}
+
+.vaccinationLine {
+  background: #ff7043;
+}
+
+.hospitalLine {
+  background: #42a5f5;
+}
+
+.groomingLine {
+  background: #ab47bc;
+}
+
+.medicationLine {
+  background: #66bb6a;
+}
+
+.weekdays div:first-child {
+  color: #e53935;
+}
+
+.weekdays div:last-child {
+  color: #1e88e5;
+}
+
+@media (max-width: 768px) {
+  .weekdays {
+    font-size: 0.9rem;
+  }
+
+  .weekRow {
+    grid-template-columns: repeat(7, minmax(78px, 1fr));
+    gap: 0.32rem;
+  }
+
+  .cell,
+  .emptyCell {
+    height: clamp(90px, 13vw, 120px);
+  }
+}
+
+@media (max-width: 540px) {
+  .cell,
+  .emptyCell {
+    height: clamp(85px, 19vw, 115px);
+  }
+}

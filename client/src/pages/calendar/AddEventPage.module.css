@@ -1,0 +1,407 @@
+@font-face {
+  font-family: "GyeonggiMillenniumTitle";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2410-3@1.0/Title_Light.woff")
+    format("woff");
+  font-weight: 300;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "GyeonggiMillenniumTitle";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2410-3@1.0/Title_Medium.woff")
+    format("woff");
+  font-weight: 500;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "GyeonggiMillenniumTitle";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2410-3@1.0/Title_Bold.woff")
+    format("woff");
+  font-weight: 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "GyeonggiMillenniumTitle";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2410-3@1.0/TitleV.woff")
+    format("woff");
+  font-weight: 800;
+  font-display: swap;
+}
+
+.page {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #e6f6e2 0%, #cde7cc 100%);
+  padding-bottom: 3rem;
+  font-family: "GyeonggiMillenniumTitle", -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+}
+
+.container {
+  max-width: 1040px;
+  margin: 1.6rem auto 0;
+  padding: 0 2rem 3.4rem;
+  position: relative;
+}
+
+.backBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.25rem;
+  background: #f6fbf6;
+  border: 1.5px solid #b7dbb3;
+  border-radius: 40px;
+  color: #2f6f2f;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 8px 16px rgba(76, 175, 80, 0.12);
+}
+
+.backBtn:hover {
+  background: #e9f5e8;
+  transform: translateX(-1px);
+}
+
+.pageHeader {
+  text-align: center;
+  margin-bottom: 2.2rem;
+}
+
+.pageIcon {
+  width: 76px;
+  height: 76px;
+  margin: 0 auto 0.8rem;
+  border-radius: 22px;
+  background: linear-gradient(160deg, #f7fdf4 0%, #e9f4e2 100%);
+  box-shadow: inset 0 2px 6px rgba(255, 255, 255, 0.9),
+    inset 0 -6px 12px rgba(0, 0, 0, 0.04), 0 10px 26px rgba(76, 175, 80, 0.14);
+  display: grid;
+  place-items: center;
+  font-size: 2.1rem;
+}
+
+.pageTitle {
+  font-size: 2.1rem;
+  color: #1f6b25;
+  margin-bottom: 0.4rem;
+}
+
+.pageSubtitle {
+  color: #4d9650;
+  font-size: 1.02rem;
+}
+
+.eventForm {
+  position: relative;
+  background: #ffffff;
+  border-radius: 28px;
+  padding: 2.4rem 2.6rem;
+  box-shadow: 0 14px 32px rgba(47, 111, 47, 0.15);
+  border: 1px solid rgba(133, 189, 135, 0.3);
+  max-width: 780px;
+  margin: 0 auto;
+}
+
+.membershipBadge {
+  position: absolute;
+  right: -28px;
+  bottom: -28px;
+  width: 72px;
+  height: 72px;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at 30% 30%, #ff7eb6 0%, #ff3f72 50%, #c51b58 100%);
+  color: #fff;
+  border-radius: 50%;
+  font-weight: 800;
+  font-size: 1rem;
+  box-shadow: 0 14px 28px rgba(255, 63, 114, 0.35);
+}
+
+.formSection {
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #ecf2ec;
+}
+
+.formSection:last-of-type {
+  margin-bottom: 0;
+  border-bottom: none;
+}
+
+.sectionHeader {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.sectionHeader h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #1b5e20;
+}
+
+.sectionHeader p {
+  margin: 0.2rem 0 0;
+  color: #66bb6a;
+  font-size: 0.95rem;
+}
+
+.sectionIcon {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  font-size: 1.2rem;
+  background: #f2f9f0;
+  color: #2f6f2f;
+}
+
+.selectWrapper select {
+  width: 100%;
+  padding: 1rem 1.4rem;
+  border-radius: 16px;
+  border: 2px solid #c6e2c2;
+  font-size: 1rem;
+  background: #f6fbf4;
+  transition: all 0.2s ease;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2366BB6A' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1.2rem;
+}
+
+.selectWrapper select:focus {
+  border-color: #66bb6a;
+  box-shadow: 0 0 0 3px rgba(102, 187, 106, 0.12);
+  background: #ffffff;
+}
+
+.helperText {
+  color: #81c784;
+  font-size: 0.9rem;
+  margin-top: 0.6rem;
+}
+
+.categoryGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0.85rem;
+}
+
+.categoryCard {
+  border: 2px solid #dfe8d8;
+  border-radius: 16px;
+  padding: 1rem 0.9rem;
+  background: #ffffff;
+  display: grid;
+  gap: 0.3rem;
+  align-content: center;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #2e7d32;
+  box-shadow: 0 6px 14px rgba(76, 175, 80, 0.08);
+}
+
+.categoryCard:hover {
+  border-color: #8dc78b;
+  transform: translateY(-1px);
+}
+
+.categoryIcon {
+  font-size: 1.4rem;
+}
+
+.categoryLabel {
+  font-weight: 700;
+}
+
+.categoryDesc {
+  color: #7cbf7c;
+  font-size: 0.9rem;
+}
+
+.active {
+  border-color: #4caf50;
+  background: linear-gradient(140deg, #7bcf7b 0%, #5eb65e 100%);
+  color: #ffffff;
+  box-shadow: 0 12px 26px rgba(76, 175, 80, 0.28);
+}
+
+.formGroup {
+  display: grid;
+  gap: 0.5rem;
+  margin-bottom: 1.2rem;
+}
+
+.formGroup label {
+  color: #2e7d32;
+  font-weight: 700;
+}
+
+.required {
+  color: #ff5252;
+  margin-left: 0.2rem;
+}
+
+.formGroup input,
+.formGroup textarea {
+  width: 100%;
+  padding: 0.95rem 1.2rem;
+  border: 2px solid #dfe8d8;
+  border-radius: 14px;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  background: #fcfdfb;
+  font-family: "GyeonggiMillenniumTitle", -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+}
+
+.formGroup input:focus,
+.formGroup textarea:focus {
+  border-color: #66bb6a;
+  box-shadow: 0 0 0 3px rgba(102, 187, 106, 0.12);
+}
+
+.formGroup textarea {
+  min-height: 120px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.dateTimeRow {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.inputGroup {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.inputGroup label {
+  color: #2e7d32;
+  font-weight: 700;
+}
+
+.inputGroup input[type="date"],
+.inputGroup input[type="time"] {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  border: 2px solid #dfe8d8;
+  border-radius: 14px;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  background: #ffffff;
+}
+
+.inputGroup input:focus {
+  border-color: #66bb6a;
+  box-shadow: 0 0 0 3px rgba(102, 187, 106, 0.12);
+}
+
+.timeRange {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.timeDivider {
+  color: #81c784;
+  font-weight: 700;
+}
+
+.statusField {
+  display: grid;
+  gap: 0.55rem;
+  margin: 1.4rem 0 1.1rem;
+}
+
+.statusField label {
+  color: #2f6f2f;
+  font-weight: 700;
+}
+
+.actionRow {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.4rem;
+}
+
+.cancelButton,
+.submitButton {
+  min-width: 150px;
+  padding: 0.95rem 1.5rem;
+  border-radius: 32px;
+  font-weight: 700;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cancelButton {
+  background: #ffffff;
+  color: #2f6f2f;
+  border: 1.5px solid #b7dbb3;
+  box-shadow: 0 8px 18px rgba(76, 175, 80, 0.12);
+}
+
+.cancelButton:hover {
+  background: #eef7ed;
+  transform: translateY(-1px);
+}
+
+.submitButton {
+  background: linear-gradient(135deg, #67bd6b 0%, #3f9b3f 100%);
+  color: #ffffff;
+  box-shadow: 0 12px 26px rgba(76, 175, 80, 0.35);
+}
+
+.submitButton:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 30px rgba(76, 175, 80, 0.4);
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0 1.2rem 2rem;
+  }
+
+  .eventForm {
+    padding: 1.8rem 1.4rem;
+  }
+
+  .membershipBadge {
+    position: static;
+    display: inline-grid;
+    margin: 0 0 1rem auto;
+    width: 64px;
+    height: 64px;
+  }
+
+  .pageTitle {
+    font-size: 2rem;
+  }
+
+  .actionRow {
+    flex-direction: column;
+  }
+
+  .cancelButton,
+  .submitButton {
+    width: 100%;
+  }
+}

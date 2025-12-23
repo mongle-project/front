@@ -1,0 +1,555 @@
+@font-face {
+  font-family: "GyeonggiMillenniumTitle";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2410-3@1.0/Title_Light.woff")
+    format("woff");
+  font-weight: 300;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "GyeonggiMillenniumTitle";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2410-3@1.0/Title_Medium.woff")
+    format("woff");
+  font-weight: 500;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "GyeonggiMillenniumTitle";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2410-3@1.0/Title_Bold.woff")
+    format("woff");
+  font-weight: 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "GyeonggiMillenniumTitle";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2410-3@1.0/TitleV.woff")
+    format("woff");
+  font-weight: 800;
+  font-display: swap;
+}
+
+.page {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #e8f4e7 0%, #cfe1d3 100%);
+  padding-bottom: 2.5rem;
+  font-family: "GyeonggiMillenniumTitle", -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 1.5rem auto 0;
+  padding: 0 2rem 2.5rem;
+}
+
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.2rem 1.4rem;
+  border-radius: 22px;
+  background: linear-gradient(135deg, #f5fcf5 0%, #dbeedb 100%);
+  box-shadow: 0 10px 28px rgba(76, 175, 80, 0.18);
+  border: 1px solid rgba(102, 187, 106, 0.15);
+}
+
+.breadcrumb {
+  color: #81c784;
+  margin: 0 0 0.35rem;
+}
+
+.title {
+  margin: 0;
+  font-size: 2.1rem;
+  color: #1b5e20;
+}
+
+.subtitle {
+  margin: 0.2rem 0 0;
+  color: #66bb6a;
+}
+
+.actions {
+  display: flex;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+}
+
+.button {
+  padding: 0.85rem 1.4rem;
+  border-radius: 999px;
+  font-weight: 800;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.08);
+}
+
+.primary {
+  background: linear-gradient(135deg, #ff9a73 0%, #ff7b4e 100%);
+  color: #fff;
+}
+
+.outline {
+  background: #fff;
+  color: #2e7d32;
+  border: 2px solid #b5d9b5;
+}
+
+.contentGrid {
+  display: grid;
+  grid-template-columns: 1fr 350px;
+  gap: 2rem;
+  margin-top: 1.2rem;
+  align-items: start;
+}
+
+.leftColumn {
+  display: grid;
+  gap: 1rem;
+}
+
+.rightColumn {
+  display: grid;
+  gap: 1rem;
+}
+
+.calendarCard {
+  background: #fff;
+  border-radius: 25px;
+  padding: 2rem;
+  box-shadow: 0 12px 30px rgba(76, 175, 80, 0.12);
+  border: 1px solid rgba(102, 187, 106, 0.1);
+  width: 100%;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.calendarHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.6rem;
+}
+
+.monthMeta {
+  margin: 0;
+  color: #81c784;
+  font-weight: 700;
+}
+
+.monthTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.monthTitleRow h2 {
+  margin: 0.1rem 0 0;
+  color: #1b5e20;
+}
+
+.monthBadge {
+  padding: 0.3rem 0.75rem;
+  border-radius: 12px;
+  background: #f1f8e9;
+  color: #2e7d32;
+  font-weight: 800;
+}
+
+.monthControls {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.navButton {
+  padding: 0.55rem 0.9rem;
+  border-radius: 12px;
+  border: 1px solid #dfe8df;
+  background: #fff;
+  cursor: pointer;
+  font-weight: 800;
+  color: #2e7d32;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+}
+
+.legendRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  margin: 0.2rem 0 0.4rem;
+  color: #66bb6a;
+  font-weight: 700;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.legendDot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.vaccination {
+  background: #ff5252;
+}
+
+.hospital {
+  background: #42a5f5;
+}
+
+.grooming {
+  background: #ab47bc;
+}
+
+.medication {
+  background: #66bb6a;
+}
+
+.monthListCard {
+  background: #fff;
+  border-radius: 20px;
+  padding: 1.3rem;
+  box-shadow: 0 14px 32px rgba(76, 175, 80, 0.14);
+  border: 1px solid rgba(102, 187, 106, 0.12);
+}
+
+.monthListHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  margin-bottom: 0.9rem;
+}
+
+.sectionEyebrow {
+  margin: 0;
+  color: #81c784;
+  font-weight: 700;
+}
+
+.monthListHeader h3 {
+  margin: 0.2rem 0 0;
+  color: #1b5e20;
+}
+
+.chips {
+  display: flex;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.chip {
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  background: #f3f8f3;
+  color: #2e7d32;
+  border: 1px solid #d9ead9;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.activeChip {
+  background: #66bb6a;
+  color: #fff;
+  border-color: #66bb6a;
+  box-shadow: 0 10px 20px rgba(102, 187, 106, 0.22);
+}
+
+.eventCards {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.eventCard {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.95rem 1.1rem;
+  border-radius: 16px;
+  background: #f9fbf9;
+  border: 1.5px solid #e1efe1;
+  border-left: 6px solid #e1efe1;
+  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.05);
+}
+
+.eventLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.typeBadge {
+  padding: 0.45rem 0.8rem;
+  border-radius: 12px;
+  color: #fff;
+  font-weight: 800;
+  min-width: 84px;
+  text-align: center;
+  display: inline-block;
+}
+
+.eventCardTitle {
+  margin: 0;
+  color: #1b5e20;
+  font-weight: 800;
+}
+
+.eventCardMeta {
+  margin: 0.15rem 0 0;
+  color: #81c784;
+}
+
+.eventRight {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.petBadge {
+  padding: 0.45rem 0.9rem;
+  border-radius: 12px;
+  background: #f1f8e9;
+  color: #2e7d32;
+  font-weight: 800;
+  border: 1px solid #c8e6c9;
+}
+
+.cardActions {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.cardActions button {
+  border: 1px solid #dfe8df;
+  background: #fff;
+  border-radius: 10px;
+  padding: 0.35rem 0.55rem;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+}
+
+.vaccination {
+  border-color: rgba(255, 82, 82, 0.28);
+  border-left-color: #ff8a80;
+  background: #fff3f3;
+}
+
+.vaccination .typeBadge {
+  background: #ff8a80;
+}
+
+.hospital {
+  border-color: rgba(66, 165, 245, 0.28);
+  border-left-color: #64b5f6;
+  background: #f2f8ff;
+}
+
+.hospital .typeBadge {
+  background: #64b5f6;
+}
+
+.grooming {
+  border-color: rgba(171, 71, 188, 0.28);
+  border-left-color: #ce93d8;
+  background: #f8f1fb;
+}
+
+.grooming .typeBadge {
+  background: #ce93d8;
+}
+
+.medication {
+  border-color: rgba(102, 187, 106, 0.28);
+  border-left-color: #81c784;
+  background: #f1fbf1;
+}
+
+.medication .typeBadge {
+  background: #81c784;
+}
+
+.sideCard {
+  background: #fff;
+  border-radius: 24px;
+  padding: 1.4rem 1.5rem;
+  box-shadow: 0 14px 30px rgba(76, 175, 80, 0.14);
+  border: 1px solid rgba(102, 187, 106, 0.08);
+}
+
+.sideCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.9rem;
+}
+
+.sideCard h3 {
+  margin: 0;
+  color: #1b5e20;
+  font-size: 1.15rem;
+}
+
+.sideBadge {
+  background: #e8f5e9;
+  color: #2e7d32;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  font-weight: 800;
+}
+
+.sideList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.sideItemCard {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.55rem;
+  padding: 0.95rem 1rem;
+  border-radius: 16px;
+  border-left: 5px solid transparent;
+}
+
+.sideDayBadge {
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  font-weight: 800;
+  color: #fff;
+  display: inline-block;
+  min-width: 56px;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.sideItemBody {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.sideTitle {
+  margin: 0;
+  color: #1b5e20;
+  font-weight: 800;
+}
+
+.sideMeta {
+  margin: 0;
+  color: #757575;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.vaccinationCard {
+  background: #fde9e9;
+  border-left-color: #ff6f61;
+}
+
+.vaccinationCard .sideDayBadge {
+  background: #ff6f61;
+}
+
+.hospitalCard {
+  background: #e5f1f9;
+  border-left-color: #42a5f5;
+}
+
+.hospitalCard .sideDayBadge {
+  background: #f6a700;
+}
+
+.groomingCard {
+  background: #f2e9f8;
+  border-left-color: #ab47bc;
+}
+
+.groomingCard .sideDayBadge {
+  background: #ab47bc;
+}
+
+.medicationCard {
+  background: #eaf5e9;
+  border-left-color: #66bb6a;
+}
+
+.medicationCard .sideDayBadge {
+  background: #66bb6a;
+}
+
+.emptyText {
+  color: #81c784;
+  margin: 0.3rem 0 0.6rem;
+}
+
+.todayEmpty {
+  background: #f6fbf6;
+  border-radius: 14px;
+  padding: 0.9rem 1.2rem;
+  text-align: center;
+  color: #2e7d32;
+  font-weight: 800;
+  margin: 0.2rem 0;
+}
+
+.emptyState {
+  color: #81c784;
+  margin: 0;
+}
+
+.secondaryButton {
+  margin-top: 0.6rem;
+  width: 100%;
+  border: 2px solid #a5d6a7;
+  background: #fff;
+  color: #2e7d32;
+  padding: 0.85rem 1rem;
+  border-radius: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.secondaryButton:hover {
+  background: #f1f8e9;
+}
+
+@media (max-width: 1200px) {
+  .contentGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0 1.2rem 2rem;
+  }
+
+  .pageHeader {
+    flex-direction: column;
+  }
+
+  .actions {
+    width: 100%;
+  }
+
+  .button {
+    flex: 1;
+    text-align: center;
+  }
+}
