@@ -53,13 +53,15 @@ const LoginPage = () => {
     try {
       const response = await login(loginId, loginPassword);
 
-      // 로그인 성공 시 토큰 저장 및 사용자 정보 업데이트
-      if (response.token) {
-        localStorage.setItem("token", response.token);
-        // AuthContext의 user 상태 업데이트
-        await authLogin(response);
+      // 로그인 성공 시 토큰 저장
+      if (response.accessToken) {
+        localStorage.setItem("token", response.accessToken);
+      }
+      if (response.refreshToken) {
+        localStorage.setItem("refreshToken", response.refreshToken);
       }
 
+      // AuthContext의 user 상태 업데이트
       await authLogin({ id: loginId, name: loginId });
 
       toast.success("로그인 성공! 🎉");

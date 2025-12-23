@@ -37,6 +37,8 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
     if (typeof window !== "undefined") {
       window.localStorage.removeItem("user");
+      window.localStorage.removeItem("token");
+      window.localStorage.removeItem("refreshToken");
     }
   };
 
