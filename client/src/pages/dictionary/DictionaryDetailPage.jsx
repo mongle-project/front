@@ -59,36 +59,34 @@ const DictionaryDetailPage = () => {
           <div className={styles.detailCard}>
             {/* 히어로 섹션 */}
             <div className={styles.heroSection}>
+              <span className={styles.category}>
+                {animal.category === "강아지"
+                  ? "🐕"
+                  : animal.category === "고양이"
+                  ? "🐈"
+                  : animal.category === "토끼"
+                  ? "🐰"
+                  : animal.category === "햄스터"
+                  ? "🐹"
+                  : animal.category === "기니피그"
+                  ? "🐹"
+                  : animal.category === "새"
+                  ? "🐦"
+                  : animal.category === "거북이"
+                  ? "🐢"
+                  : animal.category === "파충류"
+                  ? "🦎"
+                  : animal.category === "어류"
+                  ? "🐠"
+                  : "🐾"}{" "}
+                {animal.category}
+              </span>
               <img
                 src={animal.image}
                 alt={animal.name}
                 className={styles.animalImage}
               />
               <div className={styles.heroInfo}>
-                <div style={{ position: "relative" }}>
-                  <span className={styles.category}>
-                    {animal.category === "강아지"
-                      ? "🐕"
-                      : animal.category === "고양이"
-                      ? "🐈"
-                      : animal.category === "토끼"
-                      ? "🐰"
-                      : animal.category === "햄스터"
-                      ? "🐹"
-                      : animal.category === "기니피그"
-                      ? "🐹"
-                      : animal.category === "새"
-                      ? "🐦"
-                      : animal.category === "거북이"
-                      ? "🐢"
-                      : animal.category === "파충류"
-                      ? "🦎"
-                      : animal.category === "어류"
-                      ? "🐠"
-                      : "🐾"}{" "}
-                    {animal.category}
-                  </span>
-                </div>
                 <h1 className={styles.animalName}>{animal.name}</h1>
                 <p className={styles.animalBreed}>{animal.breed}</p>
                 <div className={styles.quickStats}>

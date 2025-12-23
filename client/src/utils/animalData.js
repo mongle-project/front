@@ -2,8 +2,8 @@
 import * as dogsProfile from "../data/dictionary/dogs";
 import * as catsProfile from "../data/dictionary/cats";
 import * as rabbitsProfile from "../data/dictionary/rabbit";
-import * as hamstersProfile from "../data/dictionary/Hamsters";
-import * as guinealPigsProfile from "../data/dictionary/GuineaPigs";
+import * as hamstersProfile from "../data/dictionary/hamsters";
+import * as guinealPigsProfile from "../data/dictionary/guineaPigs";
 import * as birdsProfile from "../data/dictionary/birds";
 import * as turtlesProfile from "../data/dictionary/turtles";
 import * as reptileProfile from "../data/dictionary/reptile";
@@ -11,36 +11,69 @@ import * as fishProfile from "../data/dictionary/fish";
 
 // 프로필 데이터를 카드용 데이터로 변환하는 함수
 const transformProfileToCard = (profile, category, id) => {
-  // 카테고리별 이미지 URL 매핑 (임시 - 실제 이미지로 교체 필요)
+  // 카테고리별 이미지 URL 매핑
   const imageMap = {
-    말티즈:
-      "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=800&h=600&fit=crop",
-    "골든 리트리버":
-      "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=400&h=300&fit=crop",
-    푸들: "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=400&h=300&fit=crop",
-    시츄: "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=400&h=300&fit=crop",
-    먼치킨:
-      "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?w=400&h=300&fit=crop",
-    "샴 고양이":
-      "https://images.unsplash.com/photo-1513360371669-4adf3dd7dff8?w=400&h=300&fit=crop",
-    페르시안:
-      "https://images.unsplash.com/photo-1573865526739-10c1d3a1f0cc?w=400&h=300&fit=crop",
-    "러시안 블루":
-      "https://images.unsplash.com/photo-1606214174585-fe31582dc6ee?w=400&h=300&fit=crop",
-    "네덜란드 드워프":
-      "https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=400&h=300&fit=crop",
-    "홀랜드 롭":
-      "https://images.unsplash.com/photo-1535241749838-299277b6305f?w=400&h=300&fit=crop",
-    "시리안 햄스터":
-      "https://images.unsplash.com/photo-1425082661705-1834bfd09dca?w=400&h=300&fit=crop",
-    "로보로브스키 햄스터":
-      "https://images.unsplash.com/photo-1548767797-d8c844163c4c?w=400&h=300&fit=crop",
-    "아메리칸 기니피그":
-      "https://images.unsplash.com/photo-1548767797-d8c844163c4c?w=400&h=300&fit=crop",
-    "버저리거 (잉꼬)":
-      "https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=400&h=300&fit=crop",
-    코카틸:
-      "https://images.unsplash.com/photo-1616781833946-79cad5d0c19c?w=400&h=300&fit=crop",
+    // 강아지
+    "말티즈": "/images/animals/dogs/maltese.jpg.png",
+    "골든 리트리버": "/images/animals/dogs/goldenRetriever.jpg.png",
+    "푸들": "/images/animals/dogs/poodel.jpg.png",
+    "시추": "/images/animals/dogs/shihTzu.jpg",
+    "치와와": "/images/animals/dogs/chiguahua.jpg.png",
+    "포메라니안": "/images/animals/dogs/pomeranian.jpg",
+    "웰시 코기 펨브록": "/images/animals/dogs/welshCorgiPembroke.jpg",
+    "시베리안 허스키": "/images/animals/dogs/siberianHusky.jpg.png",
+
+    // 고양이
+    "먼치킨": "/images/animals/cats/munchkin.jpg",
+    "샴": "/images/animals/cats/siamese.jpg",
+    "스핑크스": "/images/animals/cats/sphynx.jpg",
+    "페르시안": "/images/animals/cats/persianCat.jpg.png",
+    "벵갈": "/images/animals/cats/bengal.jpg",
+    "러시안 블루": "/images/animals/cats/russianBlue.jpg",
+
+    // 토끼
+    "네덜란드 드워프": "/images/animals/rabbit/neterland.jpg",
+    "홀랜드 롭": "/images/animals/rabbit/hollandLop.jpg",
+    "미니 렉스": "/images/animals/rabbit/miniRex.jpg",
+    "라이온헤드 래빗": "/images/animals/rabbit/lionhead.jpg",
+
+    // 햄스터
+    "시리아 햄스터 (골든 햄스터)": "/images/animals/hamsters/syrian.jpg",
+    "로보로브스키 햄스터 (로보 햄스터)": "/images/animals/hamsters/roborovski.jpg",
+    "드워프 햄스터 – 윈터화이트": "/images/animals/hamsters/winterWhite.jpg",
+
+    // 기니피그
+    "아메리칸 기니피그 (잉글리시 기니피그)": "/images/animals/guinealPig/american.jpg",
+    "아비시니안 기니피그": "/images/animals/guinealPig/abyssinian.jpg",
+    "실키 / 셰틀랜드 (Silkie / Sheltie)": "/images/animals/guinealPig/silkie.jpg",
+    "페루비안 기니피그": "/images/animals/guinealPig/peruvian.jpg",
+
+    // 어류
+    "구피": "/images/animals/fish/guppy.jpg",
+    "엔젤피시": "/images/animals/fish/angelfish.jpg",
+    "금붕어": "/images/animals/fish/goldfish.jpg",
+    "클라운피시 (니모, 흰동가리)": "/images/animals/fish/clownfish.jpg",
+    "블루탱 (탱, 도리)": "/images/animals/fish/blueTang.jpg",
+
+    // 거북이
+    "붉은귀거북 (리버쿠터)": "/images/animals/turtles/redEaredSlider.jpg",
+    "옐로우벨리드 슬라이더": "/images/animals/turtles/yellowBelliedSlider.jpg",
+    "페인티드 터틀 (페인팅 거북)": "/images/animals/turtles/paintedTurtle.jpg",
+    "쿠터 터틀 (리버/플로리다 쿠터)": "/images/animals/turtles/cooter.jpg",
+    "머스크 터틀 (스틴크팟)": "/images/animals/turtles/commonMusk.jpg",
+
+    // 파충류
+    "레오파드 게코 (표범무늬 도마뱀붙이)": "/images/animals/reptile/leopard.jpg",
+    "볼 파이톤": "/images/animals/reptile/ballPython.jpg",
+    "비어디드 드래곤": "/images/animals/reptile/beardedDragon.jpg",
+    "콘 스네이크 (옥수수뱀)": "/images/animals/reptile/corn.jpg",
+
+    // 새
+    "버저리거 (잉꼬)": "/images/animals/birds/budgerigar.jpg",
+    "코카틸": "/images/animals/birds/cockatiel.jpg",
+    "러브버드": "/images/animals/birds/lovebird.jpg",
+    "카나리아": "/images/animals/birds/canary.jpg",
+    "피니치류 (제브라 피니치)": "/images/animals/birds/finch.jpg",
   };
 
   return {

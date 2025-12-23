@@ -71,6 +71,7 @@
   grid-template-columns: 500px 1fr;
   padding: 0;
   background: white;
+  position: relative;
 }
 
 .animalImage {
@@ -93,14 +94,16 @@
 .category {
   position: absolute;
   top: 2rem;
-  right: 2rem;
+  left: 2rem;
   padding: 0.5rem 1.2rem;
-  background: #e8f5e9;
+  background: rgba(255, 255, 255, 0.95);
   color: #43a047;
   border-radius: 20px;
   font-size: 0.9rem;
   font-weight: 600;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+  z-index: 10;
 }
 
 .animalName {
