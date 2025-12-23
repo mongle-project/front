@@ -12,9 +12,7 @@ const NewsListPage = () => {
   const [newsData, setNewsData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  // 인기 뉴스는 뉴스 데이터의 처음 5개
-  const popularNews = newsData ? newsData.slice(0, 5) : [];
+  const [famliyInfoData, setFamliyInfoData] = useState(null);
 
   const handlePageClick = (page) => {
     setCurrentPage(page);
@@ -26,7 +24,10 @@ const NewsListPage = () => {
       try {
         setIsLoading(true);
         const response = await getNewsList();
-        setNewsData(response.data);
+
+        setNewsData(response.news);
+        setFamliyInfoData(response.familyInfo);
+
         setError(null);
       } catch (err) {
         console.error("Failed to fetch news:", err);
@@ -101,10 +102,26 @@ const NewsListPage = () => {
     );
   }
 
-  // 헤드라인 뉴스는 첫 번째 뉴스
-  const headlineNewsData = newsData[0];
-  // 나머지 뉴스 리스트
-  const newsListData = newsData.slice(1);
+  // 페이지당 표시할 뉴스 개수
+  const newsPerPage = 10;
+
+  // 전체 페이지 수 계산
+  const totalPages = Math.ceil(newsData.length / newsPerPage);
+
+  // 첫 페이지만 헤드라인 뉴스 포함
+  let headlineNewsData = null;
+  let newsListData = [];
+
+  if (currentPage === 1) {
+    // 첫 페이지: 헤드라인 1개 + 리스트 9개
+    headlineNewsData = newsData[0];
+    newsListData = newsData.slice(1, newsPerPage);
+  } else {
+    // 나머지 페이지: 리스트 10개
+    const startIndex = (currentPage - 1) * newsPerPage;
+    const endIndex = startIndex + newsPerPage;
+    newsListData = newsData.slice(startIndex, endIndex);
+  }
 
   return (
     <div className={styles.page}>
@@ -123,39 +140,38 @@ const NewsListPage = () => {
         <div className={styles.newsLayout}>
           {/* 메인 뉴스 섹션 */}
           <div className={styles.mainNewsSection}>
-            {/* 헤드라인 뉴스 */}
-            <article
-              className={styles.headlineNews}
-              onClick={() => handleNewsClick(headlineNewsData.pcUrl)}
-            >
-              <div className={styles.headlineImageWrapper}>
-                <img
-                  src={headlineNewsData.imageUrl}
-                  alt={headlineNewsData.title}
-                  className={styles.headlineImage}
-                />
-                <span className={styles.headlineBadge}>🔥 HOT</span>
-              </div>
-              <div className={styles.headlineContent}>
-                <span className={styles.newsCategory}>
-                  {headlineNewsData.category}
-                </span>
-                <h2 className={styles.headlineTitle}>
-                  {headlineNewsData.title}
-                </h2>
-                <p className={styles.headlineDescription}>
-                  {headlineNewsData.content}
-                </p>
-                <div className={styles.newsMeta}>
-                  <span className={styles.metaItem}>
-                    📰 {headlineNewsData.cpName || ""}
-                  </span>
-                  <span className={styles.metaItem}>
-                    📅 {headlineNewsData.createdAt}
-                  </span>
+            {/* 헤드라인 뉴스 - 첫 페이지만 표시 */}
+            {headlineNewsData && (
+              <article
+                className={styles.headlineNews}
+                onClick={() => handleNewsClick(headlineNewsData.pcUrl)}
+              >
+                <div className={styles.headlineImageWrapper}>
+                  <img
+                    src={headlineNewsData.imageUrl}
+                    alt={headlineNewsData.title}
+                    className={styles.headlineImage}
+                  />
+                  <span className={styles.headlineBadge}>🔥 HOT</span>
                 </div>
-              </div>
-            </article>
+                <div className={styles.headlineContent}>
+                  <h2 className={styles.headlineTitle}>
+                    {headlineNewsData.title}
+                  </h2>
+                  <p className={styles.headlineDescription}>
+                    {headlineNewsData.summary}
+                  </p>
+                  <div className={styles.newsMeta}>
+                    <span className={styles.metaItem}>
+                      📰 {headlineNewsData.cpName || ""}
+                    </span>
+                    <span className={styles.metaItem}>
+                      📅 {headlineNewsData.createdAt}
+                    </span>
+                  </div>
+                </div>
+              </article>
+            )}
 
             {/* 뉴스 리스트 */}
             <div className={styles.newsList}>
@@ -172,15 +188,11 @@ const NewsListPage = () => {
                   />
                   <div className={styles.newsContent}>
                     <div>
-                      <span className={styles.newsCategory}>
-                        {news.category}
-                      </span>
                       <h3 className={styles.newsTitle}>{news.title}</h3>
-                      <p className={styles.newsDescription}>{news.content}</p>
                     </div>
                     <div className={styles.newsMeta}>
                       <span className={styles.metaItem}>
-                        📰 {headlineNewsData.cpName || ""}
+                        📰 {news.cpName || ""}
                       </span>
                       <span className={styles.metaItem}>
                         📅 {news.createdAt}
@@ -200,21 +212,25 @@ const NewsListPage = () => {
               >
                 ◀
               </button>
-              {[1, 2, 3, 4, 5].map((page) => (
-                <button
-                  key={page}
-                  className={`${styles.pageBtn} ${
-                    currentPage === page ? styles.active : ""
-                  }`}
-                  onClick={() => handlePageClick(page)}
-                >
-                  {page}
-                </button>
-              ))}
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                (page) => (
+                  <button
+                    key={page}
+                    className={`${styles.pageBtn} ${
+                      currentPage === page ? styles.active : ""
+                    }`}
+                    onClick={() => handlePageClick(page)}
+                  >
+                    {page}
+                  </button>
+                )
+              )}
               <button
                 className={styles.pageBtn}
-                onClick={() => handlePageClick(Math.min(5, currentPage + 1))}
-                disabled={currentPage === 5}
+                onClick={() =>
+                  handlePageClick(Math.min(totalPages, currentPage + 1))
+                }
+                disabled={currentPage === totalPages}
               >
                 ▶
               </button>
@@ -223,28 +239,52 @@ const NewsListPage = () => {
 
           {/* 사이드바 */}
           <aside className={styles.sidebar}>
-            {/* 인기 뉴스 */}
+            {/* 가족이 되어주세요 뉴스 */}
             <div className={styles.popularNews}>
               <h3 className={styles.sidebarTitle}>
-                <span>🔥</span>
-                인기 뉴스
+                <span>👍</span>
+                가족이 되어주세요
               </h3>
               <div className={styles.popularList}>
-                {popularNews.map((news, index) => (
-                  <div
-                    key={news.id}
-                    className={styles.popularItem}
-                    onClick={() => handleNewsClick(news.pcUrl)}
-                  >
-                    <div className={styles.popularRank}>{index + 1}</div>
-                    <div className={styles.popularContent}>
-                      <h4 className={styles.popularTitle}>{news.title}</h4>
-                      <span className={styles.popularDate}>
-                        {news.createdAt}
-                      </span>
+                {famliyInfoData && famliyInfoData.length > 0 ? (
+                  famliyInfoData.map((news) => (
+                    <div
+                      key={news.id}
+                      className={styles.popularItem}
+                      onClick={() => handleNewsClick(news.pcUrl)}
+                    >
+                      <img
+                        src={news.imageUrl}
+                        alt={news.title}
+                        className={styles.newsImage}
+                      />
+                      <div className={styles.popularContent}>
+                        <h4 className={styles.popularTitle}>{news.title}</h4>
+                        <p className={styles.popularDescription}>
+                          {news.summary}
+                        </p>
+                        <div className={styles.newsMeta}>
+                          <span className={styles.metaItem}>
+                            📰 {news.cpName || ""}
+                          </span>
+                          <span className={styles.metaItem}>
+                            📅 {news.createdAt}
+                          </span>
+                        </div>
+                      </div>
                     </div>
+                  ))
+                ) : (
+                  <div
+                    style={{
+                      textAlign: "center",
+                      padding: "20px",
+                      color: "#999",
+                    }}
+                  >
+                    해당 뉴스가 없습니다.
                   </div>
-                ))}
+                )}
               </div>
             </div>
           </aside>
