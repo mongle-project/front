@@ -4,6 +4,7 @@ import toast, { Toaster } from "react-hot-toast";
 import DashboardHeader from "../../components/header/Header";
 import { useAuthContext } from "../../contexts/AuthContext";
 import { ROUTES } from "../../utils/constants";
+import { getPetById, updatePet } from "../../api/pets";
 import styles from "./EditPetPage.module.css";
 
 const EditPetPage = () => {
@@ -25,56 +26,10 @@ const EditPetPage = () => {
 
   const [activeSpecies, setActiveSpecies] = useState("dog");
   const [activeGender, setActiveGender] = useState("male");
+  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
 
-  const speciesOptions = [
-    { value: "dog", icon: "🐕", label: "강아지" },
-    { value: "cat", icon: "🐈", label: "고양이" },
-    { value: "rabbit", icon: "🐰", label: "토끼" },
-    { value: "hamster", icon: "🐭", label: "햄스터" },
-    { value: "guineaPig", icon: "🐹", label: "기니피그" },
-    { value: "bird", icon: "🐦", label: "조류" },
-    { value: "fish", icon: "🐟", label: "어류" },
-    { value: "reptile", icon: "🦎", label: "파충류" },
-    { value: "turtle", icon: "🐢", label: "거북이" },
-  ];
-
-  const genderOptions = [
-    { value: "male", label: "남아 ♂" },
-    { value: "female", label: "여아 ♀" },
-    { value: "neutered", label: "중성화 완료" },
-  ];
-
-  // TODO: API에서 반려동물 정보 가져오기
-  useEffect(() => {
-    // 임시 데이터 (실제로는 API에서 가져와야 함)
-    const mockPetData = {
-      id: 1,
-      name: "몽이",
-      species: "dog",
-      birthday: "2021-03-15",
-      age: "3살",
-      gender: "male",
-      feature: "닭고기 알레르기 있음. 매일 저녁 7시 산책 좋아함. 낯선 사람에게 경계심 많음.",
-      imagePreview:
-        "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=800&h=600&fit=crop",
-    };
-
-    setFormData({
-      ...mockPetData,
-      imageFile: null,
-    });
-    setActiveSpecies(mockPetData.species);
-    setActiveGender(mockPetData.gender);
-  }, [id]);
-
-  const handleLogout = () => {
-    if (typeof logout === "function") {
-      logout();
-    }
-    navigate(ROUTES.LOGIN);
-  };
-
-  const calculateAge = (birthday) => {
+  // calculateAge 함수를 useEffect 위에 선언
+  const calculateAge = React.useCallback((birthday) => {
     if (!birthday) return "";
 
     const today = new Date();
@@ -99,6 +54,71 @@ const EditPetPage = () => {
     }
 
     return `${age}살`;
+  }, []);
+
+  const speciesOptions = [
+    { value: "dog", icon: "🐕", label: "강아지" },
+    { value: "cat", icon: "🐈", label: "고양이" },
+    { value: "rabbit", icon: "🐰", label: "토끼" },
+    { value: "hamster", icon: "🐭", label: "햄스터" },
+    { value: "guineaPig", icon: "🐹", label: "기니피그" },
+    { value: "bird", icon: "🐦", label: "조류" },
+    { value: "fish", icon: "🐟", label: "어류" },
+    { value: "reptile", icon: "🦎", label: "파충류" },
+    { value: "turtle", icon: "🐢", label: "거북이" },
+  ];
+
+  const genderOptions = [
+    { value: "male", label: "남아 ♂" },
+    { value: "female", label: "여아 ♀" },
+    { value: "neutered", label: "중성화 완료" },
+  ];
+
+  // API에서 반려동물 정보 가져오기
+  useEffect(() => {
+    const fetchPetData = async () => {
+      try {
+        const response = await getPetById(id);
+        // API 응답이 { data: {...} } 형태인 경우 처리
+        const petData = response.data || response;
+
+        // ISO 날짜를 YYYY-MM-DD 형태로 변환
+        const formatDate = (dateString) => {
+          if (!dateString) return "";
+          const date = new Date(dateString);
+          return date.toISOString().split("T")[0];
+        };
+
+        setFormData({
+          name: petData.name || "",
+          species: petData.species || "dog",
+          birthday: formatDate(petData.birth_day) || "",
+          age: calculateAge(formatDate(petData.birth_day)) || "",
+          gender: petData.gender || "male",
+          feature: petData.feature || "",
+          imageFile: null,
+          imagePreview: petData.img_url || null,
+        });
+        setActiveSpecies(petData.species || "dog");
+        setActiveGender(petData.gender || "male");
+      } catch (error) {
+        console.error("반려동물 정보 조회 실패:", error);
+        toast.error("반려동물 정보를 불러오는데 실패했습니다.", {
+          duration: 3000,
+          position: "top-center",
+        });
+        navigate(ROUTES.PETS);
+      }
+    };
+
+    fetchPetData();
+  }, [id, calculateAge, navigate]);
+
+  const handleLogout = () => {
+    if (typeof logout === "function") {
+      logout();
+    }
+    navigate(ROUTES.LOGIN);
   };
 
   const handleInputChange = (e) => {
@@ -129,22 +149,6 @@ const EditPetPage = () => {
         [name]: value,
       }));
     }
-  };
-
-  const handleSpeciesClick = (value) => {
-    setActiveSpecies(value);
-    setFormData((prev) => ({
-      ...prev,
-      species: value,
-    }));
-  };
-
-  const handleGenderClick = (value) => {
-    setActiveGender(value);
-    setFormData((prev) => ({
-      ...prev,
-      gender: value,
-    }));
   };
 
   const handleImageUpload = (e) => {
@@ -183,61 +187,57 @@ const EditPetPage = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!formData.name.trim()) {
-      toast.error("이름을 입력해주세요.", {
+    if (!formData.feature && !formData.imageFile) {
+      toast.error("수정할 내용을 입력해주세요.", {
         duration: 3000,
         position: "top-center",
       });
       return;
     }
 
-    if (!formData.birthday) {
-      toast.error("생일을 선택해주세요.", {
+    try {
+      const formDataToSend = new FormData();
+
+      if (formData.feature) {
+        formDataToSend.append("feature", formData.feature);
+      }
+
+      if (formData.imageFile) {
+        formDataToSend.append("imageFile", formData.imageFile);
+      }
+
+      await updatePet(id, formDataToSend);
+
+      toast.success(`${formData.name} 정보가 수정되었습니다! 🎉`, {
         duration: 3000,
         position: "top-center",
       });
-      return;
-    }
 
-    if (!formData.age) {
-      toast.error("나이를 입력해주세요.", {
+      setTimeout(() => {
+        navigate(ROUTES.PETS);
+      }, 1000);
+    } catch (error) {
+      console.error("반려동물 수정 실패:", error);
+      toast.error("수정에 실패했습니다. 다시 시도해주세요.", {
         duration: 3000,
         position: "top-center",
       });
-      return;
     }
-
-    // TODO: API 연동
-    const petData = {
-      id: id,
-      name: formData.name,
-      species: formData.species,
-      birthday: formData.birthday,
-      age: formData.age,
-      gender: formData.gender,
-      feature: formData.feature || null,
-      imageFile: formData.imageFile,
-      user_id: user?.id || 1,
-    };
-
-    console.log("반려동물 수정 데이터:", petData);
-    toast.success(`${formData.name} 정보가 수정되었습니다! 🎉`, {
-      duration: 3000,
-      position: "top-center",
-    });
-
-    setTimeout(() => {
-      navigate(ROUTES.PETS);
-    }, 1000);
   };
 
   const handleCancel = () => {
-    if (confirm("수정을 취소하시겠습니까?\n변경사항이 저장되지 않습니다.")) {
-      navigate(ROUTES.PETS);
-    }
+    setIsCancelModalOpen(true);
+  };
+
+  const confirmCancel = () => {
+    navigate(ROUTES.PETS);
+  };
+
+  const closeCancelModal = () => {
+    setIsCancelModalOpen(false);
   };
 
   return (
@@ -286,10 +286,11 @@ const EditPetPage = () => {
                 maxLength="20"
                 value={formData.name}
                 onChange={handleInputChange}
+                disabled
                 required
               />
               <div className={styles.helpText}>
-                우리 아이를 부르는 이름을 입력해주세요
+                기본 정보는 수정할 수 없습니다
               </div>
             </div>
 
@@ -304,8 +305,8 @@ const EditPetPage = () => {
                     key={option.value}
                     className={`${styles.speciesChip} ${
                       activeSpecies === option.value ? styles.active : ""
-                    }`}
-                    onClick={() => handleSpeciesClick(option.value)}
+                    } ${styles.disabled}`}
+                    style={{ pointerEvents: 'none', opacity: 0.6 }}
                   >
                     <input
                       type="radio"
@@ -313,6 +314,7 @@ const EditPetPage = () => {
                       value={option.value}
                       className={styles.speciesChipInput}
                       checked={activeSpecies === option.value}
+                      disabled
                       onChange={() => {}}
                     />
                     <div className={styles.speciesIcon}>{option.icon}</div>
@@ -336,6 +338,7 @@ const EditPetPage = () => {
                   value={formData.birthday}
                   onChange={handleInputChange}
                   max={new Date().toISOString().split("T")[0]}
+                  disabled
                   required
                 />
               </div>
@@ -350,6 +353,7 @@ const EditPetPage = () => {
                   className={styles.formInput}
                   placeholder="생일을 선택하면 자동으로 계산됩니다"
                   value={formData.age}
+                  disabled
                   readOnly
                   required
                 />
@@ -368,7 +372,7 @@ const EditPetPage = () => {
                     className={`${styles.genderOption} ${
                       activeGender === option.value ? styles.active : ""
                     }`}
-                    onClick={() => handleGenderClick(option.value)}
+                    style={{ pointerEvents: 'none', opacity: 0.6 }}
                   >
                     <input
                       type="radio"
@@ -376,6 +380,7 @@ const EditPetPage = () => {
                       value={option.value}
                       className={styles.genderOptionInput}
                       checked={activeGender === option.value}
+                      disabled
                       onChange={() => {}}
                     />
                     <span>{option.label}</span>
@@ -476,6 +481,44 @@ const EditPetPage = () => {
             </button>
           </div>
         </form>
+      </div>
+
+      {/* 취소 확인 모달 */}
+      <div
+        className={`${styles.modal} ${isCancelModalOpen ? styles.active : ""}`}
+      >
+        <div className={styles.deleteModalContent}>
+          <div className={styles.deleteModalHeader}>
+            <div className={styles.deleteIcon}>⚠️</div>
+            <h2 className={styles.deleteModalTitle}>수정 취소</h2>
+          </div>
+
+          <div className={styles.deleteModalBody}>
+            <p className={styles.deleteMessage}>
+              수정을 취소하시겠습니까?
+            </p>
+            <p className={styles.deleteWarning}>
+              변경사항이 저장되지 않습니다.
+            </p>
+          </div>
+
+          <div className={styles.deleteModalActions}>
+            <button
+              type="button"
+              className={`${styles.modalBtn} ${styles.modalBtnSecondary}`}
+              onClick={closeCancelModal}
+            >
+              돌아가기
+            </button>
+            <button
+              type="button"
+              className={`${styles.modalBtn} ${styles.modalBtnDanger}`}
+              onClick={confirmCancel}
+            >
+              취소하기
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

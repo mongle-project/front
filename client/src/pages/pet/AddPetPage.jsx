@@ -4,6 +4,7 @@ import toast, { Toaster } from "react-hot-toast";
 import DashboardHeader from "../../components/header/Header";
 import { useAuthContext } from "../../contexts/AuthContext";
 import { ROUTES } from "../../utils/constants";
+import { createPet } from "../../api/pets";
 import styles from "./AddPetPage.module.css";
 
 const AddPetPage = () => {
@@ -24,6 +25,7 @@ const AddPetPage = () => {
 
   const [activeSpecies, setActiveSpecies] = useState("dog");
   const [activeGender, setActiveGender] = useState("male");
+  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
 
   const speciesOptions = [
     { value: "dog", icon: "🐕", label: "강아지" },
@@ -160,7 +162,7 @@ const AddPetPage = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!formData.name.trim()) {
@@ -187,35 +189,50 @@ const AddPetPage = () => {
       return;
     }
 
-    // TODO: API 연동
-    const petData = {
-      name: formData.name,
-      species: formData.species,
-      birthday: formData.birthday,
-      age: formData.age,
-      gender: formData.gender,
-      feature: formData.feature || null,
-      imageFile: formData.imageFile,
-      user_id: user?.id || 1,
-    };
+    try {
+      const formDataToSend = new FormData();
+      formDataToSend.append("name", formData.name);
+      formDataToSend.append("species", formData.species);
+      formDataToSend.append("birthday", formData.birthday);
+      formDataToSend.append("gender", formData.gender);
 
-    console.log("반려동물 데이터:", petData);
-    toast.success(`${formData.name} 등록 완료! 🎉`, {
-      duration: 3000,
-      position: "top-center",
-    });
+      if (formData.feature) {
+        formDataToSend.append("feature", formData.feature);
+      }
 
-    setTimeout(() => {
-      navigate(ROUTES.PETS);
-    }, 1000);
+      if (formData.imageFile) {
+        formDataToSend.append("imageFile", formData.imageFile);
+      }
+
+      await createPet(formDataToSend);
+
+      toast.success(`${formData.name} 등록 완료! 🎉`, {
+        duration: 3000,
+        position: "top-center",
+      });
+
+      setTimeout(() => {
+        navigate(ROUTES.PETS);
+      }, 1000);
+    } catch (error) {
+      console.error("반려동물 등록 실패:", error);
+      toast.error("등록에 실패했습니다. 다시 시도해주세요.", {
+        duration: 3000,
+        position: "top-center",
+      });
+    }
   };
 
   const handleCancel = () => {
-    if (
-      confirm("등록을 취소하시겠습니까?\n입력한 내용이 사라집니다.")
-    ) {
-      navigate(ROUTES.PETS);
-    }
+    setIsCancelModalOpen(true);
+  };
+
+  const confirmCancel = () => {
+    navigate(ROUTES.PETS);
+  };
+
+  const closeCancelModal = () => {
+    setIsCancelModalOpen(false);
   };
 
   return (
@@ -448,6 +465,44 @@ const AddPetPage = () => {
             </button>
           </div>
         </form>
+      </div>
+
+      {/* 취소 확인 모달 */}
+      <div
+        className={`${styles.modal} ${isCancelModalOpen ? styles.active : ""}`}
+      >
+        <div className={styles.deleteModalContent}>
+          <div className={styles.deleteModalHeader}>
+            <div className={styles.deleteIcon}>⚠️</div>
+            <h2 className={styles.deleteModalTitle}>등록 취소</h2>
+          </div>
+
+          <div className={styles.deleteModalBody}>
+            <p className={styles.deleteMessage}>
+              등록을 취소하시겠습니까?
+            </p>
+            <p className={styles.deleteWarning}>
+              입력한 내용이 사라집니다.
+            </p>
+          </div>
+
+          <div className={styles.deleteModalActions}>
+            <button
+              type="button"
+              className={`${styles.modalBtn} ${styles.modalBtnSecondary}`}
+              onClick={closeCancelModal}
+            >
+              돌아가기
+            </button>
+            <button
+              type="button"
+              className={`${styles.modalBtn} ${styles.modalBtnDanger}`}
+              onClick={confirmCancel}
+            >
+              취소하기
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

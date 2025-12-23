@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
 import DashboardHeader from "../../components/header/Header";
 import { useAuthContext } from "../../contexts/AuthContext";
 import { ROUTES } from "../../utils/constants";
+import { getPets, deletePet } from "../../api/pets";
 import styles from "./MyPetsPage.module.css";
 
 const MyPetsPage = () => {
@@ -14,52 +16,38 @@ const MyPetsPage = () => {
   const [selectedPet, setSelectedPet] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [petToDelete, setPetToDelete] = useState(null);
+  const [pets, setPets] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // 임시 반려동물 데이터
-  const [pets, setPets] = useState([
-    {
-      id: 1,
-      type: "dog",
-      typeLabel: "🐕 강아지",
-      name: "몽이",
-      breed: "말티즈 (Maltese)",
-      age: "3살",
-      gender: "남아",
-      weight: "2.8kg",
-      neutered: "완료",
-      image:
-        "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=800&h=600&fit=crop",
-      memo: "닭고기 알레르기 있음. 매일 저녁 7시 산책 좋아함. 낯선 사람에게 경계심 많음.",
-    },
-    {
-      id: 2,
-      type: "cat",
-      typeLabel: "🐈 고양이",
-      name: "나비",
-      breed: "코리안 숏헤어 (Korean Shorthair)",
-      age: "2살",
-      gender: "여아",
-      weight: "3.5kg",
-      neutered: "완료",
-      image:
-        "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=800&h=600&fit=crop",
-      memo: "조용한 성격. 높은 곳을 좋아함. 사료는 생선 맛만 먹음. 물 많이 마시는 편.",
-    },
-    {
-      id: 3,
-      type: "other",
-      typeLabel: "🐰 토끼",
-      name: "토순이",
-      breed: "네덜란드 드워프 (Netherland Dwarf)",
-      age: "1살",
-      gender: "여아",
-      weight: "1.2kg",
-      neutered: "미정",
-      image:
-        "https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=800&h=600&fit=crop",
-      memo: "활발한 성격. 당근을 특히 좋아함. 아침에 케이지 청소 필수. 털갈이 시즌 주의.",
-    },
-  ]);
+  // 반려동물 목록 조회
+  useEffect(() => {
+    fetchPets();
+  }, []);
+
+  const fetchPets = async () => {
+    try {
+      setLoading(true);
+      const response = await getPets();
+      // API 응답이 { data: [...] } 형태인 경우 처리
+      const data = response.data || response;
+      setPets(data);
+    } catch (error) {
+      console.error("반려동물 목록 조회 실패:", error);
+      toast.error("반려동물 목록을 불러오는데 실패했습니다.", {
+        duration: 3000,
+        position: "top-center",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 날짜 포맷팅 함수 (ISO 날짜를 YYYY-MM-DD 형태로 변환)
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    return date.toISOString().split("T")[0];
+  };
 
   const handleLogout = () => {
     if (typeof logout === "function") {
@@ -97,10 +85,23 @@ const MyPetsPage = () => {
     setPetToDelete(null);
   };
 
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     if (petToDelete) {
-      setPets(pets.filter((pet) => pet.id !== petToDelete.id));
-      closeDeleteModal();
+      try {
+        await deletePet(petToDelete.id);
+        toast.success(`${petToDelete.name}의 정보가 삭제되었습니다.`, {
+          duration: 3000,
+          position: "top-center",
+        });
+        closeDeleteModal();
+        fetchPets(); // 목록 새로고침
+      } catch (error) {
+        console.error("반려동물 삭제 실패:", error);
+        toast.error("삭제에 실패했습니다. 다시 시도해주세요.", {
+          duration: 3000,
+          position: "top-center",
+        });
+      }
     }
   };
 
@@ -112,6 +113,7 @@ const MyPetsPage = () => {
 
   return (
     <div className={styles.page}>
+      <Toaster />
       <DashboardHeader displayName={displayName} onLogout={handleLogout} />
 
       <div className={styles.container}>
@@ -138,62 +140,92 @@ const MyPetsPage = () => {
             </div>
             <div className={styles.statCard}>
               <div className={styles.statIcon}>📅</div>
-              <div className={styles.statValue}>2</div>
+              <div className={styles.statValue}>0</div>
               <div className={styles.statLabel}>다가오는 일정</div>
             </div>
             <div className={styles.statCard}>
               <div className={styles.statIcon}>💉</div>
-              <div className={styles.statValue}>1</div>
+              <div className={styles.statValue}>0</div>
               <div className={styles.statLabel}>예방접종 예정</div>
             </div>
             <div className={styles.statCard}>
               <div className={styles.statIcon}>🎂</div>
-              <div className={styles.statValue}>30</div>
+              <div className={styles.statValue}>0</div>
               <div className={styles.statLabel}>함께한 날들</div>
             </div>
           </div>
         </div>
 
         {/* 반려동물 카드 그리드 */}
-        {pets.length > 0 ? (
+        {loading ? (
+          <div className={styles.emptyState}>
+            <div className={styles.emptyIcon}>⏳</div>
+            <h2 className={styles.emptyTitle}>불러오는 중...</h2>
+          </div>
+        ) : pets.length > 0 ? (
           <div className={styles.petsGrid}>
             {pets.map((pet) => (
               <div key={pet.id} className={styles.petCard}>
                 <div className={styles.petImageWrapper}>
                   <img
-                    src={pet.image}
+                    src={
+                      pet.img_url ||
+                      "https://via.placeholder.com/800x600?text=No+Image"
+                    }
                     alt={pet.name}
                     className={styles.petImage}
                   />
-                  <span className={styles.petBadge}>{pet.typeLabel}</span>
+                  <span className={styles.petBadge}>
+                    {pet.species === "dog"
+                      ? "🐕 강아지"
+                      : pet.species === "cat"
+                      ? "🐈 고양이"
+                      : pet.species === "rabbit"
+                      ? "🐰 토끼"
+                      : pet.species === "hamster"
+                      ? "🐭 햄스터"
+                      : pet.species === "guineaPig"
+                      ? "🐹 기니피그"
+                      : pet.species === "bird"
+                      ? "🐦 조류"
+                      : pet.species === "fish"
+                      ? "🐟 어류"
+                      : pet.species === "reptile"
+                      ? "🦎 파충류"
+                      : pet.species === "turtle"
+                      ? "🐢 거북이"
+                      : "🐾 반려동물"}
+                  </span>
                 </div>
                 <div className={styles.petInfo}>
                   <h3 className={styles.petName}>{pet.name}</h3>
-                  <p className={styles.petBreed}>{pet.breed}</p>
+                  <p className={styles.petBreed}>{pet.species}</p>
 
                   <div className={styles.petDetails}>
                     <div className={styles.detailItem}>
-                      <div className={styles.detailLabel}>나이</div>
-                      <div className={styles.detailValue}>{pet.age}</div>
+                      <div className={styles.detailLabel}>생일</div>
+                      <div className={styles.detailValue}>
+                        {formatDate(pet.birth_day)}
+                      </div>
                     </div>
                     <div className={styles.detailItem}>
                       <div className={styles.detailLabel}>성별</div>
-                      <div className={styles.detailValue}>{pet.gender}</div>
-                    </div>
-                    <div className={styles.detailItem}>
-                      <div className={styles.detailLabel}>체중</div>
-                      <div className={styles.detailValue}>{pet.weight}</div>
-                    </div>
-                    <div className={styles.detailItem}>
-                      <div className={styles.detailLabel}>중성화</div>
-                      <div className={styles.detailValue}>{pet.neutered}</div>
+                      <div className={styles.detailValue}>
+                        {pet.gender === "male"
+                          ? "남아"
+                          : pet.gender === "female"
+                          ? "여아"
+                          : "중성화 완료"}
+                      </div>
                     </div>
                   </div>
 
-                  <div className={styles.petMemo}>
-                    <div className={styles.memoLabel}>📝 특이사항</div>
-                    <div className={styles.memoContent}>{pet.memo}</div>
-                  </div>
+                  {pet.feature && (
+                    <div className={styles.petMemo}>
+                      <div className={styles.memoLabel}>📝 특이사항</div>
+                      <div className={styles.memoContent}>{pet.feature}</div>
+                    </div>
+                  )}
 
                   <div className={styles.petActions}>
                     <button
@@ -433,7 +465,9 @@ const MyPetsPage = () => {
       </div>
 
       {/* 삭제 확인 모달 */}
-      <div className={`${styles.modal} ${isDeleteModalOpen ? styles.active : ""}`}>
+      <div
+        className={`${styles.modal} ${isDeleteModalOpen ? styles.active : ""}`}
+      >
         <div className={styles.deleteModalContent}>
           <div className={styles.deleteModalHeader}>
             <div className={styles.deleteIcon}>⚠️</div>
@@ -442,7 +476,8 @@ const MyPetsPage = () => {
 
           <div className={styles.deleteModalBody}>
             <p className={styles.deleteMessage}>
-              정말로 <strong>{petToDelete?.name}</strong>의 정보를 삭제하시겠습니까?
+              정말로 <strong>{petToDelete?.name}</strong>의 정보를
+              삭제하시겠습니까?
             </p>
             <p className={styles.deleteWarning}>
               삭제된 정보는 복구할 수 없습니다.

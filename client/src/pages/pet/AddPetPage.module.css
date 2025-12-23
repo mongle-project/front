@@ -398,6 +398,117 @@
   transform: translateY(-3px);
 }
 
+/* 모달 스타일 */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal.active {
+  display: flex;
+}
+
+.deleteModalContent {
+  background: white;
+  border-radius: 30px;
+  padding: 2.5rem;
+  max-width: 450px;
+  width: 90%;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3);
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.deleteModalHeader {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.deleteIcon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.deleteModalTitle {
+  font-size: 1.8rem;
+  color: #1b5e20;
+  font-weight: 700;
+}
+
+.deleteModalBody {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.deleteMessage {
+  font-size: 1.1rem;
+  color: #2e7d32;
+  margin-bottom: 0.8rem;
+  font-weight: 600;
+}
+
+.deleteWarning {
+  font-size: 0.95rem;
+  color: #ff5252;
+}
+
+.deleteModalActions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.modalBtn {
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: "GyeonggiMillenniumTitle", sans-serif;
+}
+
+.modalBtnSecondary {
+  background: white;
+  color: #43a047;
+  border: 2px solid #a5d6a7;
+}
+
+.modalBtnSecondary:hover {
+  background: #f1f8e9;
+  transform: translateY(-2px);
+}
+
+.modalBtnDanger {
+  background: linear-gradient(135deg, #ff7043 0%, #e53935 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(229, 57, 53, 0.4);
+}
+
+.modalBtnDanger:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(229, 57, 53, 0.5);
+}
+
 /* 반응형 */
 @media (max-width: 768px) {
   .container {
@@ -427,5 +538,17 @@
 
   .formRow {
     flex-direction: column;
+  }
+
+  .deleteModalContent {
+    padding: 2rem 1.5rem;
+  }
+
+  .deleteModalActions {
+    flex-direction: column;
+  }
+
+  .modalBtn {
+    width: 100%;
   }
 }

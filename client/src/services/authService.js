@@ -16,6 +16,16 @@ const authService = {
 
   logout: () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('refreshToken');
+  },
+
+  refreshToken: async () => {
+    const refreshToken = localStorage.getItem('refreshToken');
+    if (!refreshToken) {
+      throw new Error('No refresh token available');
+    }
+    const response = await api.post('/auth/refresh', { refreshToken });
+    return response.data;
   },
 
   getCurrentUser: async () => {
