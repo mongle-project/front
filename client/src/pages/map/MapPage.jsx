@@ -1,6 +1,9 @@
 import React from "react";
 import DashboardHeader from "../../components/header/Header";
 import styles from "./map.module.css";
+import { useAuthContext } from "../../contexts/AuthContext";
+import { ROUTES } from "../../utils/constants";
+import { useNavigate } from "react-router-dom";
 
 const hospitalList = [
   {
@@ -88,9 +91,18 @@ const ClinicCard = ({
 );
 
 export default function MapPage() {
+  const { user, logout } = useAuthContext();
+  const navigate = useNavigate();
+  const displayName = user?.id || user?.name || "집사님";
+
+  const handleLogout = () => {
+    if (typeof logout === "function") logout();
+    navigate(ROUTES.LOGIN);
+  };
+
   return (
     <div className={styles.shell}>
-      <DashboardHeader />
+      <DashboardHeader displayName={displayName} onLogout={handleLogout} />
 
       <main className={styles.layout}>
         <aside className={styles.sidebar}>

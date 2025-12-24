@@ -2,8 +2,8 @@
 import * as dogsProfile from "../data/dictionary/dogs";
 import * as catsProfile from "../data/dictionary/cats";
 import * as rabbitsProfile from "../data/dictionary/rabbit";
-import * as hamstersProfile from "../data/dictionary/hamsters";
-import * as guinealPigsProfile from "../data/dictionary/guineaPigs";
+import * as hamstersProfile from "../data/dictionary/Hamsters";
+import * as guineaPigsProfile from "../data/dictionary/GuineaPigs";
 import * as birdsProfile from "../data/dictionary/birds";
 import * as turtlesProfile from "../data/dictionary/turtles";
 import * as reptileProfile from "../data/dictionary/reptile";
@@ -165,22 +165,22 @@ export const animalData = [
 
   // 기니피그
   transformProfileToCard(
-    guinealPigsProfile.americanGuineaPigProfile,
+    guineaPigsProfile.americanGuineaPigProfile,
     "기니피그",
     idCounter++
   ),
   transformProfileToCard(
-    guinealPigsProfile.abyssinianGuineaPigProfile,
+    guineaPigsProfile.abyssinianGuineaPigProfile,
     "기니피그",
     idCounter++
   ),
   transformProfileToCard(
-    guinealPigsProfile.silkieGuineaPigProfile,
+    guineaPigsProfile.silkieGuineaPigProfile,
     "기니피그",
     idCounter++
   ),
   transformProfileToCard(
-    guinealPigsProfile.peruvianGuineaPigProfile,
+    guineaPigsProfile.peruvianGuineaPigProfile,
     "기니피그",
     idCounter++
   ),
