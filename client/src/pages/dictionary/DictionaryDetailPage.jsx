@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import styles from "./DictionaryDetailPage.module.css";
 import DashboardHeader from "../../components/header/Header";
@@ -13,6 +13,11 @@ const DictionaryDetailPage = () => {
   const displayName = user?.name ?? "집사님";
 
   const animal = getAnimalById(id);
+
+  // 페이지 진입 시 스크롤을 최상단으로 이동
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [id]);
 
   const handleLogout = () => {
     if (typeof logout === "function") {
