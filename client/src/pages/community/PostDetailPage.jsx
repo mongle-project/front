@@ -8,8 +8,8 @@ import {
   deleteArticle,
   getArticleById,
   reportArticle,
-  toggleArticleBookmark,
-  toggleArticleLike,
+  toggleBookmark,
+  toggleLike,
 } from "../../api/articles";
 
 const PostDetailPage = () => {
@@ -56,7 +56,7 @@ const PostDetailPage = () => {
 
   const handleLike = () => {
     if (!article) return;
-    toggleArticleLike(id)
+    toggleLike(id)
       .then((data) => {
         setLiked(Boolean(data.liked));
         setLikeCount(data.totalLikes ?? likeCount);
@@ -72,7 +72,7 @@ const PostDetailPage = () => {
 
   const handleBookmark = () => {
     if (!article) return;
-    toggleArticleBookmark(id)
+    toggleBookmark(id)
       .then((data) => {
         setBookmarked(Boolean(data.saved));
         if (data.message) alert(data.message);
