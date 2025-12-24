@@ -8,8 +8,8 @@ import {
   deleteArticle,
   getArticleById,
   reportArticle,
-  toggleArticleBookmark,
-  toggleArticleLike,
+  toggleBookmark,
+  toggleLike,
 } from "../../api/articles";
 
 const PostDetailPage = () => {
@@ -56,7 +56,7 @@ const PostDetailPage = () => {
 
   const handleLike = () => {
     if (!article) return;
-    toggleArticleLike(id)
+    toggleLike(id)
       .then((data) => {
         setLiked(Boolean(data.liked));
         setLikeCount(data.totalLikes ?? likeCount);
@@ -72,7 +72,7 @@ const PostDetailPage = () => {
 
   const handleBookmark = () => {
     if (!article) return;
-    toggleArticleBookmark(id)
+    toggleBookmark(id)
       .then((data) => {
         setBookmarked(Boolean(data.saved));
         if (data.message) alert(data.message);
@@ -111,7 +111,8 @@ const PostDetailPage = () => {
   const handleReport = () => {
     if (!article) return;
     const reason =
-      window.prompt("신고 사유를 입력해주세요.", "광고/욕설/부적절한 내용") || "";
+      window.prompt("신고 사유를 입력해주세요.", "광고/욕설/부적절한 내용") ||
+      "";
     if (!reason.trim()) return;
 
     reportArticle(id, reason.trim())
@@ -152,95 +153,103 @@ const PostDetailPage = () => {
 
         {!loading && !error && article && (
           <article className={styles.postCard}>
-          <header className={styles.postHeader}>
-            <span className={styles.category}>{article.category || "게시글"}</span>
-            <h1 className={styles.title}>{article.title}</h1>
-            <div className={styles.metaRow}>
-            <div className={styles.authorBox}>
-              <div className={styles.avatar}>
-                {article.writer?.nickname?.slice(0, 1) || "?"}
-              </div>
-              <div className={styles.authorInfo}>
-                <div className={styles.authorName}>
-                  {article.writer?.nickname || "익명"}
+            <header className={styles.postHeader}>
+              <span className={styles.category}>
+                {article.category || "게시글"}
+              </span>
+              <h1 className={styles.title}>{article.title}</h1>
+              <div className={styles.metaRow}>
+                <div className={styles.authorBox}>
+                  <div className={styles.avatar}>
+                    {article.writer?.nickname?.slice(0, 1) || "?"}
+                  </div>
+                  <div className={styles.authorInfo}>
+                    <div className={styles.authorName}>
+                      {article.writer?.nickname || "익명"}
+                    </div>
+                    <div className={styles.date}>{article.date || ""}</div>
+                  </div>
                 </div>
-                <div className={styles.date}>{article.date || ""}</div>
+                <div className={styles.stats}>
+                  <span>❤️ {likeCount}</span>
+                </div>
               </div>
-            </div>
-            <div className={styles.stats}>
-              <span>❤️ {likeCount}</span>
-            </div>
-          </div>
-        </header>
+            </header>
 
-          <section className={styles.content}>
-            {article.content
-              ?.split("\n")
-              .filter((line) => line.trim())
-              .map((line, idx) => <p key={idx}>{line}</p>)}
-
-            {article.images?.length > 0 && (
-              <div className={styles.imageBox}>
-                {article.images.map((img, idx) => (
-                  <img key={idx} src={img} alt={`게시글 이미지 ${idx + 1}`} />
+            <section className={styles.content}>
+              {article.content
+                ?.split("\n")
+                .filter((line) => line.trim())
+                .map((line, idx) => (
+                  <p key={idx}>{line}</p>
                 ))}
-              </div>
-            )}
-          </section>
 
-          <div className={styles.actions}>
-            <button
-              type="button"
-              className={`${styles.actionBtn} ${liked ? styles.liked : ""}`}
-              onClick={handleLike}
-            >
-              ❤️ 좋아요 {likeCount}
-            </button>
-            <button
-              type="button"
-              className={`${styles.actionBtn} ${
-                bookmarked ? styles.bookmarked : ""
-              }`}
-              onClick={handleBookmark}
-            >
-              📑 북마크
-            </button>
-            <button type="button" className={styles.actionBtn}>
-              📤 공유하기
-            </button>
-            <button type="button" className={styles.actionBtn} onClick={handleReport}>
-              🚨 신고하기
-            </button>
-          </div>
+              {article.images?.length > 0 && (
+                <div className={styles.imageBox}>
+                  {article.images.map((img, idx) => (
+                    <img key={idx} src={img} alt={`게시글 이미지 ${idx + 1}`} />
+                  ))}
+                </div>
+              )}
+            </section>
 
-          <div className={styles.footerActions}>
-            {isAuthor && (
-              <>
-                <button
-                  type="button"
-                  className={styles.grayBtn}
-                  onClick={handleEdit}
-                >
-                  수정하기
-                </button>
-                <button
-                  type="button"
-                  className={styles.grayBtn}
-                  onClick={handleDelete}
-                >
-                  삭제하기
-                </button>
-              </>
-            )}
-            <button
-              type="button"
-              className={styles.greenBtn}
-              onClick={() => navigate(ROUTES.COMMUNITY)}
-            >
-              목록으로
-            </button>
-          </div>
-        </article>
+            <div className={styles.actions}>
+              <button
+                type="button"
+                className={`${styles.actionBtn} ${liked ? styles.liked : ""}`}
+                onClick={handleLike}
+              >
+                ❤️ 좋아요 {likeCount}
+              </button>
+              <button
+                type="button"
+                className={`${styles.actionBtn} ${
+                  bookmarked ? styles.bookmarked : ""
+                }`}
+                onClick={handleBookmark}
+              >
+                📑 북마크
+              </button>
+              <button type="button" className={styles.actionBtn}>
+                📤 공유하기
+              </button>
+              <button
+                type="button"
+                className={styles.actionBtn}
+                onClick={handleReport}
+              >
+                🚨 신고하기
+              </button>
+            </div>
+
+            <div className={styles.footerActions}>
+              {isAuthor && (
+                <>
+                  <button
+                    type="button"
+                    className={styles.grayBtn}
+                    onClick={handleEdit}
+                  >
+                    수정하기
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.grayBtn}
+                    onClick={handleDelete}
+                  >
+                    삭제하기
+                  </button>
+                </>
+              )}
+              <button
+                type="button"
+                className={styles.greenBtn}
+                onClick={() => navigate(ROUTES.COMMUNITY)}
+              >
+                목록으로
+              </button>
+            </div>
+          </article>
         )}
       </div>
     </div>
