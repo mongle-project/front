@@ -1,46 +1,12 @@
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import CalendarGrid from "../../components/calendar/CalendarGrid";
 import DashboardHeader from "../../components/header/Header";
 import { useAuthContext } from "../../contexts/AuthContext";
+import calendarService from "../../services/calendarService";
 import { ROUTES } from "../../utils/constants";
 import styles from "./CalendarPage.module.css";
-
-const mockEvents = [
-  {
-    id: 1,
-    date: "2025-02-17",
-    title: "종합 예방접종",
-    type: "vaccination",
-    time: "오전 10:00",
-    pet: "몽글이",
-  },
-  {
-    id: 2,
-    date: "2025-02-05",
-    title: "정기 검진",
-    type: "hospital",
-    time: "오후 2:30",
-    pet: "나비",
-  },
-  {
-    id: 3,
-    date: "2025-02-27",
-    title: "전체 미용",
-    type: "grooming",
-    time: "오전 11:00",
-    pet: "토순이",
-  },
-  {
-    id: 4,
-    date: "2025-02-15",
-    title: "영양제 투약",
-    type: "medication",
-    time: "오전 9:00",
-    pet: "몽글이",
-  },
-];
 
 const weekdayLabels = ["일", "월", "화", "수", "목", "금", "토"];
 
@@ -65,32 +31,49 @@ const CalendarPage = () => {
   const displayName = user?.name ?? "집사님";
   const [currentMonth, setCurrentMonth] = useState(() => new Date());
   const [activeFilter, setActiveFilter] = useState("all");
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const normalizedEvents = useMemo(() => {
-    const year = currentMonth.getFullYear();
-    const monthIndex = currentMonth.getMonth();
-    return mockEvents.map((evt) => {
-      const original = new Date(evt.date);
-      const normalizedDate = new Date(year, monthIndex, original.getDate());
-      const isoDate = `${normalizedDate.getFullYear()}-${String(
-        normalizedDate.getMonth() + 1
-      ).padStart(2, "0")}-${String(normalizedDate.getDate()).padStart(
-        2,
-        "0"
-      )}`;
-      return {
-        ...evt,
-        date: isoDate,
-      };
-    });
+  // 월별 일정 조회
+  const fetchEvents = useCallback(async () => {
+    try {
+      setLoading(true);
+      const year = currentMonth.getFullYear();
+      const month = currentMonth.getMonth() + 1;
+      const response = await calendarService.getEventsByMonth(year, month);
+
+      // API 응답 데이터를 컴포넌트 형식으로 변환
+      const formattedEvents = (response.data || []).map((evt) => ({
+        id: evt.id,
+        date: evt.eventDate ? evt.eventDate.split("T")[0] : "",
+        title: evt.title,
+        type: evt.category,
+        time: evt.eventTime || "",
+        pet: evt.pet?.name || "",
+        petId: evt.petProfileId,
+        isComplete: evt.isComplete,
+      }));
+
+      setEvents(formattedEvents);
+    } catch (error) {
+      console.error("일정 조회 실패:", error);
+      toast.error("일정을 불러오는데 실패했습니다.");
+      setEvents([]);
+    } finally {
+      setLoading(false);
+    }
   }, [currentMonth]);
+
+  useEffect(() => {
+    fetchEvents();
+  }, [fetchEvents]);
 
   const eventsThisMonth = useMemo(() => {
     const year = currentMonth.getFullYear();
     const month = currentMonth.getMonth() + 1;
     const monthKey = `${year}-${String(month).padStart(2, "0")}`;
-    return normalizedEvents.filter((evt) => evt.date.startsWith(monthKey));
-  }, [currentMonth, normalizedEvents]);
+    return events.filter((evt) => evt.date.startsWith(monthKey));
+  }, [currentMonth, events]);
 
   const filteredEventsThisMonth = useMemo(() => {
     if (activeFilter === "all") return eventsThisMonth;
@@ -102,8 +85,23 @@ const CalendarPage = () => {
     const todayKey = `${today.getFullYear()}-${String(
       today.getMonth() + 1
     ).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
-    return normalizedEvents.filter((evt) => evt.date === todayKey);
-  }, [normalizedEvents]);
+    return events.filter((evt) => evt.date === todayKey);
+  }, [events]);
+
+  // 다가오는 일정 (오늘 이후, 최대 5개)
+  const upcomingEvents = useMemo(() => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    return events
+      .filter((evt) => {
+        const evtDate = new Date(evt.date);
+        evtDate.setHours(0, 0, 0, 0);
+        return evtDate >= today && !evt.isComplete;
+      })
+      .sort((a, b) => new Date(a.date) - new Date(b.date))
+      .slice(0, 5);
+  }, [events]);
 
   const handleLogout = () => {
     if (typeof logout === "function") {
@@ -142,20 +140,49 @@ const CalendarPage = () => {
     return `${dateObj.getMonth() + 1}월 ${dateObj.getDate()}일 (${weekday})`;
   };
 
+  const formatTime = (timeString) => {
+    if (!timeString) return "";
+    const [hours, minutes] = timeString.split(":");
+    const hour = parseInt(hours, 10);
+    const period = hour < 12 ? "오전" : "오후";
+    const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+    return `${period} ${displayHour}:${minutes}`;
+  };
+
   const handleEdit = (event) => {
-    toast.success(`"${event.title}" 수정 화면은 준비 중이에요.`);
+    navigate(`${ROUTES.CALENDAR_ADD}?edit=${event.id}`);
   };
 
-  const handleComplete = (event) => {
-    toast.success(`"${event.title}" 완료 처리했어요.`);
+  const handleComplete = async (event) => {
+    try {
+      await calendarService.updateEvent(event.id, {
+        isComplete: !event.isComplete,
+      });
+      toast.success(
+        event.isComplete
+          ? `"${event.title}" 일정을 미완료로 변경했어요.`
+          : `"${event.title}" 완료 처리했어요.`
+      );
+      fetchEvents(); // 목록 새로고침
+    } catch (error) {
+      console.error("완료 처리 실패:", error);
+      toast.error("완료 처리에 실패했습니다.");
+    }
   };
 
-  const handleDelete = (event) => {
+  const handleDelete = async (event) => {
     const shouldDelete = confirm(
       `"${event.title}" 일정을 삭제할까요?\n삭제 시 되돌릴 수 없어요.`
     );
     if (shouldDelete) {
-      toast.success("삭제가 완료됐어요.");
+      try {
+        await calendarService.deleteEvent(event.id);
+        toast.success("삭제가 완료됐어요.");
+        fetchEvents(); // 목록 새로고침
+      } catch (error) {
+        console.error("삭제 실패:", error);
+        toast.error("삭제에 실패했습니다.");
+      }
     }
   };
 
@@ -174,9 +201,6 @@ const CalendarPage = () => {
             </p>
           </div>
           <div className={styles.actions}>
-            <button type="button" className={`${styles.button} ${styles.outline}`}>
-              일정 가져오기
-            </button>
             <button
               type="button"
               className={`${styles.button} ${styles.primary}`}
@@ -228,7 +252,9 @@ const CalendarPage = () => {
 
               <div className={styles.legendRow}>
                 <div className={styles.legendItem}>
-                  <span className={`${styles.legendDot} ${styles.vaccination}`} />
+                  <span
+                    className={`${styles.legendDot} ${styles.vaccination}`}
+                  />
                   예방접종
                 </div>
                 <div className={styles.legendItem}>
@@ -240,12 +266,14 @@ const CalendarPage = () => {
                   미용
                 </div>
                 <div className={styles.legendItem}>
-                  <span className={`${styles.legendDot} ${styles.medication}`} />
+                  <span
+                    className={`${styles.legendDot} ${styles.medication}`}
+                  />
                   투약
                 </div>
               </div>
 
-              <CalendarGrid events={normalizedEvents} month={currentMonth} />
+              <CalendarGrid events={events} month={currentMonth} />
             </div>
 
             <div className={styles.monthListCard}>
@@ -270,57 +298,78 @@ const CalendarPage = () => {
                 </div>
               </div>
 
-              <div className={styles.eventCards}>
-                {filteredEventsThisMonth.length === 0 ? (
-                  <p className={styles.emptyState}>
-                    이번 달에 등록된 일정이 없습니다.
-                  </p>
-                ) : (
-                  filteredEventsThisMonth.map((event) => (
-                    <div
-                      key={event.id}
-                      className={`${styles.eventCard} ${styles[event.type]}`}
-                    >
-                      <div className={styles.eventLeft}>
-                        <span className={styles.typeBadge}>
-                          {typeLabels[event.type]}
-                        </span>
-                        <div>
-                          <p className={styles.eventCardTitle}>{event.title}</p>
-                          <p className={styles.eventCardMeta}>
-                            {formatDateLabel(event.date)} · {event.time}
-                          </p>
+              <div className={styles.eventCardsWrapper}>
+                <div className={styles.eventCards}>
+                  {loading ? (
+                    <p className={styles.emptyState}>일정을 불러오는 중...</p>
+                  ) : filteredEventsThisMonth.length === 0 ? (
+                    <p className={styles.emptyState}>
+                      이번 달에 등록된 일정이 없습니다.
+                    </p>
+                  ) : (
+                    filteredEventsThisMonth.map((event) => (
+                      <div
+                        key={event.id}
+                        className={`${styles.eventCard} ${styles[event.type]} ${
+                          event.isComplete ? styles.completed : ""
+                        }`}
+                      >
+                        <div className={styles.eventLeft}>
+                          <span className={styles.typeBadge}>
+                            {typeLabels[event.type]}
+                          </span>
+                          <div>
+                            <p className={styles.eventCardTitle}>
+                              {event.isComplete && (
+                                <span className={styles.completeMark}>✓ </span>
+                              )}
+                              {event.title}
+                            </p>
+                            <p className={styles.eventCardMeta}>
+                              {formatDateLabel(event.date)}
+                              {event.time && ` · ${formatTime(event.time)}`}
+                            </p>
+                          </div>
+                        </div>
+                        <div className={styles.eventRight}>
+                          {event.pet && (
+                            <span className={styles.petBadge}>{event.pet}</span>
+                          )}
+                          <div className={styles.cardActions}>
+                            <button
+                              type="button"
+                              aria-label="수정"
+                              onClick={() => handleEdit(event)}
+                              title="수정"
+                            >
+                              ✏️
+                            </button>
+                            <button
+                              type="button"
+                              aria-label={
+                                event.isComplete ? "미완료로 변경" : "완료"
+                              }
+                              onClick={() => handleComplete(event)}
+                              title={
+                                event.isComplete ? "미완료로 변경" : "완료 처리"
+                              }
+                            >
+                              {event.isComplete ? "↩️" : "✅"}
+                            </button>
+                            <button
+                              type="button"
+                              aria-label="삭제"
+                              onClick={() => handleDelete(event)}
+                              title="삭제"
+                            >
+                              🗑️
+                            </button>
+                          </div>
                         </div>
                       </div>
-                      <div className={styles.eventRight}>
-                        <span className={styles.petBadge}>{event.pet}</span>
-                        <div className={styles.cardActions}>
-                          <button
-                            type="button"
-                            aria-label="수정"
-                            onClick={() => handleEdit(event)}
-                          >
-                            ✏️
-                          </button>
-                          <button
-                            type="button"
-                            aria-label="완료"
-                            onClick={() => handleComplete(event)}
-                          >
-                            ✅
-                          </button>
-                          <button
-                            type="button"
-                            aria-label="삭제"
-                            onClick={() => handleDelete(event)}
-                          >
-                            🗑️
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  ))
-                )}
+                    ))
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -330,11 +379,11 @@ const CalendarPage = () => {
               <div className={styles.sideCardHeader}>
                 <h3>다가오는 일정</h3>
               </div>
-              <ul className={styles.sideList}>
-                {normalizedEvents
-                  .slice()
-                  .sort((a, b) => (a.date > b.date ? 1 : -1))
-                  .map((event) => (
+              {upcomingEvents.length === 0 ? (
+                <p className={styles.todayEmpty}>다가오는 일정이 없습니다</p>
+              ) : (
+                <ul className={styles.sideList}>
+                  {upcomingEvents.map((event) => (
                     <li
                       key={event.id}
                       className={`${styles.sideItemCard} ${
@@ -347,37 +396,43 @@ const CalendarPage = () => {
                       <div className={styles.sideItemBody}>
                         <p className={styles.sideTitle}>{event.title}</p>
                         <p className={styles.sideMeta}>
-                          {formatDateLabel(event.date)} · {event.time}
-                        </p>
-                      </div>
-                    </li>
-                  ))}
-              </ul>
-            </div>
-
-              <div className={styles.sideCard}>
-                <div className={styles.sideCardHeader}>
-                  <h3>오늘 일정</h3>
-                </div>
-                {todayEvents.length === 0 ? (
-                  <p className={styles.todayEmpty}>오늘 일정 없음</p>
-                ) : (
-                  <ul className={styles.sideList}>
-                    {todayEvents.map((event) => (
-                      <li key={event.id} className={styles.sideItem}>
-                        <div>
-                        <p className={styles.sideTitle}>{event.title}</p>
-                        <p className={styles.sideMeta}>
-                          {event.time} · {event.pet}
+                          {formatDateLabel(event.date)}
+                          {event.time && ` · ${formatTime(event.time)}`}
                         </p>
                       </div>
                     </li>
                   ))}
                 </ul>
               )}
-              <button className={styles.secondaryButton} onClick={handleAdd}>
-                일정 추가하기
-              </button>
+            </div>
+
+            <div className={styles.sideCard}>
+              <div className={styles.sideCardHeader}>
+                <h3>오늘 일정</h3>
+              </div>
+              {todayEvents.length === 0 ? (
+                <p className={styles.todayEmpty}>오늘 일정 없음</p>
+              ) : (
+                <ul className={styles.sideList}>
+                  {todayEvents.map((event) => (
+                    <li key={event.id} className={styles.sideItem}>
+                      <div>
+                        <p className={styles.sideTitle}>
+                          {event.isComplete && (
+                            <span className={styles.completeMark}>✓ </span>
+                          )}
+                          {event.title}
+                        </p>
+                        <p className={styles.sideMeta}>
+                          {event.time && formatTime(event.time)}
+                          {event.time && event.pet && " · "}
+                          {event.pet}
+                        </p>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
           </div>
         </section>
