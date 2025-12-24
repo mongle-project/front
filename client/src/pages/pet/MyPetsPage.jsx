@@ -167,14 +167,44 @@ const MyPetsPage = () => {
             {pets.map((pet) => (
               <div key={pet.id} className={styles.petCard}>
                 <div className={styles.petImageWrapper}>
-                  <img
-                    src={
-                      pet.img_url ||
-                      "https://via.placeholder.com/800x600?text=No+Image"
-                    }
-                    alt={pet.name}
-                    className={styles.petImage}
-                  />
+                  {pet.img_url ? (
+                    <img
+                      src={pet.img_url}
+                      alt={pet.name}
+                      className={styles.petImage}
+                    />
+                  ) : (
+                    <div
+                      className={styles.petImage}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        backgroundColor: "#e3f2fd",
+                        fontSize: "120px",
+                      }}
+                    >
+                      {pet.species === "dog"
+                        ? "🐕"
+                        : pet.species === "cat"
+                        ? "🐈"
+                        : pet.species === "rabbit"
+                        ? "🐰"
+                        : pet.species === "hamster"
+                        ? "🐭"
+                        : pet.species === "guineaPig"
+                        ? "🐹"
+                        : pet.species === "bird"
+                        ? "🐦"
+                        : pet.species === "fish"
+                        ? "🐟"
+                        : pet.species === "reptile"
+                        ? "🦎"
+                        : pet.species === "turtle"
+                        ? "🐢"
+                        : "🐾"}
+                    </div>
+                  )}
                   <span className={styles.petBadge}>
                     {pet.species === "dog"
                       ? "🐕 강아지"
