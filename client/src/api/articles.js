@@ -5,6 +5,11 @@ export const getArticles = async (params = {}) => {
   const response = await axios.get("/articles", { params });
   return response.data;
 };
+// 내가 작성한 게시글 목록 조회
+export const getMyArticles = async (limit = 20, offset = 0) => {
+  const response = await axios.get(`/articles/me/my-articles?limit=${limit}&offset=${offset}`);
+  return response.data;
+};
 // 게시글 상세 조회
 export const getArticleById = async (id) => {
   const response = await axios.get(`/articles/${id}`);
