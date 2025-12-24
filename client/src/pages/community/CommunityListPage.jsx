@@ -7,15 +7,22 @@ import styles from "./CommunityListPage.module.css";
 import { getArticles } from "../../api/articles";
 
 const categoryFilters = [
-  { label: "전체", value: "all", icon: "🌟" },
-  { label: "강아지", value: "dog", icon: "🐕" },
-  { label: "고양이", value: "cat", icon: "🐈" },
-  { label: "소형동물", value: "rabbit", icon: "🐰" },
-  { label: "조류", value: "bird", icon: "🐦" },
-  { label: "파충류", value: "reptile", icon: "🦎" },
+  { label: "전체", value: "all", icon: "✨" },
+  { label: "강아지", value: "dog", icon: "🐶" },
+  { label: "고양이", value: "cat", icon: "🐱" },
+  { label: "토끼", value: "rabbit", icon: "🐰" },
+  { label: "기니피그", value: "guinea pig", icon: "🐭" },
   { label: "어류", value: "fish", icon: "🐠" },
-  { label: "기타", value: "etc", icon: "✨" },
+  { label: "햄스터", value: "hamster", icon: "🐹" },
+  { label: "파충류", value: "reptile", icon: "🦎" },
+  { label: "새", value: "bird", icon: "🐦" },
+  { label: "거북이", value: "turtle", icon: "🐢" },
 ];
+
+const categoryLabelMap = categoryFilters.reduce((acc, cur) => {
+  if (cur.value !== "all") acc[cur.value] = cur.label;
+  return acc;
+}, {});
 
 const sortOptions = [
   { label: "최신순", value: "latest" },
@@ -26,7 +33,7 @@ const sortOptions = [
 const CommunityListPage = () => {
   const navigate = useNavigate();
   const { user, logout } = useAuthContext();
-  const displayName = user?.name ?? "집사님";
+  const displayName = user?.id || user?.name || "집사님";
   const [activeFilter, setActiveFilter] = useState("all");
   const [keyword, setKeyword] = useState("");
   const [sort, setSort] = useState("latest");
@@ -73,19 +80,41 @@ const CommunityListPage = () => {
     fetchArticles({ pageToLoad: page, append: true });
   }, [page, fetchArticles]);
 
+  const normalizedActiveFilter = activeFilter.replace(/\s+/g, "").toLowerCase();
   const filteredPosts = useMemo(() => {
-    const lowered = keyword.trim().toLowerCase();
-    if (!lowered) return posts;
-
+    const loweredKeyword = keyword.trim().toLowerCase();
     return posts.filter((post) => {
+      const categoryRaw =
+        post.category ||
+        post.categoryKey ||
+        post.category_id ||
+        post.categoryName ||
+        "";
+      const normalizedCategory = categoryRaw.replace(/\s+/g, "").toLowerCase();
+
+      const matchCategory =
+        normalizedActiveFilter === "all" ||
+        normalizedCategory === normalizedActiveFilter;
+
+      if (!matchCategory) return false;
+
+      if (!loweredKeyword) return true;
+
       const title = post.title?.toLowerCase() || "";
       const content = post.content?.toLowerCase() || "";
-      const writer = post.writer?.nickname?.toLowerCase() || "";
+      const writer =
+        post.writer?.nickname?.toLowerCase() ||
+        post.writer?.id?.toLowerCase() ||
+        post.author?.toLowerCase() ||
+        "";
+
       return (
-        title.includes(lowered) || content.includes(lowered) || writer.includes(lowered)
+        title.includes(loweredKeyword) ||
+        content.includes(loweredKeyword) ||
+        writer.includes(loweredKeyword)
       );
     });
-  }, [keyword, posts]);
+  }, [keyword, posts, normalizedActiveFilter]);
 
   const hasMore = page < totalPage;
 
@@ -130,7 +159,7 @@ const CommunityListPage = () => {
         </header>
 
         <section className={styles.filterSection}>
-          <div className={styles.filterTop}>
+          <div className={styles.filterRow}>
             <div className={styles.categoryFilters}>
               {categoryFilters.map((tab) => (
                 <button
@@ -141,7 +170,7 @@ const CommunityListPage = () => {
                   }`}
                   onClick={() => setActiveFilter(tab.value)}
                 >
-                  <span>{tab.icon}</span>
+                  <span className={styles.filterIcon}>{tab.icon}</span>
                   {tab.label}
                 </button>
               ))}
@@ -151,16 +180,17 @@ const CommunityListPage = () => {
               className={styles.writeButton}
               onClick={() => navigate("/community/write")}
             >
-              <span>✏️</span>
-              글쓰기
+              <span>✏️ 글쓰기</span>
             </button>
           </div>
+        </section>
 
+        <div className={styles.searchSection}>
           <div className={styles.searchBox}>
             <input
               type="text"
               className={styles.searchInput}
-              placeholder="제목, 내용, 작성자로 검색해보세요..."
+              placeholder="품종명으로 검색해보세요..."
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
             />
@@ -168,7 +198,7 @@ const CommunityListPage = () => {
               🔍 검색
             </button>
           </div>
-        </section>
+        </div>
 
         <section className={styles.postsContainer}>
           <div className={styles.postsHeader}>
@@ -193,9 +223,24 @@ const CommunityListPage = () => {
 
           <div className={styles.postList}>
             {filteredPosts.map((post) => {
-              const category = post.category || "전체";
-              const categoryKey = post.categoryKey || post.category || "etc";
-              const authorName = post.writer?.nickname || post.author || "익명";
+              const rawCategory = post.category || "";
+              const categoryKey = (
+                post.categoryKey ||
+                rawCategory ||
+                "etc"
+              )
+                .toString()
+                .replace(/\s+/g, "_");
+              const categoryLabel =
+                categoryLabelMap[rawCategory] || rawCategory || "전체";
+      const authorName =
+        post.writer?.nickname ||
+        post.writer?.id ||
+        post.author ||
+        post.user?.id ||
+        post.userId ||
+        post.user_id ||
+        "익명";
               const summary =
                 post.summary || post.content || "내용이 없습니다.";
 
@@ -207,10 +252,10 @@ const CommunityListPage = () => {
                 >
                   <span
                     className={`${styles.postCategory} ${
-                      styles[`category_${categoryKey}`]
+                      styles[`category_${categoryKey}`] || ""
                     }`}
                   >
-                    {category}
+                    {categoryLabel}
                   </span>
                   <h3 className={styles.postTitle}>
                     {post.title}
@@ -226,12 +271,8 @@ const CommunityListPage = () => {
                     </div>
                     <span>{post.date || ""}</span>
                     <div className={styles.postStats}>
-                      <span className={styles.statItem}>👁️ {post.views || 0}</span>
                       <span className={styles.statItem}>
-                        💬 {post.commentCount || post.comments || 0}
-                      </span>
-                      <span className={styles.statItem}>
-                        ❤️ {post.likeCount || post.likes || 0}
+                        ❤️ {post.likesCount ?? post.likeCount ?? post.likes ?? 0}
                       </span>
                     </div>
                   </div>

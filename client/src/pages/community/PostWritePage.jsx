@@ -1,25 +1,21 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
 import styles from "./PostWritePage.module.css";
 import DashboardHeader from "../../components/header/Header";
 import { ROUTES } from "../../utils/constants";
 import { useAuthContext } from "../../contexts/AuthContext";
-import { createArticle, updateArticle } from "../../api/articles";
+import { createArticle, getArticleById, updateArticle } from "../../api/articles";
 const categories = [
-  { value: "dog", label: "강아지", icon: ":개2:" },
-  { value: "cat", label: "고양이", icon: ":고양이2:" },
-  { value: "small", label: "소동물", icon: ":토끼:" },
-  { value: "bird", label: "조류", icon: ":새:" },
-  { value: "reptile", label: "파충류", icon: ":도마뱀:" },
-  { value: "fish", label: "어류", icon: ":열대어:" },
-  { value: "etc", label: "기타", icon: ":별2:" },
-];
-const topicOptions = [
-  { value: "info", label: "정보 공유" },
-  { value: "question", label: "질문" },
-  { value: "knowhow", label: "노하우" },
-  { value: "review", label: "후기" },
-  { value: "etc", label: "기타" },
+  { value: "dog", label: "강아지", icon: "🐶" },
+  { value: "cat", label: "고양이", icon: "🐱" },
+  { value: "rabbit", label: "토끼", icon: "🐰" },
+  { value: "hamster", label: "햄스터", icon: "🐹" },
+  { value: "guinea pig", label: "기니피그", icon: "🐭" },
+  { value: "bird", label: "조류", icon: "🦜" },
+  { value: "fish", label: "어류", icon: "🐟" },
+  { value: "reptile", label: "파충류", icon: "🦎" },
+  { value: "turtle", label: "거북이", icon: "🐢" },
 ];
 const PostWritePage = () => {
   const navigate = useNavigate();
@@ -27,8 +23,8 @@ const PostWritePage = () => {
   const fileInputRef = useRef(null);
   const { user, logout } = useAuthContext();
   const isEdit = Boolean(new URLSearchParams(location.search).get("edit"));
+  const editId = new URLSearchParams(location.search).get("edit");
   const [selectedCategory, setSelectedCategory] = useState("dog");
-  const [topic, setTopic] = useState("info");
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [imagePreview, setImagePreview] = useState("");
@@ -37,33 +33,56 @@ const PostWritePage = () => {
   const titleLimit = 100;
   const displayName = user?.name || "집사님";
   useEffect(() => {
+    if (isEdit) return; // 수정 모드에서는 초안 대신 서버 데이터 사용
     const saved = localStorage.getItem("community_post_draft");
     if (saved) {
       const data = JSON.parse(saved);
       setSelectedCategory(data.selectedCategory || "dog");
-      setTopic(data.topic || "info");
       setTitle(data.title || "");
       setContent(data.content || "");
       setImagePreview(data.imagePreview || "");
     }
-  }, []);
+  }, [isEdit]);
+
+  useEffect(() => {
+    if (!isEdit || !editId) return;
+    const fetchArticle = async () => {
+      try {
+        const res = await getArticleById(editId);
+        const data = res?.data ?? res;
+        setSelectedCategory(data?.category || "dog");
+        setTitle(data?.title || "");
+        setContent(data?.content || "");
+        setImagePreview(data?.img_url || "");
+      } catch (err) {
+        console.error("게시글 불러오기 실패:", err);
+        toast.error(
+          err.response?.data?.message ||
+            "게시글을 불러오는 중 오류가 발생했습니다.",
+          { position: "top-center" }
+        );
+      }
+    };
+    fetchArticle();
+  }, [isEdit, editId]);
   useEffect(() => {
     localStorage.setItem(
       "community_post_draft",
       JSON.stringify({
         selectedCategory,
-        topic,
         title,
         content,
         imagePreview,
       })
     );
-  }, [selectedCategory, topic, title, content, imagePreview]);
+  }, [selectedCategory, title, content, imagePreview]);
   const handleImageChange = (event) => {
     const file = event.target.files?.[0];
     if (!file) return;
     if (file.size > 5 * 1024 * 1024) {
-      alert("파일 크기는 5MB 이하여야 합니다.");
+      toast.error("파일 크기는 5MB 이하여야 합니다.", {
+        position: "top-center",
+      });
       return;
     }
     // 파일 객체 저장
@@ -74,6 +93,7 @@ const PostWritePage = () => {
     };
     reader.readAsDataURL(file);
   };
+
   const handleRemoveImage = () => {
     setImagePreview("");
     setImageFile(null);
@@ -81,14 +101,15 @@ const PostWritePage = () => {
       fileInputRef.current.value = "";
     }
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!title.trim()) {
-      alert("제목을 입력해주세요.");
+      toast.error("제목을 입력해주세요.", { position: "top-center" });
       return;
     }
     if (!content.trim()) {
-      alert("내용을 입력해주세요.");
+      toast.error("내용을 입력해주세요.", { position: "top-center" });
       return;
     }
     setIsSubmitting(true);
@@ -100,32 +121,64 @@ const PostWritePage = () => {
       if (imageFile) {
         formData.append("imageFile", imageFile);
       }
-      if (isEdit) {
-        // 수정 시 articleId 필요 (URL에서 가져오거나 별도 상태로 관리)
-        const articleId = new URLSearchParams(location.search).get("id");
-        await updateArticle(articleId, formData);
+      if (isEdit && editId) {
+        await updateArticle(editId, formData);
       } else {
         await createArticle(formData);
       }
-      alert(
-        isEdit
-          ? "게시글이 수정되었습니다! :짠:"
-          : "게시글이 등록되었습니다! :짠:"
+      toast.success(
+        isEdit ? "게시글이 수정되었습니다! ✨" : "게시글이 등록되었습니다! ✨",
+        { position: "top-center" }
       );
       localStorage.removeItem("community_post_draft");
-      navigate(ROUTES.COMMUNITY);
+      setTimeout(() => navigate(ROUTES.COMMUNITY), 400);
     } catch (error) {
       console.error("게시글 저장 실패:", error);
-      alert("게시글 저장에 실패했습니다. 다시 시도해주세요.");
+      toast.error("게시글 저장에 실패했습니다. 다시 시도해주세요.", {
+        position: "top-center",
+      });
     } finally {
       setIsSubmitting(false);
     }
   };
+
   const handleCancel = () => {
-    if (window.confirm("작성을 취소하시겠습니까?\n작성 내용이 사라집니다.")) {
-      navigate(ROUTES.COMMUNITY);
-    }
+    toast.custom(
+      (t) => (
+        <div
+          className={`${styles.confirmToast} ${
+            t.visible ? styles.toastIn : styles.toastOut
+          }`}
+        >
+          <div className={styles.confirmTitle}>작성을 취소하시겠습니까?</div>
+          <div className={styles.confirmMessage}>
+            작성 내용이 사라집니다.
+          </div>
+          <div className={styles.confirmActions}>
+            <button
+              type="button"
+              className={styles.confirmCancel}
+              onClick={() => toast.dismiss(t.id)}
+            >
+              계속 작성
+            </button>
+            <button
+              type="button"
+              className={styles.confirmOk}
+              onClick={() => {
+                toast.dismiss(t.id);
+                navigate(ROUTES.COMMUNITY);
+              }}
+            >
+              취소하기
+            </button>
+          </div>
+        </div>
+      ),
+      { position: "top-center", duration: 4000 }
+    );
   };
+
   const handleLogout = () => {
     if (typeof logout === "function") {
       logout();
@@ -134,6 +187,7 @@ const PostWritePage = () => {
   };
   return (
     <div className={styles.page}>
+      <Toaster position="top-center" />
       <DashboardHeader displayName={displayName} onLogout={handleLogout} />
       <div className={styles.container}>
         <div className={styles.backRow}>
@@ -147,7 +201,7 @@ const PostWritePage = () => {
         </div>
         <header className={styles.pageHeader}>
           <h1 className={styles.pageTitle}>
-            {isEdit ? ":연필2: 게시글 수정" : ":연필2: 게시글 작성"}
+            {isEdit ? "📝 게시글 수정" : "📝 게시글 작성"}
           </h1>
           <p className={styles.pageSubtitle}>
             {isEdit
@@ -176,20 +230,6 @@ const PostWritePage = () => {
                     {cat.label}
                   </button>
                 ))}
-              </div>
-              <div className={styles.topicSelect}>
-                <label htmlFor="topic">주제</label>
-                <select
-                  id="topic"
-                  value={topic}
-                  onChange={(e) => setTopic(e.target.value)}
-                >
-                  {topicOptions.map((opt) => (
-                    <option key={opt.value} value={opt.value}>
-                      {opt.label}
-                    </option>
-                  ))}
-                </select>
               </div>
             </section>
             <section className={styles.section}>
@@ -232,9 +272,7 @@ const PostWritePage = () => {
                 <span>{content.length.toLocaleString()}</span>자
               </div>
               <div className={styles.tipBox}>
-                <div className={styles.tipTitle}>
-                  :전구: 좋은 게시글 작성 팁
-                </div>
+                <div className={styles.tipTitle}>💡 좋은 게시글 작성 팁</div>
                 <ul className={styles.tipList}>
                   <li>
                     구체적인 상황과 경험을 공유하면 더 많은 공감을 얻을 수
@@ -258,9 +296,7 @@ const PostWritePage = () => {
                   className={styles.uploadArea}
                   onClick={() => fileInputRef.current?.click()}
                 >
-                  <div className={styles.uploadIcon}>
-                    :플래시가_깜박이는_카메라:
-                  </div>
+                  <div className={styles.uploadIcon}>📸</div>
                   <div className={styles.uploadText}>
                     클릭하여 이미지 업로드
                   </div>

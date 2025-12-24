@@ -1,7 +1,8 @@
 import axios from "./axios";
 // 게시글 목록 조회
-export const getArticles = async (limit = 20, offset = 0) => {
-  const response = await axios.get(`/articles?limit=${limit}&offset=${offset}`);
+export const getArticles = async (params = {}) => {
+  // params 예: { page, limit, category, sort, keyword }
+  const response = await axios.get("/articles", { params });
   return response.data;
 };
 // 게시글 상세 조회
