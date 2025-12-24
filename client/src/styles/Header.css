@@ -201,6 +201,44 @@
   color: #2e7d32;
 }
 
+.mg-auth-buttons {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.mg-auth-button {
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  font-family: "GyeonggiMillenniumTitle", -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  font-size: 0.95rem;
+}
+
+.mg-auth-button--login {
+  background: transparent;
+  color: #2e7d32;
+  border: 1px solid #2e7d32;
+}
+
+.mg-auth-button--login:hover {
+  background: #f1f8e9;
+}
+
+.mg-auth-button--signup {
+  background: transparent;
+  color: #2e7d32;
+  border: 1px solid #2e7d32;
+}
+
+.mg-auth-button--signup:hover {
+  background: #f1f8e9;
+}
+
 @media (max-width: 768px) {
   .mg-header__inner {
     grid-template-columns: auto 1fr auto auto;
@@ -305,6 +343,11 @@
 
   .mg-user-menu {
     padding: 0.4rem 0.85rem;
+  }
+
+  .mg-auth-button {
+    padding: 0.4rem 0.85rem;
+    font-size: 0.9rem;
   }
 }
 

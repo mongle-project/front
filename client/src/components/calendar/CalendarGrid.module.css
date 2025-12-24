@@ -36,8 +36,7 @@
   flex-direction: column;
   gap: 0.35rem;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease,
-    transform 0.15s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
 }
 
 .emptyCell {
@@ -52,9 +51,9 @@
 }
 
 .today {
-  border: 2px solid #43a047;
-  box-shadow: 0 10px 24px rgba(102, 187, 106, 0.16);
-  background: linear-gradient(135deg, #66bb6a 0%, #43a047 100%);
+  border: 2px solid #81c784;
+  box-shadow: 0 10px 24px rgba(129, 199, 132, 0.2);
+  background: linear-gradient(135deg, #a5d6a7 0%, #81c784 100%);
 }
 
 .dateHeader {
@@ -113,15 +112,22 @@
 
 .hasEvents {
   border-width: 2px;
-  border-color: #ff7043;
-  background: #fff;
 }
 
-.vaccination,
-.hospital,
-.grooming,
-.medication {
-  border-color: #ff7043;
+.hasEvents.vaccination {
+  border-color: #d32f2f;
+}
+
+.hasEvents.hospital {
+  border-color: #1976d2;
+}
+
+.hasEvents.grooming {
+  border-color: #7b1fa2;
+}
+
+.hasEvents.medication {
+  border-color: #388e3c;
 }
 
 .eventIcon {
@@ -146,19 +152,19 @@
 }
 
 .vaccinationLine {
-  background: #ff7043;
+  background: #d32f2f;
 }
 
 .hospitalLine {
-  background: #42a5f5;
+  background: #1976d2;
 }
 
 .groomingLine {
-  background: #ab47bc;
+  background: #7b1fa2;
 }
 
 .medicationLine {
-  background: #66bb6a;
+  background: #388e3c;
 }
 
 .weekdays div:first-child {
