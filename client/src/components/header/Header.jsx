@@ -21,12 +21,29 @@ const DashboardHeader = ({ displayName = "집사님", onLogout }) => {
         <div className="mg-logo" onClick={handleLogoClick}>
           몽글몽글
         </div>
-        <NavBar onLogout={onLogout} />
+        <NavBar onLogout={onLogout} showLogout={!!user} />
         <div className="mg-header__actions">
-          <div className="mg-user-menu" onClick={() => navigate(ROUTES.DASHBOARD)}>
-            <span className="mg-user-avatar">{avatarInitial}</span>
-            <span className="mg-user-name">{displayName}</span>
-          </div>
+          {user ? (
+            <div className="mg-user-menu" onClick={() => navigate(ROUTES.DASHBOARD)}>
+              <span className="mg-user-avatar">{avatarInitial}</span>
+              <span className="mg-user-name">{displayName}</span>
+            </div>
+          ) : (
+            <div className="mg-auth-buttons">
+              <button
+                className="mg-auth-button mg-auth-button--login"
+                onClick={() => navigate(ROUTES.LOGIN)}
+              >
+                로그인
+              </button>
+              <button
+                className="mg-auth-button mg-auth-button--signup"
+                onClick={() => navigate(ROUTES.SIGNUP)}
+              >
+                회원가입
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </header>
