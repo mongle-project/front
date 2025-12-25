@@ -1,10 +1,10 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import DashboardHeader from "../../components/header/Header";
 import { useAuthContext } from "../../contexts/AuthContext";
 import { ROUTES } from "../../utils/constants";
 import styles from "./CommunityListPage.module.css";
-import { getArticles } from "../../api/articles";
+import { getArticles, getMyArticles } from "../../api/articles";
 
 const categoryFilters = [
   { label: "전체", value: "all", icon: "✨" },
@@ -32,9 +32,11 @@ const sortOptions = [
 
 const CommunityListPage = () => {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { user, logout } = useAuthContext();
   const displayName = user?.id || user?.name || "집사님";
   const [activeFilter, setActiveFilter] = useState("all");
+  const [showMyPostsOnly, setShowMyPostsOnly] = useState(false);
   const [keyword, setKeyword] = useState("");
   const [sort, setSort] = useState("latest");
   const [posts, setPosts] = useState([]);
@@ -44,16 +46,40 @@ const CommunityListPage = () => {
   const [error, setError] = useState("");
   const sentinelRef = useRef(null);
 
+  // URL 파라미터에서 필터 정보 읽기
+  useEffect(() => {
+    const filterParam = searchParams.get("filter");
+    if (filterParam === "myPosts") {
+      setShowMyPostsOnly(true);
+    } else {
+      setShowMyPostsOnly(false);
+    }
+  }, [searchParams]);
+
   const fetchArticles = useCallback(
     async ({ pageToLoad = 1, append = false } = {}) => {
       setLoading(true);
       setError("");
       try {
-        const { data = [], meta = {} } = await getArticles({
-          page: pageToLoad,
-          category: activeFilter !== "all" ? activeFilter : undefined,
-          sort,
-        });
+        let data = [];
+        let meta = {};
+
+        if (showMyPostsOnly) {
+          // 내가 작성한 글만 가져오기
+          const response = await getMyArticles(1000, 0);
+          const myArticlesData = response.data || response;
+          data = Array.isArray(myArticlesData) ? myArticlesData : myArticlesData.articles || [];
+          meta = { totalPage: 1 };
+        } else {
+          // 전체 게시글 가져오기
+          const response = await getArticles({
+            page: pageToLoad,
+            category: activeFilter !== "all" ? activeFilter : undefined,
+            sort,
+          });
+          data = response.data || [];
+          meta = response.meta || {};
+        }
 
         setPosts((prev) => (append ? [...prev, ...data] : data));
         setTotalPage(meta.totalPage || 1);
@@ -67,13 +93,13 @@ const CommunityListPage = () => {
         setLoading(false);
       }
     },
-    [activeFilter, sort]
+    [activeFilter, sort, showMyPostsOnly]
   );
 
   useEffect(() => {
     setPage(1);
     fetchArticles({ pageToLoad: 1, append: false });
-  }, [activeFilter, sort, fetchArticles]);
+  }, [activeFilter, sort, showMyPostsOnly, fetchArticles]);
 
   useEffect(() => {
     if (page === 1) return;
@@ -166,9 +192,14 @@ const CommunityListPage = () => {
                   key={tab.value}
                   type="button"
                   className={`${styles.filterButton} ${
-                    activeFilter === tab.value ? styles.filterActive : ""
+                    activeFilter === tab.value && !showMyPostsOnly ? styles.filterActive : ""
                   }`}
-                  onClick={() => setActiveFilter(tab.value)}
+                  onClick={() => {
+                    setActiveFilter(tab.value);
+                    setShowMyPostsOnly(false);
+                    setSearchParams({});
+                  }}
+                  disabled={showMyPostsOnly}
                 >
                   <span className={styles.filterIcon}>{tab.icon}</span>
                   {tab.label}
@@ -196,6 +227,20 @@ const CommunityListPage = () => {
             />
             <button type="button" className={styles.searchButton}>
               🔍 검색
+            </button>
+            <button
+              type="button"
+              className={`${styles.searchButton} ${showMyPostsOnly ? styles.filterActive : ""}`}
+              onClick={() => {
+                setShowMyPostsOnly(!showMyPostsOnly);
+                if (!showMyPostsOnly) {
+                  setSearchParams({ filter: 'myPosts' });
+                } else {
+                  setSearchParams({});
+                }
+              }}
+            >
+              <span>📝 {showMyPostsOnly ? '전체 글 보기' : '내가 작성한 글'}</span>
             </button>
           </div>
         </div>
