@@ -26,6 +26,30 @@ export const EVENT_TYPES = {
   OTHER: 'other',
 };
 
+export const COMMUNITY_CATEGORIES = [
+  { value: 'dog', label: '강아지', icon: '🐶' },
+  { value: 'cat', label: '고양이', icon: '🐱' },
+  { value: 'small', label: '소동물 (토끼/햄스터 등)', icon: '🐹' },
+  { value: 'bird', label: '새', icon: '🦜' },
+  { value: 'reptile', label: '파충류', icon: '🦎' },
+  { value: 'fish', label: '어류', icon: '🐟' },
+  { value: 'etc', label: '기타', icon: '✨' },
+];
+
+export const COMMUNITY_CATEGORY_LABEL_MAP = COMMUNITY_CATEGORIES.reduce(
+  (acc, cur) => {
+    acc[cur.value] = cur.label;
+    return acc;
+  },
+  {}
+);
+
+export const COMMUNITY_CATEGORY_SET = new Set(
+  COMMUNITY_CATEGORIES.map((category) => category.value)
+);
+
+export const DEFAULT_COMMUNITY_CATEGORY = COMMUNITY_CATEGORIES[0].value;
+
 export const ROUTES = {
   HOME: '/',
   LOGIN: '/login',

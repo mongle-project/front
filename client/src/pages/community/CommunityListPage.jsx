@@ -8,7 +8,11 @@ import React, {
 import { useNavigate, useSearchParams } from "react-router-dom";
 import DashboardHeader from "../../components/header/Header";
 import { useAuthContext } from "../../contexts/AuthContext";
-import { ROUTES } from "../../utils/constants";
+import {
+  COMMUNITY_CATEGORIES,
+  COMMUNITY_CATEGORY_LABEL_MAP,
+  ROUTES,
+} from "../../utils/constants";
 import styles from "./CommunityListPage.module.css";
 import {
   getArticles,
@@ -18,21 +22,20 @@ import {
 
 const categoryFilters = [
   { label: "전체", value: "all", icon: "✨" },
-  { label: "강아지", value: "dog", icon: "🐶" },
-  { label: "고양이", value: "cat", icon: "🐱" },
-  { label: "토끼", value: "rabbit", icon: "🐰" },
-  { label: "기니피그", value: "guinea pig", icon: "🐭" },
-  { label: "어류", value: "fish", icon: "🐠" },
-  { label: "햄스터", value: "hamster", icon: "🐹" },
-  { label: "파충류", value: "reptile", icon: "🦎" },
-  { label: "새", value: "bird", icon: "🐦" },
-  { label: "거북이", value: "turtle", icon: "🐢" },
+  ...COMMUNITY_CATEGORIES,
 ];
 
-const categoryLabelMap = categoryFilters.reduce((acc, cur) => {
-  if (cur.value !== "all") acc[cur.value] = cur.label;
-  return acc;
-}, {});
+const legacyCategoryLabelMap = {
+  rabbit: COMMUNITY_CATEGORY_LABEL_MAP.small,
+  hamster: COMMUNITY_CATEGORY_LABEL_MAP.small,
+  "guinea pig": COMMUNITY_CATEGORY_LABEL_MAP.small,
+  turtle: COMMUNITY_CATEGORY_LABEL_MAP.reptile,
+};
+
+const categoryLabelMap = {
+  ...legacyCategoryLabelMap,
+  ...COMMUNITY_CATEGORY_LABEL_MAP,
+};
 
 const sortOptions = [
   { label: "최신순", value: "latest" },
