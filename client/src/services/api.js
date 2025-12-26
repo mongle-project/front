@@ -1,10 +1,10 @@
-import axios from "axios";
+import axios from 'axios';
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000/api",
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
   timeout: 10000,
   headers: {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
   },
 });
 
@@ -26,7 +26,7 @@ const processQueue = (error, token = null) => {
 // Request interceptor
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -49,7 +49,7 @@ api.interceptors.response.use(
           failedQueue.push({ resolve, reject });
         })
           .then((token) => {
-            originalRequest.headers.Authorization = "Bearer " + token;
+            originalRequest.headers.Authorization = 'Bearer ' + token;
             return api(originalRequest);
           })
           .catch((err) => {
@@ -60,39 +60,39 @@ api.interceptors.response.use(
       originalRequest._retry = true;
       isRefreshing = true;
 
-      const refreshToken = localStorage.getItem("refreshToken");
+      const refreshToken = localStorage.getItem('refreshToken');
 
       if (!refreshToken) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("refreshToken");
-        window.location.href = "/login";
+        localStorage.removeItem('token');
+        localStorage.removeItem('refreshToken');
+        window.location.href = '/login';
         return Promise.reject(error);
       }
 
       try {
         const response = await axios.post(
           `${
-            import.meta.env.VITE_API_URL || "http://localhost:5000/api"
+            import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
           }/auth/refresh`,
           { refreshToken }
         );
 
         const { accessToken, refreshToken: newRefreshToken } = response.data;
 
-        localStorage.setItem("token", accessToken);
-        localStorage.setItem("refreshToken", newRefreshToken);
+        localStorage.setItem('token', accessToken);
+        localStorage.setItem('refreshToken', newRefreshToken);
 
-        api.defaults.headers.common["Authorization"] = "Bearer " + accessToken;
-        originalRequest.headers.Authorization = "Bearer " + accessToken;
+        api.defaults.headers.common['Authorization'] = 'Bearer ' + accessToken;
+        originalRequest.headers.Authorization = 'Bearer ' + accessToken;
 
         processQueue(null, accessToken);
 
         return api(originalRequest);
       } catch (refreshError) {
         processQueue(refreshError, null);
-        localStorage.removeItem("token");
-        localStorage.removeItem("refreshToken");
-        window.location.href = "/login";
+        localStorage.removeItem('token');
+        localStorage.removeItem('refreshToken');
+        window.location.href = '/login';
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;
