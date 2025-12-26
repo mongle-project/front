@@ -8,6 +8,21 @@ export const formatDateTime = (date) => {
   return d.toLocaleString('ko-KR');
 };
 
+export const formatDateTimeCompact = (date) => {
+  const d = new Date(date);
+  if (Number.isNaN(d.getTime())) return '';
+
+  const pad = (num) => String(num).padStart(2, '0');
+  const year = d.getFullYear();
+  const month = pad(d.getMonth() + 1);
+  const day = pad(d.getDate());
+  const hour = pad(d.getHours());
+  const minute = pad(d.getMinutes());
+  const second = pad(d.getSeconds());
+
+  return `${year}-${month}-${day} ${hour}:${minute}:${second}`;
+};
+
 export const getDaysUntil = (targetDate) => {
   const now = new Date();
   const target = new Date(targetDate);
