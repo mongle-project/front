@@ -150,12 +150,7 @@ const LandingPage = () => {
             <button
               type="button"
               className={`${styles.btn} ${styles.secondary}`}
-              onClick={() =>
-                handleNavClick(
-                  null,
-                  ROUTES.SIGNUP ?? `${ROUTES.LOGIN}?tab=signup`
-                )
-              }
+              onClick={() => handleNavClick("features")}
             >
               더 알아보기
             </button>
@@ -175,7 +170,7 @@ const LandingPage = () => {
         </div>
       </section>
 
-      <section className={styles.features} id="dictionary">
+      <section className={styles.features} id="features">
         <h2 className={styles.sectionTitle}>몽글몽글의 핵심 기능</h2>
         <div className={styles.featureGrid}>
           {featureData.map((feature) => (
