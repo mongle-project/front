@@ -150,21 +150,50 @@ const DashboardPage = () => {
       try {
         setLoading(true);
 
-        // 현재 년월 계산
+        // 현재 년월 계산 및 향후 6개월 데이터 수집
         const now = new Date();
         const year = now.getFullYear();
         const month = now.getMonth() + 1;
 
+        // 향후 6개월의 일정 데이터 가져오기
+        const eventPromises = [];
+        for (let i = 0; i < 6; i++) {
+          const targetDate = new Date(year, month - 1 + i, 1);
+          const targetYear = targetDate.getFullYear();
+          const targetMonth = targetDate.getMonth() + 1;
+          eventPromises.push(
+            getMonthlyCalendarEvents({ year: targetYear, month: targetMonth }).catch((err) => {
+              console.error(`${targetYear}-${targetMonth} 일정 로딩 실패:`, err);
+              return { data: [] };
+            })
+          );
+        }
+
         // 병렬로 데이터 패치
-        const [petsData, eventsData, articlesData, newsData] =
-          await Promise.all([
-            getPets().catch(() => ({ data: [] })),
-            getMonthlyCalendarEvents({ year, month }).catch(() => ({
-              events: [],
-            })),
-            getMyArticles(4, 0).catch(() => ({ data: [] })),
-            getNewsList().catch(() => ({ news: [] })),
-          ]);
+        const [petsData, ...eventsDataArray] = await Promise.all([
+          getPets().catch((err) => {
+            console.error("펫 데이터 로딩 실패:", err);
+            return { data: [] };
+          }),
+          ...eventPromises,
+        ]);
+
+        const [articlesData, newsData] = await Promise.all([
+          getMyArticles(100, 0).catch((err) => {
+            console.error("게시글 데이터 로딩 실패:", err);
+            return { data: [] };
+          }),
+          getNewsList().catch((err) => {
+            console.error("뉴스 데이터 로딩 실패:", err);
+            return { news: [] };
+          }),
+        ]);
+
+        // 모든 일정 데이터 병합
+        const allEvents = eventsDataArray.reduce((acc, monthData) => {
+          const events = monthData.data || monthData.events || [];
+          return [...acc, ...events];
+        }, []);
 
         // 펫 데이터 변환
         const transformedPets = (petsData.data || []).map((pet, index) => ({
@@ -181,28 +210,42 @@ const DashboardPage = () => {
         setPets(transformedPets);
 
         // 일정 데이터 변환 및 정렬 (다가오는 순서대로)
-        const transformedEvents = (eventsData.events || [])
+        const eventsArray = allEvents;
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        // 2주 후 날짜 계산
+        const twoWeeksLater = new Date(today);
+        twoWeeksLater.setDate(today.getDate() + 14);
+
+        const transformedEvents = eventsArray
           .map((event) => {
+            const eventDate = event.eventDate || event.event_date;
+            const eventContent = event.content || event.title || "일정";
             const petInfo = transformedPets.find(
-              (p) => p.id === event.petProfileId
+              (p) => p.id === event.petProfileId || p.id === event.pet_profile_id
             );
             return {
               id: event.id,
-              dDay: calculateDday(event.eventDate),
-              dateLabel: formatDate(event.eventDate),
-              title: `${getCategoryEmoji(event.category)} ${event.content}`,
+              dDay: calculateDday(eventDate),
+              dateLabel: formatDate(eventDate),
+              title: `${getCategoryEmoji(event.category)} ${eventContent}`,
               pet: petInfo
                 ? `${petInfo.emoji} ${petInfo.name}`
                 : "🐾 알 수 없음",
               urgent:
-                calculateDday(event.eventDate).includes("D-") &&
-                parseInt(calculateDday(event.eventDate).split("-")[1]) <= 7,
+                calculateDday(eventDate).includes("D-") &&
+                parseInt(calculateDday(eventDate).split("-")[1]) <= 7,
               path: ROUTES.CALENDAR,
-              eventDate: event.eventDate,
+              eventDate: eventDate,
+              category: event.category || 'medication', // 카테고리 정보 추가
             };
           })
-          .sort((a, b) => new Date(a.eventDate) - new Date(b.eventDate))
-          .slice(0, 4);
+          .filter((event) => {
+            const evtDate = new Date(event.eventDate);
+            return evtDate >= today && evtDate <= twoWeeksLater; // 오늘부터 2주 이내 일정만
+          })
+          .sort((a, b) => new Date(a.eventDate) - new Date(b.eventDate)); // 가까운 순
         setSchedules(transformedEvents);
 
         // D-day 알림 설정 (가장 임박한 일정)
@@ -385,21 +428,29 @@ const DashboardPage = () => {
               </div>
               <div className={styles.scheduleList}>
                 {schedules.length > 0 ? (
-                  schedules.map((item) => (
-                    <div
-                      key={item.id}
-                      className={`${styles.scheduleItem} ${
-                        item.urgent ? styles.urgent : ""
-                      }`}
-                      onClick={() => handleNavigate(item.path)}
-                    >
-                      <div className={styles.scheduleDate}>
-                        {item.dDay} • {item.dateLabel}
+                  schedules.map((item) => {
+                    const eventDate = new Date(item.eventDate);
+                    const weekdayLabels = ["일", "월", "화", "수", "목", "금", "토"];
+                    const weekday = weekdayLabels[eventDate.getDay()];
+                    const dateLabel = `${eventDate.getMonth() + 1}월 ${eventDate.getDate()}일 (${weekday})`;
+
+                    // 카테고리에 따른 클래스명 (vaccination, hospital, grooming, medication)
+                    const categoryClass = item.category || 'medication';
+
+                    return (
+                      <div
+                        key={item.id}
+                        className={`${styles.scheduleItem} ${styles[`${categoryClass}Card`]}`}
+                        onClick={() => handleNavigate(item.path)}
+                      >
+                        <div className={styles.scheduleBadge}>{item.dDay}</div>
+                        <div className={styles.scheduleContent}>
+                          <div className={styles.scheduleTitle}>{item.title}</div>
+                          <div className={styles.scheduleDateTime}>{dateLabel}</div>
+                        </div>
                       </div>
-                      <div className={styles.scheduleTitle}>{item.title}</div>
-                      <div className={styles.schedulePet}>{item.pet}</div>
-                    </div>
-                  ))
+                    );
+                  })
                 ) : (
                   <div style={{ padding: "20px", color: "#999" }}>
                     등록된 일정이 없습니다
