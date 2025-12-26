@@ -33,38 +33,146 @@ instance.interceptors.request.use(
 );
 
 // 응답 인터셉터
-let isLoggingOut = false; // 중복 로그아웃 방지
+let isRefreshing = false; // refresh token 갱신 중인지 체크
+let failedQueue = []; // 대기 중인 요청들
+
+const processQueue = (error, token = null) => {
+  failedQueue.forEach((prom) => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token);
+    }
+  });
+
+  failedQueue = [];
+};
+
 instance.interceptors.response.use(
   (response) => {
     return response;
   },
-  (error) => {
-    // 인증 만료 시 자동 로그아웃 처리
-    if (error.response?.status === 401 && !isLoggingOut) {
-      isLoggingOut = true;
-      const message =
-        error.response?.data?.message ||
-        '토큰이 만료되었습니다. 다시 로그인해주세요.';
+  async (error) => {
+    const originalRequest = error.config;
 
-      try {
-        localStorage.removeItem('token');
-        localStorage.removeItem('refreshToken');
-        localStorage.removeItem('user');
-      } catch (storageError) {
-        console.error('Failed to clear auth storage:', storageError);
+    // 401 에러이고 아직 재시도하지 않은 경우
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      // refresh token 요청이 401이면 로그아웃
+      if (originalRequest.url === '/auth/refresh') {
+        const message = '세션이 만료되었습니다. 다시 로그인해주세요.';
+
+        try {
+          localStorage.removeItem('token');
+          localStorage.removeItem('refreshToken');
+          localStorage.removeItem('user');
+        } catch (storageError) {
+          console.error('Failed to clear auth storage:', storageError);
+        }
+
+        toast.dismiss('auth-expired');
+        toast.error(message, {
+          id: 'auth-expired',
+          position: 'top-center',
+          duration: 2000,
+        });
+
+        setTimeout(() => {
+          window.location.href = '/login';
+        }, 1200);
+
+        return Promise.reject(error);
       }
 
-      toast.dismiss('auth-expired');
-      toast.error(message, {
-        id: 'auth-expired',
-        position: 'top-center',
-        duration: 2000,
-      });
+      if (isRefreshing) {
+        // refresh가 진행 중이면 대기열에 추가
+        return new Promise((resolve, reject) => {
+          failedQueue.push({ resolve, reject });
+        })
+          .then((token) => {
+            originalRequest.headers.Authorization = `Bearer ${token}`;
+            return instance(originalRequest);
+          })
+          .catch((err) => {
+            return Promise.reject(err);
+          });
+      }
 
-      setTimeout(() => {
-        window.location.href = '/login';
-      }, 1200);
-      return Promise.reject(error);
+      originalRequest._retry = true;
+      isRefreshing = true;
+
+      const refreshToken = localStorage.getItem('refreshToken');
+
+      if (!refreshToken) {
+        // refresh token이 없으면 로그아웃
+        const message = '세션이 만료되었습니다. 다시 로그인해주세요.';
+
+        try {
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+        } catch (storageError) {
+          console.error('Failed to clear auth storage:', storageError);
+        }
+
+        toast.dismiss('auth-expired');
+        toast.error(message, {
+          id: 'auth-expired',
+          position: 'top-center',
+          duration: 2000,
+        });
+
+        setTimeout(() => {
+          window.location.href = '/login';
+        }, 1200);
+
+        return Promise.reject(error);
+      }
+
+      try {
+        // refresh token으로 새 access token 발급
+        const response = await instance.post('/auth/refresh', {
+          refreshToken,
+        });
+
+        const { accessToken } = response.data;
+
+        // 새로운 access token 저장
+        localStorage.setItem('token', accessToken);
+
+        // 대기 중인 요청들 처리
+        processQueue(null, accessToken);
+
+        // 원래 요청 재시도
+        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+        return instance(originalRequest);
+      } catch (refreshError) {
+        // refresh token도 만료된 경우 로그아웃
+        processQueue(refreshError, null);
+
+        const message = '세션이 만료되었습니다. 다시 로그인해주세요.';
+
+        try {
+          localStorage.removeItem('token');
+          localStorage.removeItem('refreshToken');
+          localStorage.removeItem('user');
+        } catch (storageError) {
+          console.error('Failed to clear auth storage:', storageError);
+        }
+
+        toast.dismiss('auth-expired');
+        toast.error(message, {
+          id: 'auth-expired',
+          position: 'top-center',
+          duration: 2000,
+        });
+
+        setTimeout(() => {
+          window.location.href = '/login';
+        }, 1200);
+
+        return Promise.reject(refreshError);
+      } finally {
+        isRefreshing = false;
+      }
     }
 
     // 에러 처리

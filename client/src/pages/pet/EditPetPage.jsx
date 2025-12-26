@@ -190,7 +190,7 @@ const EditPetPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!formData.feature && !formData.imageFile) {
+    if (!formData.feature && !formData.imageFile && formData.imagePreview !== null) {
       toast.error("수정할 내용을 입력해주세요.", {
         duration: 3000,
         position: "top-center",
@@ -207,6 +207,9 @@ const EditPetPage = () => {
 
       if (formData.imageFile) {
         formDataToSend.append("imageFile", formData.imageFile);
+      } else if (formData.imagePreview === null) {
+        // 사진을 삭제한 경우
+        formDataToSend.append("removeImage", "true");
       }
 
       await updatePet(id, formDataToSend);

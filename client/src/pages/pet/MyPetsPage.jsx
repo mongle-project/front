@@ -5,23 +5,27 @@ import DashboardHeader from "../../components/header/Header";
 import { useAuthContext } from "../../contexts/AuthContext";
 import { ROUTES } from "../../utils/constants";
 import { getPets, deletePet } from "../../api/pets";
+import { getMonthlyCalendarEvents } from "../../api/calendarEvents";
+import { getMyArticles } from "../../api/articles";
 import styles from "./MyPetsPage.module.css";
 
 const MyPetsPage = () => {
   const navigate = useNavigate();
   const { user, logout } = useAuthContext();
   const displayName = user?.name ?? "집사님";
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalMode, setModalMode] = useState("add");
-  const [selectedPet, setSelectedPet] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [petToDelete, setPetToDelete] = useState(null);
   const [pets, setPets] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [upcomingEventsCount, setUpcomingEventsCount] = useState(0);
+  const [upcomingVaccinationsCount, setUpcomingVaccinationsCount] = useState(0);
+  const [myArticlesCount, setMyArticlesCount] = useState(0);
 
-  // 반려동물 목록 조회
+  // 반려동물 목록 조회 및 통계 데이터 로드
   useEffect(() => {
     fetchPets();
+    fetchUpcomingEvents();
+    fetchMyArticles();
   }, []);
 
   const fetchPets = async () => {
@@ -42,6 +46,71 @@ const MyPetsPage = () => {
     }
   };
 
+  // 다가오는 일정 및 예방접종 예정 개수 조회
+  const fetchUpcomingEvents = async () => {
+    try {
+      const now = new Date();
+      const currentYear = now.getFullYear();
+      const currentMonth = now.getMonth() + 1;
+
+      // 현재 달과 다음 달의 일정을 가져옴
+      const currentMonthEvents = await getMonthlyCalendarEvents({
+        year: currentYear,
+        month: currentMonth,
+      });
+
+      const nextMonth = currentMonth === 12 ? 1 : currentMonth + 1;
+      const nextYear = currentMonth === 12 ? currentYear + 1 : currentYear;
+      const nextMonthEvents = await getMonthlyCalendarEvents({
+        year: nextYear,
+        month: nextMonth,
+      });
+
+      // 두 달의 일정을 합침
+      const allEvents = [
+        ...(currentMonthEvents.data || currentMonthEvents || []),
+        ...(nextMonthEvents.data || nextMonthEvents || []),
+      ];
+
+      // 미래의 일정만 필터링
+      const futureEvents = allEvents.filter((event) => {
+        const eventDate = new Date(event.eventDate);
+        return eventDate >= now && !event.isComplete;
+      });
+
+      // 전체 미래 일정 개수
+      setUpcomingEventsCount(futureEvents.length);
+
+      // 예방접종 관련 일정만 필터링 (category가 'vaccination'인 경우)
+      const vaccinationEvents = futureEvents.filter(
+        (event) => event.category === "vaccination"
+      );
+      setUpcomingVaccinationsCount(vaccinationEvents.length);
+    } catch (error) {
+      console.error("일정 조회 실패:", error);
+      // 에러가 발생해도 카운트는 0으로 유지
+    }
+  };
+
+  // 내가 작성한 게시글 수 조회
+  const fetchMyArticles = async () => {
+    try {
+      const response = await getMyArticles(1000, 0); // 충분히 큰 limit으로 전체 개수 파악
+      const data = response.data || response;
+      // 배열인 경우 length, 객체에 totalCount 등이 있는 경우 처리
+      if (Array.isArray(data)) {
+        setMyArticlesCount(data.length);
+      } else if (data.totalCount !== undefined) {
+        setMyArticlesCount(data.totalCount);
+      } else if (data.articles && Array.isArray(data.articles)) {
+        setMyArticlesCount(data.articles.length);
+      }
+    } catch (error) {
+      console.error("게시글 조회 실패:", error);
+      // 에러가 발생해도 카운트는 0으로 유지
+    }
+  };
+
   // 날짜 포맷팅 함수 (ISO 날짜를 YYYY-MM-DD 형태로 변환)
   const formatDate = (dateString) => {
     if (!dateString) return "";
@@ -56,6 +125,15 @@ const MyPetsPage = () => {
     navigate(ROUTES.LOGIN);
   };
 
+  // 통계 카드 클릭 핸들러
+  const handleNavigateToCalendar = () => {
+    navigate(ROUTES.CALENDAR);
+  };
+
+  const handleNavigateToMyArticles = () => {
+    navigate(`${ROUTES.COMMUNITY}?filter=myPosts`);
+  };
+
   const openModal = (mode = "add", pet = null) => {
     if (mode === "add") {
       navigate(ROUTES.PETS_ADD);
@@ -65,14 +143,6 @@ const MyPetsPage = () => {
       navigate(`/pets/edit/${pet.id}`);
       return;
     }
-    setModalMode(mode);
-    setSelectedPet(pet);
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setSelectedPet(null);
   };
 
   const openDeleteModal = (pet) => {
@@ -105,12 +175,6 @@ const MyPetsPage = () => {
     }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // TODO: 실제 등록/수정 로직 구현
-    closeModal();
-  };
-
   return (
     <div className={styles.page}>
       <Toaster />
@@ -138,20 +202,37 @@ const MyPetsPage = () => {
               <div className={styles.statValue}>{pets.length}</div>
               <div className={styles.statLabel}>등록된 반려동물</div>
             </div>
-            <div className={styles.statCard}>
+            <div
+              className={`${styles.statCard} ${styles.clickable}`}
+              onClick={handleNavigateToCalendar}
+              role="button"
+              tabIndex={0}
+            >
               <div className={styles.statIcon}>📅</div>
-              <div className={styles.statValue}>0</div>
+              <div className={styles.statValue}>{upcomingEventsCount}</div>
               <div className={styles.statLabel}>다가오는 일정</div>
             </div>
-            <div className={styles.statCard}>
+            <div
+              className={`${styles.statCard} ${styles.clickable}`}
+              onClick={handleNavigateToCalendar}
+              role="button"
+              tabIndex={0}
+            >
               <div className={styles.statIcon}>💉</div>
-              <div className={styles.statValue}>0</div>
+              <div className={styles.statValue}>
+                {upcomingVaccinationsCount}
+              </div>
               <div className={styles.statLabel}>예방접종 예정</div>
             </div>
-            <div className={styles.statCard}>
-              <div className={styles.statIcon}>🎂</div>
-              <div className={styles.statValue}>0</div>
-              <div className={styles.statLabel}>함께한 날들</div>
+            <div
+              className={`${styles.statCard} ${styles.clickable}`}
+              onClick={handleNavigateToMyArticles}
+              role="button"
+              tabIndex={0}
+            >
+              <div className={styles.statIcon}>📝</div>
+              <div className={styles.statValue}>{myArticlesCount}</div>
+              <div className={styles.statLabel}>내가 작성한 게시글 수</div>
             </div>
           </div>
         </div>
@@ -292,206 +373,6 @@ const MyPetsPage = () => {
             </button>
           </div>
         )}
-      </div>
-
-      {/* 등록/수정 모달 */}
-      <div className={`${styles.modal} ${isModalOpen ? styles.active : ""}`}>
-        <div className={styles.modalContent}>
-          <div className={styles.modalHeader}>
-            <h2 className={styles.modalTitle}>
-              {modalMode === "add" ? "새 반려동물 등록" : "반려동물 정보 수정"}
-            </h2>
-            <button className={styles.modalClose} onClick={closeModal}>
-              ✕
-            </button>
-          </div>
-
-          <form onSubmit={handleSubmit}>
-            <div className={styles.formGroup}>
-              <label className={styles.formLabel}>
-                동물 종류<span className={styles.required}>*</span>
-              </label>
-              <div className={styles.radioGroup}>
-                <div className={styles.radioOption}>
-                  <input
-                    type="radio"
-                    id="modal-dog"
-                    name="animalType"
-                    className={styles.radioInput}
-                    defaultChecked
-                  />
-                  <label htmlFor="modal-dog" className={styles.radioLabel}>
-                    🐕 강아지
-                  </label>
-                </div>
-                <div className={styles.radioOption}>
-                  <input
-                    type="radio"
-                    id="modal-cat"
-                    name="animalType"
-                    className={styles.radioInput}
-                  />
-                  <label htmlFor="modal-cat" className={styles.radioLabel}>
-                    🐈 고양이
-                  </label>
-                </div>
-                <div className={styles.radioOption}>
-                  <input
-                    type="radio"
-                    id="modal-other"
-                    name="animalType"
-                    className={styles.radioInput}
-                  />
-                  <label htmlFor="modal-other" className={styles.radioLabel}>
-                    🐰 기타
-                  </label>
-                </div>
-              </div>
-            </div>
-
-            <div className={styles.formGroup}>
-              <label className={styles.formLabel} htmlFor="petName">
-                이름<span className={styles.required}>*</span>
-              </label>
-              <input
-                type="text"
-                id="petName"
-                className={styles.formInput}
-                placeholder="예: 몽이"
-                defaultValue={selectedPet?.name}
-                required
-              />
-            </div>
-
-            <div className={styles.formGroup}>
-              <label className={styles.formLabel} htmlFor="petBreed">
-                품종<span className={styles.required}>*</span>
-              </label>
-              <input
-                type="text"
-                id="petBreed"
-                className={styles.formInput}
-                placeholder="예: 말티즈"
-                defaultValue={selectedPet?.breed}
-                required
-              />
-            </div>
-
-            <div className={styles.formGroup}>
-              <label className={styles.formLabel} htmlFor="petAge">
-                나이<span className={styles.required}>*</span>
-              </label>
-              <input
-                type="text"
-                id="petAge"
-                className={styles.formInput}
-                placeholder="예: 3살"
-                defaultValue={selectedPet?.age}
-                required
-              />
-            </div>
-
-            <div className={styles.formGroup}>
-              <label className={styles.formLabel}>
-                성별<span className={styles.required}>*</span>
-              </label>
-              <div className={styles.radioGroup}>
-                <div className={styles.radioOption}>
-                  <input
-                    type="radio"
-                    id="male"
-                    name="gender"
-                    className={styles.radioInput}
-                    defaultChecked
-                  />
-                  <label htmlFor="male" className={styles.radioLabel}>
-                    남아
-                  </label>
-                </div>
-                <div className={styles.radioOption}>
-                  <input
-                    type="radio"
-                    id="female"
-                    name="gender"
-                    className={styles.radioInput}
-                  />
-                  <label htmlFor="female" className={styles.radioLabel}>
-                    여아
-                  </label>
-                </div>
-              </div>
-            </div>
-
-            <div className={styles.formGroup}>
-              <label className={styles.formLabel} htmlFor="petWeight">
-                체중
-              </label>
-              <input
-                type="text"
-                id="petWeight"
-                className={styles.formInput}
-                placeholder="예: 3.5kg"
-                defaultValue={selectedPet?.weight}
-              />
-            </div>
-
-            <div className={styles.formGroup}>
-              <label className={styles.formLabel} htmlFor="neutered">
-                중성화 여부
-              </label>
-              <select
-                id="neutered"
-                className={styles.formSelect}
-                defaultValue={selectedPet?.neutered}
-              >
-                <option value="완료">완료</option>
-                <option value="미완료">미완료</option>
-                <option value="모름">모름</option>
-              </select>
-            </div>
-
-            <div className={styles.formGroup}>
-              <label className={styles.formLabel} htmlFor="petPhoto">
-                사진 URL
-              </label>
-              <input
-                type="url"
-                id="petPhoto"
-                className={styles.formInput}
-                placeholder="https://example.com/photo.jpg"
-                defaultValue={selectedPet?.image}
-              />
-            </div>
-
-            <div className={styles.formGroup}>
-              <label className={styles.formLabel} htmlFor="petMemo">
-                특이사항/메모
-              </label>
-              <textarea
-                id="petMemo"
-                className={styles.formTextarea}
-                placeholder="알레르기, 특별한 습관, 주의사항 등을 자유롭게 작성하세요"
-                defaultValue={selectedPet?.memo}
-              ></textarea>
-            </div>
-
-            <div className={styles.modalActions}>
-              <button
-                type="button"
-                className={`${styles.modalBtn} ${styles.modalBtnSecondary}`}
-                onClick={closeModal}
-              >
-                취소
-              </button>
-              <button
-                type="submit"
-                className={`${styles.modalBtn} ${styles.modalBtnPrimary}`}
-              >
-                {modalMode === "add" ? "등록하기" : "수정하기"}
-              </button>
-            </div>
-          </form>
-        </div>
       </div>
 
       {/* 삭제 확인 모달 */}

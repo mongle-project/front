@@ -478,6 +478,7 @@
   font-size: 1rem;
   cursor: pointer;
   transition: all 0.2s ease;
+  white-space: nowrap;
   font-family: "GyeonggiMillenniumTitle", -apple-system, BlinkMacSystemFont,
     "Segoe UI", sans-serif;
 }

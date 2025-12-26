@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import DashboardHeader from "../../components/header/Header";
@@ -24,6 +24,7 @@ const AiConsultPage = () => {
   });
 
   const [charCount, setCharCount] = useState(0);
+  const consultationRef = useRef(null);
 
   const handleAnimalTypeChange = (type) => {
     setFormData({ ...formData, animalType: type });
@@ -85,7 +86,12 @@ const AiConsultPage = () => {
         breed: formData.breed,
         age: formData.age,
         weight: formData.weight || "",
-        gender: formData.gender === "male" ? "남아" : formData.gender === "female" ? "여아" : "중성화 완료",
+        gender:
+          formData.gender === "male"
+            ? "남아"
+            : formData.gender === "female"
+            ? "여아"
+            : "중성화 완료",
         existingDiseases: formData.diseases.map(
           (diseaseId) => diseases.find((d) => d.id === diseaseId)?.label || ""
         ),
@@ -117,7 +123,8 @@ const AiConsultPage = () => {
     } catch (error) {
       toast.dismiss();
       toast.error(
-        error.response?.data?.message || "상담 요청에 실패했습니다. 다시 시도해주세요.",
+        error.response?.data?.message ||
+          "상담 요청에 실패했습니다. 다시 시도해주세요.",
         {
           duration: 3000,
           position: "top-center",
@@ -398,6 +405,7 @@ const AiConsultPage = () => {
               </label>
               <textarea
                 id="consultation"
+                ref={consultationRef}
                 className={styles.formTextarea}
                 placeholder={`예시:
 • 우리 강아지가 최근 식욕이 떨어졌는데 어떻게 해야 할까요?
@@ -464,9 +472,17 @@ const AiConsultPage = () => {
               <div
                 key={index}
                 className={styles.exampleCard}
-                onClick={() =>
-                  setFormData({ ...formData, consultation: example.text })
-                }
+                onClick={() => {
+                  setFormData({ ...formData, consultation: example.text });
+                  setCharCount(example.text.length);
+                  consultationRef.current?.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center",
+                  });
+                  setTimeout(() => {
+                    consultationRef.current?.focus();
+                  }, 500);
+                }}
               >
                 <div className={styles.exampleIcon}>{example.icon}</div>
                 <div className={styles.exampleTitle}>{example.title}</div>
