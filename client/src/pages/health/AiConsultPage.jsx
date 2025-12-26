@@ -24,6 +24,7 @@ const AiConsultPage = () => {
   });
 
   const [charCount, setCharCount] = useState(0);
+  const consultationRef = React.useRef(null);
 
   const handleAnimalTypeChange = (type) => {
     setFormData({ ...formData, animalType: type });
@@ -398,6 +399,7 @@ const AiConsultPage = () => {
               </label>
               <textarea
                 id="consultation"
+                ref={consultationRef}
                 className={styles.formTextarea}
                 placeholder={`예시:
 • 우리 강아지가 최근 식욕이 떨어졌는데 어떻게 해야 할까요?
@@ -464,9 +466,17 @@ const AiConsultPage = () => {
               <div
                 key={index}
                 className={styles.exampleCard}
-                onClick={() =>
-                  setFormData({ ...formData, consultation: example.text })
-                }
+                onClick={() => {
+                  setFormData({ ...formData, consultation: example.text });
+                  setCharCount(example.text.length);
+                  consultationRef.current?.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                  });
+                  setTimeout(() => {
+                    consultationRef.current?.focus();
+                  }, 500);
+                }}
               >
                 <div className={styles.exampleIcon}>{example.icon}</div>
                 <div className={styles.exampleTitle}>{example.title}</div>

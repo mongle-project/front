@@ -261,7 +261,7 @@ const CommunityListPage = () => {
             <input
               type="text"
               className={styles.searchInput}
-              placeholder="품종명으로 검색해보세요..."
+              placeholder="제목, 내용으로 검색해보세요..."
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
             />
@@ -284,7 +284,9 @@ const CommunityListPage = () => {
                 }
               }}
             >
-              <span>📝 내가 작성한 글</span>
+              <span>
+                {showMyPostsOnly ? "📋 전체 게시글 보기" : "📝 내가 작성한 글"}
+              </span>
             </button>
             <button
               type="button"
