@@ -1,10 +1,20 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import DashboardHeader from "../../components/header/Header";
 import { useAuthContext } from "../../contexts/AuthContext";
 import { ROUTES } from "../../utils/constants";
 import styles from "./CommunityListPage.module.css";
-import { getArticles, getMyArticles } from "../../api/articles";
+import {
+  getArticles,
+  getMyArticles,
+  getBookmarkedArticles,
+} from "../../api/articles";
 
 const categoryFilters = [
   { label: "전체", value: "all", icon: "✨" },
@@ -27,7 +37,6 @@ const categoryLabelMap = categoryFilters.reduce((acc, cur) => {
 const sortOptions = [
   { label: "최신순", value: "latest" },
   { label: "인기순", value: "popular" },
-  { label: "댓글순", value: "comment" },
 ];
 
 const CommunityListPage = () => {
@@ -36,7 +45,13 @@ const CommunityListPage = () => {
   const { user, logout } = useAuthContext();
   const displayName = user?.id || user?.name || "집사님";
   const [activeFilter, setActiveFilter] = useState("all");
-  const [showMyPostsOnly, setShowMyPostsOnly] = useState(false);
+  // URL 파라미터에서 초기값 설정
+  const [showMyPostsOnly, setShowMyPostsOnly] = useState(() => {
+    return searchParams.get("filter") === "myPosts";
+  });
+  const [showBookmarkedOnly, setShowBookmarkedOnly] = useState(() => {
+    return searchParams.get("filter") === "bookmarked";
+  });
   const [keyword, setKeyword] = useState("");
   const [sort, setSort] = useState("latest");
   const [posts, setPosts] = useState([]);
@@ -45,14 +60,24 @@ const CommunityListPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const sentinelRef = useRef(null);
+  const isFirstRender = useRef(true);
 
-  // URL 파라미터에서 필터 정보 읽기
+  // URL 파라미터 변경 감지 (첫 렌더링 제외)
   useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
     const filterParam = searchParams.get("filter");
     if (filterParam === "myPosts") {
       setShowMyPostsOnly(true);
+      setShowBookmarkedOnly(false);
+    } else if (filterParam === "bookmarked") {
+      setShowMyPostsOnly(false);
+      setShowBookmarkedOnly(true);
     } else {
       setShowMyPostsOnly(false);
+      setShowBookmarkedOnly(false);
     }
   }, [searchParams]);
 
@@ -68,7 +93,17 @@ const CommunityListPage = () => {
           // 내가 작성한 글만 가져오기
           const response = await getMyArticles(1000, 0);
           const myArticlesData = response.data || response;
-          data = Array.isArray(myArticlesData) ? myArticlesData : myArticlesData.articles || [];
+          data = Array.isArray(myArticlesData)
+            ? myArticlesData
+            : myArticlesData.articles || [];
+          meta = { totalPage: 1 };
+        } else if (showBookmarkedOnly) {
+          // 북마크한 글만 가져오기
+          const response = await getBookmarkedArticles(1000, 0);
+          const bookmarkedData = response.data || response;
+          data = Array.isArray(bookmarkedData)
+            ? bookmarkedData
+            : bookmarkedData.articles || [];
           meta = { totalPage: 1 };
         } else {
           // 전체 게시글 가져오기
@@ -93,13 +128,13 @@ const CommunityListPage = () => {
         setLoading(false);
       }
     },
-    [activeFilter, sort, showMyPostsOnly]
+    [activeFilter, sort, showMyPostsOnly, showBookmarkedOnly]
   );
 
   useEffect(() => {
     setPage(1);
     fetchArticles({ pageToLoad: 1, append: false });
-  }, [activeFilter, sort, showMyPostsOnly, fetchArticles]);
+  }, [activeFilter, sort, showMyPostsOnly, showBookmarkedOnly, fetchArticles]);
 
   useEffect(() => {
     if (page === 1) return;
@@ -192,14 +227,19 @@ const CommunityListPage = () => {
                   key={tab.value}
                   type="button"
                   className={`${styles.filterButton} ${
-                    activeFilter === tab.value && !showMyPostsOnly ? styles.filterActive : ""
+                    activeFilter === tab.value &&
+                    !showMyPostsOnly &&
+                    !showBookmarkedOnly
+                      ? styles.filterActive
+                      : ""
                   }`}
                   onClick={() => {
                     setActiveFilter(tab.value);
                     setShowMyPostsOnly(false);
+                    setShowBookmarkedOnly(false);
                     setSearchParams({});
                   }}
-                  disabled={showMyPostsOnly}
+                  disabled={showMyPostsOnly || showBookmarkedOnly}
                 >
                   <span className={styles.filterIcon}>{tab.icon}</span>
                   {tab.label}
@@ -230,17 +270,39 @@ const CommunityListPage = () => {
             </button>
             <button
               type="button"
-              className={`${styles.searchButton} ${showMyPostsOnly ? styles.filterActive : ""}`}
+              className={`${styles.searchButton} ${
+                showMyPostsOnly ? styles.filterActive : ""
+              }`}
               onClick={() => {
-                setShowMyPostsOnly(!showMyPostsOnly);
-                if (!showMyPostsOnly) {
-                  setSearchParams({ filter: 'myPosts' });
-                } else {
+                if (showMyPostsOnly) {
+                  setShowMyPostsOnly(false);
                   setSearchParams({});
+                } else {
+                  setShowMyPostsOnly(true);
+                  setShowBookmarkedOnly(false);
+                  setSearchParams({ filter: "myPosts" });
                 }
               }}
             >
-              <span>📝 {showMyPostsOnly ? '전체 글 보기' : '내가 작성한 글'}</span>
+              <span>📝 내가 작성한 글</span>
+            </button>
+            <button
+              type="button"
+              className={`${styles.searchButton} ${
+                showBookmarkedOnly ? styles.filterActive : ""
+              }`}
+              onClick={() => {
+                if (showBookmarkedOnly) {
+                  setShowBookmarkedOnly(false);
+                  setSearchParams({});
+                } else {
+                  setShowBookmarkedOnly(true);
+                  setShowMyPostsOnly(false);
+                  setSearchParams({ filter: "bookmarked" });
+                }
+              }}
+            >
+              <span>🔖 북마크한 글</span>
             </button>
           </div>
         </div>
@@ -269,23 +331,19 @@ const CommunityListPage = () => {
           <div className={styles.postList}>
             {filteredPosts.map((post) => {
               const rawCategory = post.category || "";
-              const categoryKey = (
-                post.categoryKey ||
-                rawCategory ||
-                "etc"
-              )
+              const categoryKey = (post.categoryKey || rawCategory || "etc")
                 .toString()
                 .replace(/\s+/g, "_");
               const categoryLabel =
                 categoryLabelMap[rawCategory] || rawCategory || "전체";
-      const authorName =
-        post.writer?.nickname ||
-        post.writer?.id ||
-        post.author ||
-        post.user?.id ||
-        post.userId ||
-        post.user_id ||
-        "익명";
+              const authorName =
+                post.writer?.nickname ||
+                post.writer?.id ||
+                post.author ||
+                post.user?.id ||
+                post.userId ||
+                post.user_id ||
+                "익명";
               const summary =
                 post.summary || post.content || "내용이 없습니다.";
 
@@ -317,7 +375,8 @@ const CommunityListPage = () => {
                     <span>{post.date || ""}</span>
                     <div className={styles.postStats}>
                       <span className={styles.statItem}>
-                        ❤️ {post.likesCount ?? post.likeCount ?? post.likes ?? 0}
+                        ❤️{" "}
+                        {post.likesCount ?? post.likeCount ?? post.likes ?? 0}
                       </span>
                     </div>
                   </div>

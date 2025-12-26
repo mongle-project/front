@@ -7,7 +7,9 @@ export const getArticles = async (params = {}) => {
 };
 // 내가 작성한 게시글 목록 조회
 export const getMyArticles = async (limit = 20, offset = 0) => {
-  const response = await axios.get(`/articles/me/my-articles?limit=${limit}&offset=${offset}`);
+  const response = await axios.get(
+    `/articles/me/my-articles?limit=${limit}&offset=${offset}`
+  );
   return response.data;
 };
 // 게시글 상세 조회
@@ -40,6 +42,15 @@ export const toggleBookmark = async (id) => {
   const response = await axios.post(`/articles/${id}/bookmarks`);
   return response.data;
 };
+
+// 북마크한 게시글 목록 조회
+export const getBookmarkedArticles = async (limit = 20, offset = 0) => {
+  const response = await axios.get(
+    `/articles/me/bookmarked?limit=${limit}&offset=${offset}`
+  );
+  return response.data;
+};
+
 // 신고
 export const reportArticle = async (id) => {
   const response = await axios.post(`/articles/${id}/reports`);
