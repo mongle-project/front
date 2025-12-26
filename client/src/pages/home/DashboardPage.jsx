@@ -218,13 +218,19 @@ const DashboardPage = () => {
         }
 
         // 게시글 데이터 변환
-        const transformedPosts = (articlesData.data || []).map((article) => ({
-          id: article.id,
-          title: article.title,
-          stats: `👁️ ${article.likesCount || 0}  ·  💬 ${
-            article.commentsCount || 0
-          }`,
-        }));
+        const transformedPosts = (articlesData.data || []).map((article) => {
+          // 날짜 포맷팅 (YYYY-MM-DD)
+          const createdDate = article.created_at
+            ? new Date(article.created_at).toISOString().split('T')[0]
+            : '';
+
+          return {
+            id: article.id,
+            title: article.title,
+            createdAt: createdDate,
+            likesCount: article.likesCount || 0,
+          };
+        });
         setPosts(transformedPosts);
 
         // 뉴스 데이터 변환 (첫 번째 항목의 summary는 제외)
@@ -442,10 +448,15 @@ const DashboardPage = () => {
                     <div
                       key={post.id}
                       className={styles.postItem}
-                      onClick={() => handleNavigate(ROUTES.COMMUNITY)}
+                      onClick={() =>
+                        handleNavigate(`${ROUTES.COMMUNITY}/${post.id}`)
+                      }
                     >
                       <div className={styles.postTitleMini}>{post.title}</div>
-                      <div className={styles.postMetaMini}>{post.stats}</div>
+                      <div className={styles.postMetaMini}>
+                        <span>{post.createdAt}</span>
+                        <span>❤️ {post.likesCount}</span>
+                      </div>
                     </div>
                   ))
                 ) : (
