@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import DashboardHeader from "../../components/header/Header";
@@ -24,7 +24,7 @@ const AiConsultPage = () => {
   });
 
   const [charCount, setCharCount] = useState(0);
-  const consultationRef = React.useRef(null);
+  const consultationRef = useRef(null);
 
   const handleAnimalTypeChange = (type) => {
     setFormData({ ...formData, animalType: type });
@@ -86,7 +86,12 @@ const AiConsultPage = () => {
         breed: formData.breed,
         age: formData.age,
         weight: formData.weight || "",
-        gender: formData.gender === "male" ? "남아" : formData.gender === "female" ? "여아" : "중성화 완료",
+        gender:
+          formData.gender === "male"
+            ? "남아"
+            : formData.gender === "female"
+            ? "여아"
+            : "중성화 완료",
         existingDiseases: formData.diseases.map(
           (diseaseId) => diseases.find((d) => d.id === diseaseId)?.label || ""
         ),
@@ -118,7 +123,8 @@ const AiConsultPage = () => {
     } catch (error) {
       toast.dismiss();
       toast.error(
-        error.response?.data?.message || "상담 요청에 실패했습니다. 다시 시도해주세요.",
+        error.response?.data?.message ||
+          "상담 요청에 실패했습니다. 다시 시도해주세요.",
         {
           duration: 3000,
           position: "top-center",
@@ -470,8 +476,8 @@ const AiConsultPage = () => {
                   setFormData({ ...formData, consultation: example.text });
                   setCharCount(example.text.length);
                   consultationRef.current?.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'center'
+                    behavior: "smooth",
+                    block: "center",
                   });
                   setTimeout(() => {
                     consultationRef.current?.focus();
