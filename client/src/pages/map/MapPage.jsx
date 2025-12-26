@@ -1,91 +1,66 @@
-import React from "react";
+import React, { useState } from "react";
+import toast from "react-hot-toast";
 import DashboardHeader from "../../components/header/Header";
+import KakaoMap from "../../components/map/KakaoMap";
+import useKakaoMap from "../../hooks/useKakaoMap";
+import useLocationData from "../../hooks/useLocationData";
+import { searchAddress } from "../../services/kakaoGeocoding";
 import styles from "./map.module.css";
 import { useAuthContext } from "../../contexts/AuthContext";
 import { ROUTES } from "../../utils/constants";
 import { useNavigate } from "react-router-dom";
-
-const hospitalList = [
-  {
-    label: "24시 응급 동물병원",
-    name: "24시 우리 동물병원",
-    address: "경기도 남양주시 화도읍 먹골로 123",
-    phone: "031-1234-5678",
-    hours: "24시간 운영",
-    distance: "현재 위치에서 850m",
-    status: "영업중",
-    statusType: "success",
-  },
-  {
-    label: "사랑 동물의료센터",
-    name: "사랑 동물의료센터",
-    address: "경기도 남양주시 화도읍 마석로 456",
-    phone: "031-2345-6789",
-    hours: "09:00 - 21:00 (연중무휴)",
-    distance: "현재 위치에서 1.2km",
-    status: "영업중",
-    statusType: "success",
-  },
-  {
-    label: "행복 동물병원",
-    name: "행복 동물병원",
-    address: "경기도 남양주시 화도읍 창현로 789",
-    phone: "031-3456-7890",
-    hours: "09:00 - 19:00 (일요일 휴무)",
-    distance: "현재 위치에서 1.8km",
-    status: "영업종료",
-    statusType: "offline",
-  },
-  {
-    label: "입양 상담 동물병원",
-    name: "펫케어 동물병원",
-    address: "경기도 남양주시 진접읍 진접로 321",
-    phone: "031-4567-8901",
-    hours: "10:00 - 20:00",
-    distance: "현재 위치에서 2.5km",
-    status: "영업중",
-    statusType: "success",
-  },
-  {
-    label: "입양 상담 동물병원",
-    name: "남양주 반려동물병원",
-    address: "경기도 남양주시 와부읍 덕소로 654",
-    phone: "031-5678-9012",
-    hours: "09:30 - 18:30 (목요일 휴무)",
-    distance: "현재 위치에서 3.2km",
-    status: "영업중",
-    statusType: "success",
-  },
-];
 
 const ClinicCard = ({
   label,
   name,
   address,
   phone,
-  hours,
   distance,
-  status,
-  statusType,
+  isSelected,
+  onClick,
 }) => (
-  <article className={styles.clinicCard}>
+  <article
+    className={`${styles.clinicCard} ${isSelected ? styles.selected : ""}`}
+    onClick={onClick}
+    style={{ cursor: "pointer" }}
+  >
     <div className={styles.clinicTop}>
       <div className={styles.clinicLeft}>
         <p className={styles.clinicLabel}>{label}</p>
         <h3 className={styles.clinicName}>{name}</h3>
         <p className={styles.clinicMeta}>📍 {address}</p>
         <p className={styles.clinicMeta}>📞 {phone}</p>
-        <p className={styles.clinicMeta}>🕒 {hours}</p>
         <p className={`${styles.clinicMeta} ${styles.distance}`}>
           🚗 {distance}
         </p>
       </div>
-      <span className={`${styles.tag} ${styles[statusType]}`}>{status}</span>
     </div>
     <div className={styles.clinicActions}>
-      <button className={styles.ghostBtn}>전화하기</button>
-      <button className={styles.ghostBtn}>길찾기</button>
-      <button className={styles.ghostBtn}>상세보기</button>
+      <button
+        className={styles.ghostBtn}
+        onClick={(e) => {
+          e.stopPropagation();
+          // 네이버에서 주소 + 이름으로 검색
+          const searchQuery = encodeURIComponent(`${address} ${name}`);
+          window.open(
+            `https://search.naver.com/search.naver?query=${searchQuery}`,
+            "_blank"
+          );
+        }}
+      >
+        네이버 검색
+      </button>
+      <button
+        className={styles.ghostBtn}
+        onClick={(e) => {
+          e.stopPropagation();
+          // 카카오맵에서 주소로 검색하여 길찾기
+          const encodedAddress = encodeURIComponent(address);
+          window.open(`https://map.kakao.com/?q=${encodedAddress}`, "_blank");
+        }}
+      >
+        길찾기
+      </button>
     </div>
   </article>
 );
@@ -95,9 +70,101 @@ export default function MapPage() {
   const navigate = useNavigate();
   const displayName = user?.id || user?.name || "집사님";
 
+  // 상태 관리
+  const [activeTab, setActiveTab] = useState("hospital");
+  const [mapCenter, setMapCenter] = useState({ lat: 37.5665, lng: 126.978 });
+  const [searchInput, setSearchInput] = useState("");
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [currentAddress, setCurrentAddress] = useState("서울특별시 중구");
+
+  // 커스텀 훅
+  const {
+    mapRef,
+    mapInstance,
+    isLoaded,
+    error: mapError,
+    panTo,
+    setLevel,
+  } = useKakaoMap(mapCenter);
+  const {
+    allData,
+    listData,
+    loading,
+    error: dataError,
+    count,
+  } = useLocationData(
+    activeTab,
+    mapCenter,
+    currentAddress // 현재 주소 전달 (서울 지역 판별용)
+  );
+
   const handleLogout = () => {
     if (typeof logout === "function") logout();
     navigate(ROUTES.LOGIN);
+  };
+
+  // 탭 전환
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+    setSelectedItem(null);
+  };
+
+  // 주소 검색
+  const handleSearchAddress = async (e) => {
+    e.preventDefault();
+    if (!searchInput.trim()) {
+      toast.error("주소를 입력해주세요.");
+      return;
+    }
+
+    try {
+      const result = await searchAddress(searchInput);
+      setMapCenter({ lat: result.lat, lng: result.lng });
+      setCurrentAddress(result.address);
+      panTo(result.lat, result.lng);
+      toast.success("주소 검색 완료!");
+    } catch (err) {
+      toast.error(err.message || "주소 검색에 실패했습니다.");
+    }
+  };
+
+  // 사이드바 카드 클릭
+  const handleCardClick = (item) => {
+    setSelectedItem(item);
+  };
+
+  // 마커 클릭
+  const handleMarkerClick = (item) => {
+    setSelectedItem(item);
+    const cardElement = document.getElementById(`clinic-card-${item.id}`);
+    if (cardElement) {
+      cardElement.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  };
+
+  // 줌 컨트롤
+  const handleZoomIn = () => {
+    if (!mapInstance) return;
+    const level = mapInstance.getLevel();
+    setLevel(level - 1);
+  };
+
+  const handleZoomOut = () => {
+    if (!mapInstance) return;
+    const level = mapInstance.getLevel();
+    setLevel(level + 1);
+  };
+
+  // 리스트 스크롤 맨 위로 이동 및 첫 번째 아이템 선택
+  const handleScrollToTop = () => {
+    const listElement = document.querySelector(`.${styles.clinicList}`);
+    if (listElement) {
+      listElement.scrollTo({ top: 0, behavior: "smooth" });
+    }
+    // 첫 번째 아이템 선택
+    if (listData.length > 0) {
+      setSelectedItem(listData[0]);
+    }
   };
 
   return (
@@ -115,42 +182,99 @@ export default function MapPage() {
             </div>
 
             <div className={styles.filterTabs}>
-              <button className={`${styles.tab} ${styles.tabActive}`}>
+              <button
+                className={`${styles.tab} ${
+                  activeTab === "hospital" ? styles.tabActive : ""
+                }`}
+                onClick={() => handleTabChange("hospital")}
+              >
                 🏥 동물병원
               </button>
-              <button className={styles.tab}>🏠 유기견 보호소</button>
+              <button
+                className={`${styles.tab} ${
+                  activeTab === "shelter" ? styles.tabActive : ""
+                }`}
+                onClick={() => handleTabChange("shelter")}
+              >
+                🏠 유기견 보호소
+              </button>
             </div>
 
-            <div className={styles.searchBox}>
-              <span className={styles.searchIcon}>🔍</span>
-              <input
-                id="searchName"
-                type="text"
-                placeholder="병원명 또는 지역 검색"
-              />
-            </div>
+            <form onSubmit={handleSearchAddress}>
+              <div className={styles.searchBox}>
+                <span className={styles.searchIcon}>🔍</span>
+                <input
+                  id="searchName"
+                  type="text"
+                  placeholder="주소 검색 (예: 서울시 강남구)"
+                  value={searchInput}
+                  onChange={(e) => setSearchInput(e.target.value)}
+                />
+                <button type="submit" className={styles.searchBtn}>
+                  검색
+                </button>
+              </div>
+            </form>
 
             <div className={styles.locationBar}>
               <span className={styles.pinIcon}>📍</span>
-              <span className={styles.locationText}>
-                경기도 남양주시 화도읍
-              </span>
+              <span className={styles.locationText}>{currentAddress}</span>
             </div>
           </section>
 
           <section className={`${styles.card} ${styles.listCard}`}>
             <div className={styles.listHeader}>
               <div className={styles.listTitle}>
-                <span className={styles.dot}></span>총 <strong>24개</strong>의
-                동물병원
+                <span className={styles.dot}></span>총{" "}
+                <strong>{count || 0}개</strong>의{" "}
+                {activeTab === "hospital" ? "동물병원" : "유기견 보호소"}
               </div>
-              <button className={styles.toggle}>가까운 순</button>
+              <button className={styles.toggle} onClick={handleScrollToTop}>
+                가까운 순
+              </button>
             </div>
 
             <div className={styles.clinicList}>
-              {hospitalList.map((item) => (
-                <ClinicCard key={item.name} {...item} />
-              ))}
+              {loading && (
+                <div style={{ padding: "20px", textAlign: "center" }}>
+                  데이터를 불러오는 중...
+                </div>
+              )}
+
+              {!loading && dataError && (
+                <div
+                  style={{
+                    padding: "20px",
+                    textAlign: "center",
+                    color: "#d32f2f",
+                  }}
+                >
+                  {dataError}
+                </div>
+              )}
+
+              {!loading && !dataError && listData.length === 0 && (
+                <div style={{ padding: "20px", textAlign: "center" }}>
+                  검색 반경 내에{" "}
+                  {activeTab === "hospital" ? "병원이" : "보호소가"} 없습니다.
+                </div>
+              )}
+
+              {!loading &&
+                !dataError &&
+                listData.map((item) => (
+                  <div key={item.id} id={`clinic-card-${item.id}`}>
+                    <ClinicCard
+                      label={item.label}
+                      name={item.name}
+                      address={item.address}
+                      phone={item.phone}
+                      distance={item.distance}
+                      isSelected={selectedItem?.id === item.id}
+                      onClick={() => handleCardClick(item)}
+                    />
+                  </div>
+                ))}
             </div>
           </section>
         </aside>
@@ -158,29 +282,70 @@ export default function MapPage() {
         <section className={styles.mapPanel}>
           <div className={styles.mapSurface}>
             <div className={styles.mapControls}>
-              <button className={styles.circleBtn}>+</button>
-              <button className={styles.circleBtn}>−</button>
-              <button className={`${styles.circleBtn} ${styles.pin}`}>
-                📍
+              <button className={styles.circleBtn} onClick={handleZoomIn}>
+                +
+              </button>
+              <button className={styles.circleBtn} onClick={handleZoomOut}>
+                −
               </button>
             </div>
-            <div className={styles.mapViewport}>
-              <div className={styles.mapPlaceholder}></div>
-              <div className={styles.legend}>
-                <p className={styles.legendTitle}>지도 범례</p>
-                <div className={styles.legendList}>
-                  <div className={styles.legendItem}>
-                    <span className={`${styles.legendIcon} ${styles.hospital}`}>
-                      🏥
-                    </span>
-                    <span className={styles.legendText}>동물병원</span>
-                  </div>
-                  <div className={styles.legendItem}>
-                    <span className={`${styles.legendIcon} ${styles.shelter}`}>
-                      🏠
-                    </span>
-                    <span className={styles.legendText}>유기견 보호소</span>
-                  </div>
+
+            <div className={styles.mapViewport} ref={mapRef}>
+              {!isLoaded && !mapError && (
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                  }}
+                >
+                  지도를 로딩 중...
+                </div>
+              )}
+
+              {mapError && (
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                    color: "#d32f2f",
+                    textAlign: "center",
+                  }}
+                >
+                  <p>지도를 로드할 수 없습니다.</p>
+                  <p style={{ fontSize: "12px", marginTop: "10px" }}>
+                    {mapError}
+                  </p>
+                </div>
+              )}
+
+              {isLoaded && mapInstance && (
+                <KakaoMap
+                  mapInstance={mapInstance}
+                  markers={allData}
+                  onMarkerClick={handleMarkerClick}
+                  selectedItem={selectedItem}
+                />
+              )}
+            </div>
+
+            <div className={styles.legend}>
+              <p className={styles.legendTitle}>지도 범례</p>
+              <div className={styles.legendList}>
+                <div className={styles.legendItem}>
+                  <span className={`${styles.legendIcon} ${styles.hospital}`}>
+                    🏥
+                  </span>
+                  <span className={styles.legendText}>동물병원</span>
+                </div>
+                <div className={styles.legendItem}>
+                  <span className={`${styles.legendIcon} ${styles.shelter}`}>
+                    🏠
+                  </span>
+                  <span className={styles.legendText}>유기견 보호소</span>
                 </div>
               </div>
             </div>
