@@ -433,7 +433,7 @@ const AddEventPage = () => {
               className={styles.cancelModalYes}
               onClick={confirmCancel}
             >
-              예, 취소합니다
+              취소하기
             </button>
           </div>
         </div>
