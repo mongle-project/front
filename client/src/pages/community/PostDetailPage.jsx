@@ -3,7 +3,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import styles from "./PostDetailPage.module.css";
 import DashboardHeader from "../../components/header/Header";
 import { COMMUNITY_CATEGORY_LABEL_MAP, ROUTES } from "../../utils/constants";
-import { formatDateTimeCompact } from "../../utils/dateUtils";
 import { useAuthContext } from "../../contexts/AuthContext";
 import toast, { Toaster } from "react-hot-toast";
 import {
@@ -244,17 +243,15 @@ const PostDetailPage = () => {
                   <div className={styles.avatar}>
                     {(article.userId || "익명").toString().slice(0, 1)}
                   </div>
-                  <div className={styles.authorInfo}>
-                    <div className={styles.authorName}>
-                      {article.userId || "익명"}
-                    </div>
-                    <div className={styles.date}>
-                      {formatDateTimeCompact(article.createdAt) || ""}
+                    <div className={styles.authorInfo}>
+                      <div className={styles.authorName}>
+                        {article.userId || "익명"}
+                      </div>
+                    <div className={styles.date}>{article.createdAt || ""}</div>
                     </div>
                   </div>
-                </div>
-                <div className={styles.stats}>
-                  <span>❤️ {likeCount}</span>
+                  <div className={styles.stats}>
+                    <span>❤️ {likeCount}</span>
                 </div>
               </div>
             </header>
