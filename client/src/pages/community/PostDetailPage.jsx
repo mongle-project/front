@@ -2,7 +2,8 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styles from "./PostDetailPage.module.css";
 import DashboardHeader from "../../components/header/Header";
-import { ROUTES } from "../../utils/constants";
+import { COMMUNITY_CATEGORY_LABEL_MAP, ROUTES } from "../../utils/constants";
+import { formatDateTimeCompact } from "../../utils/dateUtils";
 import { useAuthContext } from "../../contexts/AuthContext";
 import toast, { Toaster } from "react-hot-toast";
 import {
@@ -13,16 +14,17 @@ import {
   toggleLike,
 } from "../../api/articles";
 
-const categoryLabels = {
-  dog: "강아지",
-  cat: "고양이",
-  rabbit: "토끼",
-  hamster: "햄스터",
-  guineapig: "기니피그",
-  bird: "조류",
-  fish: "어류",
-  reptile: "파충류",
-  turtle: "거북이",
+const legacyCategoryLabelMap = {
+  rabbit: COMMUNITY_CATEGORY_LABEL_MAP.small,
+  hamster: COMMUNITY_CATEGORY_LABEL_MAP.small,
+  guineapig: COMMUNITY_CATEGORY_LABEL_MAP.small,
+  "guinea pig": COMMUNITY_CATEGORY_LABEL_MAP.small,
+  turtle: COMMUNITY_CATEGORY_LABEL_MAP.reptile,
+};
+
+const categoryLabelMap = {
+  ...COMMUNITY_CATEGORY_LABEL_MAP,
+  ...legacyCategoryLabelMap,
 };
 
 const mapArticleResponse = (response) => {
@@ -232,7 +234,7 @@ const PostDetailPage = () => {
           <article className={styles.postCard}>
             <header className={styles.postHeader}>
               <span className={styles.category}>
-                {categoryLabels[article.category] ||
+                {categoryLabelMap[article.category] ||
                   article.category ||
                   "게시글"}
               </span>
@@ -246,7 +248,9 @@ const PostDetailPage = () => {
                     <div className={styles.authorName}>
                       {article.userId || "익명"}
                     </div>
-                    <div className={styles.date}>{article.createdAt || ""}</div>
+                    <div className={styles.date}>
+                      {formatDateTimeCompact(article.createdAt) || ""}
+                    </div>
                   </div>
                 </div>
                 <div className={styles.stats}>
