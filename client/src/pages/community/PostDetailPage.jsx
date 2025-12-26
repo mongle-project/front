@@ -233,7 +233,7 @@ const PostDetailPage = () => {
           <article className={styles.postCard}>
             <header className={styles.postHeader}>
               <span className={styles.category}>
-                {categoryLabels[article.category] ||
+                {categoryLabelMap[article.category] ||
                   article.category ||
                   "게시글"}
               </span>
