@@ -1,14 +1,14 @@
-import React, { useState } from "react";
-import toast from "react-hot-toast";
-import DashboardHeader from "../../components/header/Header";
-import KakaoMap from "../../components/map/KakaoMap";
-import useKakaoMap from "../../hooks/useKakaoMap";
-import useLocationData from "../../hooks/useLocationData";
-import { searchAddress } from "../../services/kakaoGeocoding";
-import styles from "./map.module.css";
-import { useAuthContext } from "../../contexts/AuthContext";
-import { ROUTES } from "../../utils/constants";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from 'react';
+import toast from 'react-hot-toast';
+import DashboardHeader from '../../components/header/Header';
+import KakaoMap from '../../components/map/KakaoMap';
+import useKakaoMap from '../../hooks/useKakaoMap';
+import useLocationData from '../../hooks/useLocationData';
+import { searchAddress } from '../../services/kakaoGeocoding';
+import styles from './map.module.css';
+import { useAuthContext } from '../../contexts/AuthContext';
+import { ROUTES } from '../../utils/constants';
+import { useNavigate } from 'react-router-dom';
 
 const ClinicCard = ({
   label,
@@ -20,9 +20,9 @@ const ClinicCard = ({
   onClick,
 }) => (
   <article
-    className={`${styles.clinicCard} ${isSelected ? styles.selected : ""}`}
+    className={`${styles.clinicCard} ${isSelected ? styles.selected : ''}`}
     onClick={onClick}
-    style={{ cursor: "pointer" }}
+    style={{ cursor: 'pointer' }}
   >
     <div className={styles.clinicTop}>
       <div className={styles.clinicLeft}>
@@ -44,7 +44,7 @@ const ClinicCard = ({
           const searchQuery = encodeURIComponent(`${address} ${name}`);
           window.open(
             `https://search.naver.com/search.naver?query=${searchQuery}`,
-            "_blank"
+            '_blank'
           );
         }}
       >
@@ -56,7 +56,7 @@ const ClinicCard = ({
           e.stopPropagation();
           // 카카오맵에서 주소로 검색하여 길찾기
           const encodedAddress = encodeURIComponent(address);
-          window.open(`https://map.kakao.com/?q=${encodedAddress}`, "_blank");
+          window.open(`https://map.kakao.com/?q=${encodedAddress}`, '_blank');
         }}
       >
         길찾기
@@ -68,14 +68,14 @@ const ClinicCard = ({
 export default function MapPage() {
   const { user, logout } = useAuthContext();
   const navigate = useNavigate();
-  const displayName = user?.id || user?.name || "집사님";
+  const displayName = user?.id || user?.name || '집사님';
 
   // 상태 관리
-  const [activeTab, setActiveTab] = useState("hospital");
+  const [activeTab, setActiveTab] = useState('hospital');
   const [mapCenter, setMapCenter] = useState({ lat: 37.5665, lng: 126.978 });
-  const [searchInput, setSearchInput] = useState("");
+  const [searchInput, setSearchInput] = useState('');
   const [selectedItem, setSelectedItem] = useState(null);
-  const [currentAddress, setCurrentAddress] = useState("서울특별시 중구");
+  const [currentAddress, setCurrentAddress] = useState('서울특별시 중구');
 
   // 커스텀 훅
   const {
@@ -99,7 +99,7 @@ export default function MapPage() {
   );
 
   const handleLogout = () => {
-    if (typeof logout === "function") logout();
+    if (typeof logout === 'function') logout();
     navigate(ROUTES.LOGIN);
   };
 
@@ -113,7 +113,7 @@ export default function MapPage() {
   const handleSearchAddress = async (e) => {
     e.preventDefault();
     if (!searchInput.trim()) {
-      toast.error("주소를 입력해주세요.");
+      toast.error('주소를 입력해주세요.');
       return;
     }
 
@@ -122,9 +122,9 @@ export default function MapPage() {
       setMapCenter({ lat: result.lat, lng: result.lng });
       setCurrentAddress(result.address);
       panTo(result.lat, result.lng);
-      toast.success("주소 검색 완료!");
+      toast.success('주소 검색 완료!');
     } catch (err) {
-      toast.error(err.message || "주소 검색에 실패했습니다.");
+      toast.error(err.message || '주소 검색에 실패했습니다.');
     }
   };
 
@@ -137,8 +137,17 @@ export default function MapPage() {
   const handleMarkerClick = (item) => {
     setSelectedItem(item);
     const cardElement = document.getElementById(`clinic-card-${item.id}`);
-    if (cardElement) {
-      cardElement.scrollIntoView({ behavior: "smooth", block: "center" });
+    const listContainer = document.querySelector(`.${styles.clinicList}`);
+    if (cardElement && listContainer) {
+      // 리스트 컨테이너 내에서만 스크롤 (전체 페이지 스크롤 방지)
+      const containerRect = listContainer.getBoundingClientRect();
+      const cardRect = cardElement.getBoundingClientRect();
+      const scrollTop =
+        listContainer.scrollTop +
+        (cardRect.top - containerRect.top) -
+        containerRect.height / 2 +
+        cardRect.height / 2;
+      listContainer.scrollTo({ top: scrollTop, behavior: 'smooth' });
     }
   };
 
@@ -159,7 +168,7 @@ export default function MapPage() {
   const handleScrollToTop = () => {
     const listElement = document.querySelector(`.${styles.clinicList}`);
     if (listElement) {
-      listElement.scrollTo({ top: 0, behavior: "smooth" });
+      listElement.scrollTo({ top: 0, behavior: 'smooth' });
     }
     // 첫 번째 아이템 선택
     if (listData.length > 0) {
@@ -184,17 +193,17 @@ export default function MapPage() {
             <div className={styles.filterTabs}>
               <button
                 className={`${styles.tab} ${
-                  activeTab === "hospital" ? styles.tabActive : ""
+                  activeTab === 'hospital' ? styles.tabActive : ''
                 }`}
-                onClick={() => handleTabChange("hospital")}
+                onClick={() => handleTabChange('hospital')}
               >
                 🏥 동물병원
               </button>
               <button
                 className={`${styles.tab} ${
-                  activeTab === "shelter" ? styles.tabActive : ""
+                  activeTab === 'shelter' ? styles.tabActive : ''
                 }`}
-                onClick={() => handleTabChange("shelter")}
+                onClick={() => handleTabChange('shelter')}
               >
                 🏠 유기견 보호소
               </button>
@@ -225,9 +234,9 @@ export default function MapPage() {
           <section className={`${styles.card} ${styles.listCard}`}>
             <div className={styles.listHeader}>
               <div className={styles.listTitle}>
-                <span className={styles.dot}></span>총{" "}
-                <strong>{count || 0}개</strong>의{" "}
-                {activeTab === "hospital" ? "동물병원" : "유기견 보호소"}
+                <span className={styles.dot}></span>총{' '}
+                <strong>{count || 0}개</strong>의{' '}
+                {activeTab === 'hospital' ? '동물병원' : '유기견 보호소'}
               </div>
               <button className={styles.toggle} onClick={handleScrollToTop}>
                 가까운 순
@@ -236,7 +245,7 @@ export default function MapPage() {
 
             <div className={styles.clinicList}>
               {loading && (
-                <div style={{ padding: "20px", textAlign: "center" }}>
+                <div style={{ padding: '20px', textAlign: 'center' }}>
                   데이터를 불러오는 중...
                 </div>
               )}
@@ -244,9 +253,9 @@ export default function MapPage() {
               {!loading && dataError && (
                 <div
                   style={{
-                    padding: "20px",
-                    textAlign: "center",
-                    color: "#d32f2f",
+                    padding: '20px',
+                    textAlign: 'center',
+                    color: '#d32f2f',
                   }}
                 >
                   {dataError}
@@ -254,9 +263,9 @@ export default function MapPage() {
               )}
 
               {!loading && !dataError && listData.length === 0 && (
-                <div style={{ padding: "20px", textAlign: "center" }}>
-                  검색 반경 내에{" "}
-                  {activeTab === "hospital" ? "병원이" : "보호소가"} 없습니다.
+                <div style={{ padding: '20px', textAlign: 'center' }}>
+                  검색 반경 내에{' '}
+                  {activeTab === 'hospital' ? '병원이' : '보호소가'} 없습니다.
                 </div>
               )}
 
@@ -294,10 +303,10 @@ export default function MapPage() {
               {!isLoaded && !mapError && (
                 <div
                   style={{
-                    position: "absolute",
-                    top: "50%",
-                    left: "50%",
-                    transform: "translate(-50%, -50%)",
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
                   }}
                 >
                   지도를 로딩 중...
@@ -307,16 +316,16 @@ export default function MapPage() {
               {mapError && (
                 <div
                   style={{
-                    position: "absolute",
-                    top: "50%",
-                    left: "50%",
-                    transform: "translate(-50%, -50%)",
-                    color: "#d32f2f",
-                    textAlign: "center",
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    color: '#d32f2f',
+                    textAlign: 'center',
                   }}
                 >
                   <p>지도를 로드할 수 없습니다.</p>
-                  <p style={{ fontSize: "12px", marginTop: "10px" }}>
+                  <p style={{ fontSize: '12px', marginTop: '10px' }}>
                     {mapError}
                   </p>
                 </div>
