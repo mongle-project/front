@@ -13,6 +13,7 @@ import {
   COMMUNITY_CATEGORY_LABEL_MAP,
   ROUTES,
 } from "../../utils/constants";
+import { formatDateTimeCompact } from "../../utils/dateUtils";
 import styles from "./CommunityListPage.module.css";
 import {
   getArticles,
@@ -26,10 +27,11 @@ const categoryFilters = [
 ];
 
 const legacyCategoryLabelMap = {
-  rabbit: COMMUNITY_CATEGORY_LABEL_MAP.small,
-  hamster: COMMUNITY_CATEGORY_LABEL_MAP.small,
-  "guinea pig": COMMUNITY_CATEGORY_LABEL_MAP.small,
-  turtle: COMMUNITY_CATEGORY_LABEL_MAP.reptile,
+  rabbit: COMMUNITY_CATEGORY_LABEL_MAP.rabbit || "토끼",
+  hamster: COMMUNITY_CATEGORY_LABEL_MAP.hamster || "햄스터",
+  "guinea pig": COMMUNITY_CATEGORY_LABEL_MAP["guinea pig"] || "기니피그",
+  turtle: COMMUNITY_CATEGORY_LABEL_MAP.turtle || "거북이",
+  small: "소동물",
 };
 
 const categoryLabelMap = {
@@ -144,6 +146,21 @@ const CommunityListPage = () => {
     fetchArticles({ pageToLoad: page, append: true });
   }, [page, fetchArticles]);
 
+  const normalizeCategory = (value = "") =>
+    value.toString().replace(/\s+/g, "").toLowerCase();
+
+  const formatArticleDate = (post) => {
+    const rawDate =
+      post.date ||
+      post.createdAt ||
+      post.created_at ||
+      post.updatedAt ||
+      post.updated_at;
+    if (!rawDate) return "";
+    const formatted = formatDateTimeCompact(rawDate);
+    return formatted || rawDate;
+  };
+
   const normalizedActiveFilter = activeFilter.replace(/\s+/g, "").toLowerCase();
   const filteredPosts = useMemo(() => {
     const loweredKeyword = keyword.trim().toLowerCase();
@@ -154,11 +171,17 @@ const CommunityListPage = () => {
         post.category_id ||
         post.categoryName ||
         "";
-      const normalizedCategory = categoryRaw.replace(/\s+/g, "").toLowerCase();
+      const normalizedCategory = normalizeCategory(categoryRaw);
+
+      const matchLegacySmall =
+        normalizedCategory === "small" &&
+        (normalizedActiveFilter === "rabbit" ||
+          normalizedActiveFilter === "hamster");
 
       const matchCategory =
         normalizedActiveFilter === "all" ||
-        normalizedCategory === normalizedActiveFilter;
+        normalizedCategory === normalizedActiveFilter ||
+        matchLegacySmall;
 
       if (!matchCategory) return false;
 
@@ -351,6 +374,7 @@ const CommunityListPage = () => {
                 "익명";
               const summary =
                 post.summary || post.content || "내용이 없습니다.";
+              const displayDate = formatArticleDate(post);
 
               return (
                 <article
@@ -377,7 +401,7 @@ const CommunityListPage = () => {
                       </div>
                       {authorName}
                     </div>
-                    <span>{post.date || ""}</span>
+                    <span>{displayDate}</span>
                     <div className={styles.postStats}>
                       <span className={styles.statItem}>
                         ❤️{" "}
