@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import styles from "./PostDetailPage.module.css";
 import DashboardHeader from "../../components/header/Header";
 import { COMMUNITY_CATEGORY_LABEL_MAP, ROUTES } from "../../utils/constants";
+import { formatDateTimeCompact } from "../../utils/dateUtils";
 import { useAuthContext } from "../../contexts/AuthContext";
 import toast, { Toaster } from "react-hot-toast";
 import {
@@ -14,16 +15,23 @@ import {
 } from "../../api/articles";
 
 const legacyCategoryLabelMap = {
-  rabbit: COMMUNITY_CATEGORY_LABEL_MAP.small,
-  hamster: COMMUNITY_CATEGORY_LABEL_MAP.small,
-  guineapig: COMMUNITY_CATEGORY_LABEL_MAP.small,
-  "guinea pig": COMMUNITY_CATEGORY_LABEL_MAP.small,
-  turtle: COMMUNITY_CATEGORY_LABEL_MAP.reptile,
+  rabbit: COMMUNITY_CATEGORY_LABEL_MAP.rabbit || "토끼",
+  hamster: COMMUNITY_CATEGORY_LABEL_MAP.hamster || "햄스터",
+  guineapig: COMMUNITY_CATEGORY_LABEL_MAP["guinea pig"] || "기니피그",
+  "guinea pig": COMMUNITY_CATEGORY_LABEL_MAP["guinea pig"] || "기니피그",
+  turtle: COMMUNITY_CATEGORY_LABEL_MAP.turtle || "거북이",
+  small: "소동물",
 };
 
 const categoryLabelMap = {
   ...COMMUNITY_CATEGORY_LABEL_MAP,
   ...legacyCategoryLabelMap,
+};
+
+const formatArticleDate = (value) => {
+  if (!value) return "";
+  const formatted = formatDateTimeCompact(value);
+  return formatted || value;
 };
 
 const mapArticleResponse = (response) => {
@@ -35,7 +43,7 @@ const mapArticleResponse = (response) => {
     content: data?.content ?? "",
     category: data?.category ?? "",
     images: data?.img_url ? [data.img_url] : [],
-    createdAt: data?.created_at,
+    createdAt: formatArticleDate(data?.created_at),
     updatedAt: data?.updated_at,
     likeCount: data?.likesCount ?? 0,
     commentsCount: data?.commentsCount ?? 0,

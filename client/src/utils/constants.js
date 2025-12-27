@@ -29,7 +29,8 @@ export const EVENT_TYPES = {
 export const COMMUNITY_CATEGORIES = [
   { value: 'dog', label: '강아지', icon: '🐶' },
   { value: 'cat', label: '고양이', icon: '🐱' },
-  { value: 'small', label: '소동물 (토끼/햄스터 등)', icon: '🐹' },
+  { value: 'rabbit', label: '토끼', icon: '🐰' },
+  { value: 'hamster', label: '햄스터', icon: '🐹' },
   { value: 'bird', label: '새', icon: '🦜' },
   { value: 'reptile', label: '파충류', icon: '🦎' },
   { value: 'fish', label: '어류', icon: '🐟' },
@@ -41,11 +42,23 @@ export const COMMUNITY_CATEGORY_LABEL_MAP = COMMUNITY_CATEGORIES.reduce(
     acc[cur.value] = cur.label;
     return acc;
   },
-  {}
+  {
+    // 기존 데이터/백엔드에서 넘어오는 레거시 카테고리 대비
+    small: '소동물',
+    guineapig: '기니피그',
+    'guinea pig': '기니피그',
+    turtle: '거북이',
+  }
 );
 
 export const COMMUNITY_CATEGORY_SET = new Set(
-  COMMUNITY_CATEGORIES.map((category) => category.value)
+  COMMUNITY_CATEGORIES.map((category) => category.value).concat([
+    // 레거시 호환용
+    'small',
+    'guineapig',
+    'guinea pig',
+    'turtle',
+  ])
 );
 
 export const DEFAULT_COMMUNITY_CATEGORY = COMMUNITY_CATEGORIES[0].value;
