@@ -33,6 +33,8 @@ const CalendarPage = () => {
   const [activeFilter, setActiveFilter] = useState("all");
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [eventToDelete, setEventToDelete] = useState(null);
 
   // 월별 일정 조회
   const fetchEvents = useCallback(async () => {
@@ -131,7 +133,8 @@ const CalendarPage = () => {
     const diff =
       (target.setHours(0, 0, 0, 0) - today.setHours(0, 0, 0, 0)) /
       (1000 * 60 * 60 * 24);
-    return Math.max(0, Math.round(diff));
+    const days = Math.max(0, Math.round(diff));
+    return days === 0 ? "Day" : days;
   };
 
   const formatDateLabel = (dateString) => {
@@ -155,9 +158,16 @@ const CalendarPage = () => {
 
   const handleComplete = async (event) => {
     try {
-      await calendarService.updateEvent(event.id, {
-        isComplete: !event.isComplete,
-      });
+      const payload = {
+        petId: event.petId ? Number(event.petId) : null,
+        title: event.title,
+        category: event.type,
+        date: event.date,
+        startTime: event.time || null,
+        completed: !event.isComplete,
+      };
+
+      await calendarService.updateEvent(event.id, payload);
       toast.success(
         event.isComplete
           ? `"${event.title}" 일정을 미완료로 변경했어요.`
@@ -170,14 +180,22 @@ const CalendarPage = () => {
     }
   };
 
-  const handleDelete = async (event) => {
-    const shouldDelete = confirm(
-      `"${event.title}" 일정을 삭제할까요?\n삭제 시 되돌릴 수 없어요.`
-    );
-    if (shouldDelete) {
+  const openDeleteModal = (event) => {
+    setEventToDelete(event);
+    setIsDeleteModalOpen(true);
+  };
+
+  const closeDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+    setEventToDelete(null);
+  };
+
+  const handleDelete = async () => {
+    if (eventToDelete) {
       try {
-        await calendarService.deleteEvent(event.id);
+        await calendarService.deleteEvent(eventToDelete.id);
         toast.success("삭제가 완료됐어요.");
+        closeDeleteModal();
         fetchEvents(); // 목록 새로고침
       } catch (error) {
         console.error("삭제 실패:", error);
@@ -359,7 +377,7 @@ const CalendarPage = () => {
                             <button
                               type="button"
                               aria-label="삭제"
-                              onClick={() => handleDelete(event)}
+                              onClick={() => openDeleteModal(event)}
                               title="삭제"
                             >
                               🗑️
@@ -415,8 +433,16 @@ const CalendarPage = () => {
               ) : (
                 <ul className={styles.sideList}>
                   {todayEvents.map((event) => (
-                    <li key={event.id} className={styles.sideItem}>
-                      <div>
+                    <li
+                      key={event.id}
+                      className={`${styles.sideItemCard} ${
+                        styles[`${event.type}Card`]
+                      } ${event.isComplete ? styles.completedCard : ""}`}
+                    >
+                      <span className={styles.sideDayBadge}>
+                        {event.isComplete ? "완료" : typeLabels[event.type]}
+                      </span>
+                      <div className={styles.sideItemBody}>
                         <p className={styles.sideTitle}>
                           {event.isComplete && (
                             <span className={styles.completeMark}>✓ </span>
@@ -436,6 +462,45 @@ const CalendarPage = () => {
             </div>
           </div>
         </section>
+      </div>
+
+      {/* 삭제 확인 모달 */}
+      <div
+        className={`${styles.modal} ${isDeleteModalOpen ? styles.active : ""}`}
+      >
+        <div className={styles.deleteModalContent}>
+          <div className={styles.deleteModalHeader}>
+            <div className={styles.deleteIcon}>⚠️</div>
+            <h2 className={styles.deleteModalTitle}>일정 삭제</h2>
+          </div>
+
+          <div className={styles.deleteModalBody}>
+            <p className={styles.deleteMessage}>
+              정말로 <strong>{eventToDelete?.title}</strong> 일정을
+              삭제하시겠습니까?
+            </p>
+            <p className={styles.deleteWarning}>
+              삭제 시 되돌릴 수 없어요.
+            </p>
+          </div>
+
+          <div className={styles.deleteModalActions}>
+            <button
+              type="button"
+              className={`${styles.modalBtn} ${styles.modalBtnSecondary}`}
+              onClick={closeDeleteModal}
+            >
+              취소
+            </button>
+            <button
+              type="button"
+              className={`${styles.modalBtn} ${styles.modalBtnDanger}`}
+              onClick={handleDelete}
+            >
+              삭제
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
