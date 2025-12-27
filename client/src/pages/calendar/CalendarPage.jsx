@@ -133,7 +133,8 @@ const CalendarPage = () => {
     const diff =
       (target.setHours(0, 0, 0, 0) - today.setHours(0, 0, 0, 0)) /
       (1000 * 60 * 60 * 24);
-    return Math.max(0, Math.round(diff));
+    const days = Math.max(0, Math.round(diff));
+    return days === 0 ? "Day" : days;
   };
 
   const formatDateLabel = (dateString) => {
@@ -432,8 +433,16 @@ const CalendarPage = () => {
               ) : (
                 <ul className={styles.sideList}>
                   {todayEvents.map((event) => (
-                    <li key={event.id} className={styles.sideItem}>
-                      <div>
+                    <li
+                      key={event.id}
+                      className={`${styles.sideItemCard} ${
+                        styles[`${event.type}Card`]
+                      } ${event.isComplete ? styles.completedCard : ""}`}
+                    >
+                      <span className={styles.sideDayBadge}>
+                        {event.isComplete ? "완료" : typeLabels[event.type]}
+                      </span>
+                      <div className={styles.sideItemBody}>
                         <p className={styles.sideTitle}>
                           {event.isComplete && (
                             <span className={styles.completeMark}>✓ </span>
