@@ -3,24 +3,22 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import toast, { Toaster } from 'react-hot-toast';
 import styles from './PostWritePage.module.css';
 import DashboardHeader from '../../components/header/Header';
-import { ROUTES } from '../../utils/constants';
+import {
+  COMMUNITY_CATEGORIES,
+  COMMUNITY_CATEGORY_SET,
+  DEFAULT_COMMUNITY_CATEGORY,
+  ROUTES,
+} from '../../utils/constants';
 import { useAuthContext } from '../../contexts/AuthContext';
 import {
   createArticle,
   getArticleById,
   updateArticle,
 } from '../../api/articles';
-const categories = [
-  { value: 'dog', label: '강아지', icon: '🐶' },
-  { value: 'cat', label: '고양이', icon: '🐱' },
-  { value: 'rabbit', label: '토끼', icon: '🐰' },
-  { value: 'hamster', label: '햄스터', icon: '🐹' },
-  { value: 'guinea pig', label: '기니피그', icon: '🐭' },
-  { value: 'bird', label: '조류', icon: '🦜' },
-  { value: 'fish', label: '어류', icon: '🐟' },
-  { value: 'reptile', label: '파충류', icon: '🦎' },
-  { value: 'turtle', label: '거북이', icon: '🐢' },
-];
+
+const ensureValidCategory = (value) =>
+  COMMUNITY_CATEGORY_SET.has(value) ? value : DEFAULT_COMMUNITY_CATEGORY;
+
 const PostWritePage = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -28,7 +26,9 @@ const PostWritePage = () => {
   const { user, logout } = useAuthContext();
   const isEdit = Boolean(new URLSearchParams(location.search).get('edit'));
   const editId = new URLSearchParams(location.search).get('edit');
-  const [selectedCategory, setSelectedCategory] = useState('dog');
+  const [selectedCategory, setSelectedCategory] = useState(
+    DEFAULT_COMMUNITY_CATEGORY
+  );
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [imagePreview, setImagePreview] = useState('');
@@ -41,7 +41,7 @@ const PostWritePage = () => {
     const saved = localStorage.getItem('community_post_draft');
     if (saved) {
       const data = JSON.parse(saved);
-      setSelectedCategory(data.selectedCategory || 'dog');
+      setSelectedCategory(ensureValidCategory(data.selectedCategory));
       setTitle(data.title || '');
       setContent(data.content || '');
       setImagePreview(data.imagePreview || '');
@@ -54,7 +54,7 @@ const PostWritePage = () => {
       try {
         const res = await getArticleById(editId);
         const data = res?.data ?? res;
-        setSelectedCategory(data?.category || 'dog');
+        setSelectedCategory(ensureValidCategory(data?.category));
         setTitle(data?.title || '');
         setContent(data?.content || '');
         setImagePreview(data?.img_url || '');
@@ -219,7 +219,7 @@ const PostWritePage = () => {
                 <span className={styles.required}>*</span>
               </div>
               <div className={styles.categoryRow}>
-                {categories.map((cat) => (
+                {COMMUNITY_CATEGORIES.map((cat) => (
                   <button
                     key={cat.value}
                     type="button"
