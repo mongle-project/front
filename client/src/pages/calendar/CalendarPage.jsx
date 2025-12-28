@@ -6,6 +6,7 @@ import DashboardHeader from "../../components/header/Header";
 import { useAuthContext } from "../../contexts/AuthContext";
 import calendarService from "../../services/calendarService";
 import { ROUTES } from "../../utils/constants";
+import { formatDateLabel, formatTimeReadable } from "../../utils/dateUtils";
 import styles from "./CalendarPage.module.css";
 
 const weekdayLabels = ["일", "월", "화", "수", "목", "금", "토"];
@@ -129,7 +130,9 @@ const CalendarPage = () => {
 
   const getDaysRemaining = (dateString) => {
     const today = new Date();
-    const target = new Date(dateString);
+    // YYYY-MM-DD 형식을 로컬 타임존으로 파싱
+    const [year, month, day] = dateString.split('-').map(Number);
+    const target = new Date(year, month - 1, day);
     const diff =
       (target.setHours(0, 0, 0, 0) - today.setHours(0, 0, 0, 0)) /
       (1000 * 60 * 60 * 24);
@@ -137,20 +140,8 @@ const CalendarPage = () => {
     return days === 0 ? "Day" : days;
   };
 
-  const formatDateLabel = (dateString) => {
-    const dateObj = new Date(dateString);
-    const weekday = weekdayLabels[dateObj.getDay()];
-    return `${dateObj.getMonth() + 1}월 ${dateObj.getDate()}일 (${weekday})`;
-  };
-
-  const formatTime = (timeString) => {
-    if (!timeString) return "";
-    const [hours, minutes] = timeString.split(":");
-    const hour = parseInt(hours, 10);
-    const period = hour < 12 ? "오전" : "오후";
-    const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
-    return `${period} ${displayHour}:${minutes}`;
-  };
+  // 날짜/시간 포맷팅 - 공통 유틸 사용
+  // formatDateLabel과 formatTimeReadable은 dateUtils에서 import됨
 
   const handleEdit = (event) => {
     navigate(`${ROUTES.CALENDAR_ADD}?edit=${event.id}`);
@@ -345,7 +336,7 @@ const CalendarPage = () => {
                             </p>
                             <p className={styles.eventCardMeta}>
                               {formatDateLabel(event.date)}
-                              {event.time && ` · ${formatTime(event.time)}`}
+                              {event.time && ` · ${formatTimeReadable(event.time)}`}
                             </p>
                           </div>
                         </div>
@@ -415,7 +406,7 @@ const CalendarPage = () => {
                         <p className={styles.sideTitle}>{event.title}</p>
                         <p className={styles.sideMeta}>
                           {formatDateLabel(event.date)}
-                          {event.time && ` · ${formatTime(event.time)}`}
+                          {event.time && ` · ${formatTimeReadable(event.time)}`}
                         </p>
                       </div>
                     </li>
@@ -450,7 +441,7 @@ const CalendarPage = () => {
                           {event.title}
                         </p>
                         <p className={styles.sideMeta}>
-                          {event.time && formatTime(event.time)}
+                          {event.time && formatTimeReadable(event.time)}
                           {event.time && event.pet && " · "}
                           {event.pet}
                         </p>

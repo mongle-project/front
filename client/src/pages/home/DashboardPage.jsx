@@ -8,6 +8,7 @@ import { getPets } from "../../api/pets";
 import { getMonthlyCalendarEvents } from "../../api/calendarEvents";
 import { getMyArticles } from "../../api/articles";
 import { getNewsList } from "../../api/news";
+import { formatDateTimeReadable } from "../../utils/dateUtils";
 
 const quickActions = [
   {
@@ -117,22 +118,6 @@ const DashboardPage = () => {
     return `D-${diff}`;
   };
 
-  // 날짜 포맷팅
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    const weekdays = ["일", "월", "화", "수", "목", "금", "토"];
-    const weekday = weekdays[date.getDay()];
-    const hours = date.getHours();
-    const minutes = String(date.getMinutes()).padStart(2, "0");
-    const ampm = hours < 12 ? "오전" : "오후";
-    const displayHours = hours % 12 || 12;
-
-    return `${year}.${month}.${day} (${weekday}) ${ampm} ${displayHours}:${minutes}`;
-  };
-
   // 카테고리 이모지 매핑
   const getCategoryEmoji = (category) => {
     const emojiMap = {
@@ -221,6 +206,7 @@ const DashboardPage = () => {
         const transformedEvents = eventsArray
           .map((event) => {
             const eventDate = event.eventDate || event.event_date;
+            const eventTime = event.eventTime || event.event_time;
             const eventContent = event.content || event.title || "일정";
             const petInfo = transformedPets.find(
               (p) => p.id === event.petProfileId || p.id === event.pet_profile_id
@@ -228,7 +214,7 @@ const DashboardPage = () => {
             return {
               id: event.id,
               dDay: calculateDday(eventDate),
-              dateLabel: formatDate(eventDate),
+              dateLabel: formatDateTimeReadable(eventDate),
               title: `${getCategoryEmoji(event.category)} ${eventContent}`,
               pet: petInfo
                 ? `${petInfo.emoji} ${petInfo.name}`
@@ -238,6 +224,7 @@ const DashboardPage = () => {
                 parseInt(calculateDday(eventDate).split("-")[1]) <= 7,
               path: ROUTES.CALENDAR,
               eventDate: eventDate,
+              eventTime: eventTime,
               category: event.category || 'medication', // 카테고리 정보 추가
             };
           })
@@ -429,10 +416,23 @@ const DashboardPage = () => {
               <div className={styles.scheduleList}>
                 {schedules.length > 0 ? (
                   schedules.map((item) => {
-                    const eventDate = new Date(item.eventDate);
+                    // 날짜 파싱 (로컬 타임존으로)
+                    const [year, month, day] = item.eventDate.split('-').map(Number);
+                    const eventDate = new Date(year, month - 1, day);
                     const weekdayLabels = ["일", "월", "화", "수", "목", "금", "토"];
                     const weekday = weekdayLabels[eventDate.getDay()];
-                    const dateLabel = `${eventDate.getMonth() + 1}월 ${eventDate.getDate()}일 (${weekday})`;
+
+                    // 시간 포맷팅 (HH:MM 형식을 오전/오후 형식으로 변환)
+                    let timeLabel = "";
+                    if (item.eventTime) {
+                      const [hours, minutes] = item.eventTime.split(':');
+                      const hour = parseInt(hours, 10);
+                      const period = hour < 12 ? "오전" : "오후";
+                      const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+                      timeLabel = ` ${period} ${displayHour}:${minutes}`;
+                    }
+
+                    const dateLabel = `${eventDate.getMonth() + 1}월 ${eventDate.getDate()}일 (${weekday})${timeLabel}`;
 
                     // 카테고리에 따른 클래스명 (vaccination, hospital, grooming, medication)
                     const categoryClass = item.category || 'medication';

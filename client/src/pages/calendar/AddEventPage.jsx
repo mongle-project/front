@@ -93,11 +93,18 @@ const AddEventPage = () => {
         const event = response.data;
 
         if (event) {
+          // eventDate를 YYYY-MM-DD 형식으로 추출 (타임존 변환 없이)
+          let dateString = "";
+          if (event.eventDate) {
+            // "T" 또는 공백으로 날짜와 시간 분리
+            dateString = event.eventDate.split("T")[0].split(" ")[0];
+          }
+
           setFormData({
             petId: event.petProfileId || "",
             category: event.category || "vaccination",
             title: event.title || "",
-            date: event.eventDate ? event.eventDate.split("T")[0] : "",
+            date: dateString,
             startTime: event.eventTime || "",
             completed: event.isComplete || false,
           });
