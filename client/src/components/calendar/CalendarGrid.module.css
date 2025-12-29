@@ -3,6 +3,8 @@
   gap: 0.6rem;
   width: 100%;
   max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .weekdays {
@@ -12,17 +14,20 @@
   font-weight: 700;
   text-align: center;
   padding: 0 0.2rem;
+  min-width: 0;
 }
 
 .grid {
   display: grid;
   gap: 0.4rem;
+  min-width: 0;
 }
 
 .weekRow {
   display: grid;
-  grid-template-columns: repeat(7, minmax(105px, 1fr));
+  grid-template-columns: repeat(7, 1fr);
   gap: 0.4rem;
+  min-width: 0;
 }
 
 .cell,
@@ -175,25 +180,147 @@
   color: #1e88e5;
 }
 
-@media (max-width: 768px) {
+/* 태블릿 가로 */
+@media (max-width: 1024px) {
   .weekdays {
-    font-size: 0.9rem;
-  }
-
-  .weekRow {
-    grid-template-columns: repeat(7, minmax(78px, 1fr));
-    gap: 0.32rem;
+    font-size: 0.95rem;
   }
 
   .cell,
   .emptyCell {
-    height: clamp(90px, 13vw, 120px);
+    height: clamp(95px, 11vw, 125px);
+    padding: 0.4rem;
+  }
+
+  .dayNumber {
+    font-size: 1rem;
   }
 }
 
-@media (max-width: 540px) {
+/* 태블릿 세로 */
+@media (max-width: 768px) {
+  .weekdays {
+    font-size: 0.85rem;
+    padding: 0;
+  }
+
+  .grid {
+    gap: 0.3rem;
+  }
+
+  .weekRow {
+    gap: 0.3rem;
+  }
+
   .cell,
   .emptyCell {
-    height: clamp(85px, 19vw, 115px);
+    height: clamp(75px, 12vw, 100px);
+    padding: 0.35rem;
+    border-radius: 12px;
+  }
+
+  .dayNumber {
+    font-size: 0.9rem;
+  }
+
+  .todayBadge {
+    padding: 0.2rem 0.4rem;
+    font-size: 0.65rem;
+  }
+
+  .eventLine {
+    width: 70%;
+    height: 2px;
+  }
+}
+
+/* 모바일 큰 화면 */
+@media (max-width: 540px) {
+  .calendar {
+    gap: 0.4rem;
+  }
+
+  .weekdays {
+    font-size: 0.75rem;
+  }
+
+  .grid {
+    gap: 0.25rem;
+  }
+
+  .weekRow {
+    gap: 0.25rem;
+  }
+
+  .cell,
+  .emptyCell {
+    height: clamp(55px, 14vw, 80px);
+    padding: 0.25rem;
+    border-radius: 10px;
+    border-width: 1.5px;
+  }
+
+  .dayNumber {
+    font-size: 0.8rem;
+  }
+
+  .todayBadge {
+    padding: 0.15rem 0.35rem;
+    font-size: 0.6rem;
+    border-radius: 6px;
+  }
+
+  .eventLine {
+    width: 80%;
+    height: 1.5px;
+    margin: 1px auto 0;
+  }
+
+  .today {
+    box-shadow: 0 6px 16px rgba(129, 199, 132, 0.2);
+  }
+}
+
+/* 모바일 작은 화면 */
+@media (max-width: 400px) {
+  .weekdays {
+    font-size: 0.7rem;
+  }
+
+  .grid {
+    gap: 0.2rem;
+  }
+
+  .weekRow {
+    gap: 0.2rem;
+  }
+
+  .cell,
+  .emptyCell {
+    height: clamp(48px, 13vw, 65px);
+    padding: 0.2rem;
+    border-radius: 8px;
+  }
+
+  .dayNumber {
+    font-size: 0.75rem;
+  }
+
+  .dateHeader {
+    margin-bottom: 0;
+  }
+
+  .todayBadge {
+    display: none;
+  }
+
+  .events {
+    gap: 0.1rem;
+    padding-bottom: 0.15rem;
+  }
+
+  .eventLine {
+    width: 85%;
+    height: 1.5px;
   }
 }

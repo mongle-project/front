@@ -125,6 +125,7 @@
   width: 100%;
   overflow: hidden;
   min-width: 0;
+  box-sizing: border-box;
 }
 
 .calendarHeader {
@@ -581,19 +582,81 @@
   background: #f1f8e9;
 }
 
+/* 태블릿 가로 - 사이드바 하단으로 이동 */
 @media (max-width: 1200px) {
   .contentGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .rightColumn {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+}
+
+/* 태블릿 세로 */
+@media (max-width: 900px) {
+  .container {
+    padding: 0 1.5rem 2rem;
+    margin-top: 1rem;
+  }
+
+  .pageHeader {
+    padding: 1rem 1.2rem;
+    border-radius: 18px;
+  }
+
+  .title {
+    font-size: 1.8rem;
+  }
+
+  .calendarCard {
+    padding: 1.5rem;
+    border-radius: 20px;
+  }
+
+  .calendarHeader {
+    flex-wrap: wrap;
+    gap: 0.8rem;
+  }
+
+  .monthTitleRow h2 {
+    font-size: 1.3rem;
+  }
+
+  .legendRow {
+    gap: 0.5rem;
+    font-size: 0.85rem;
+  }
+
+  .legendDot {
+    width: 12px;
+    height: 12px;
+  }
+
+  .rightColumn {
     grid-template-columns: 1fr;
   }
 }
 
 @media (max-width: 768px) {
   .container {
-    padding: 0 1.2rem 2rem;
+    padding: 0 1rem 2rem;
   }
 
   .pageHeader {
     flex-direction: column;
+    padding: 1rem;
+    gap: 0.8rem;
+  }
+
+  .title {
+    font-size: 1.6rem;
+  }
+
+  .subtitle {
+    font-size: 0.9rem;
   }
 
   .actions {
@@ -603,6 +666,253 @@
   .button {
     flex: 1;
     text-align: center;
+    padding: 0.7rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .calendarCard {
+    padding: 1.2rem;
+    border-radius: 18px;
+  }
+
+  .calendarHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.6rem;
+  }
+
+  .monthControls {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .navButton {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.85rem;
+  }
+
+  .legendRow {
+    gap: 0.4rem;
+    font-size: 0.8rem;
+  }
+
+  .legendDot {
+    width: 10px;
+    height: 10px;
+  }
+
+  .monthListCard {
+    padding: 1rem;
+    border-radius: 16px;
+  }
+
+  .chips {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .chip {
+    padding: 0.35rem 0.7rem;
+    font-size: 0.8rem;
+  }
+
+  .eventCard {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.6rem;
+    padding: 0.8rem;
+  }
+
+  .eventRight {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .sideCard {
+    padding: 1rem 1.2rem;
+    border-radius: 18px;
+  }
+}
+
+/* 모바일 큰 화면 */
+@media (max-width: 540px) {
+  .container {
+    padding: 0 0.8rem 1.5rem;
+    margin-top: 0.8rem;
+  }
+
+  .pageHeader {
+    padding: 0.9rem;
+    border-radius: 15px;
+  }
+
+  .title {
+    font-size: 1.4rem;
+  }
+
+  .breadcrumb {
+    font-size: 0.85rem;
+  }
+
+  .calendarCard {
+    padding: 1rem;
+    border-radius: 15px;
+  }
+
+  .monthTitleRow h2 {
+    font-size: 1.1rem;
+  }
+
+  .monthBadge {
+    padding: 0.25rem 0.6rem;
+    font-size: 0.8rem;
+    border-radius: 10px;
+  }
+
+  .eventCardsWrapper {
+    max-height: 300px;
+  }
+
+  .typeBadge {
+    min-width: 70px;
+    padding: 0.35rem 0.6rem;
+    font-size: 0.8rem;
+  }
+
+  .petBadge {
+    padding: 0.35rem 0.7rem;
+    font-size: 0.85rem;
+  }
+
+  .sideItemCard {
+    padding: 0.8rem;
+  }
+
+  .sideDayBadge {
+    min-width: 48px;
+    padding: 0.3rem 0.6rem;
+    font-size: 0.8rem;
+  }
+}
+
+/* 모바일 작은 화면 */
+@media (max-width: 400px) {
+  .container {
+    padding: 0 0.6rem 1.2rem;
+  }
+
+  .pageHeader {
+    padding: 0.8rem;
+  }
+
+  .title {
+    font-size: 1.25rem;
+  }
+
+  .button {
+    padding: 0.6rem 0.8rem;
+    font-size: 0.85rem;
+  }
+
+  .calendarCard {
+    padding: 0.8rem;
+    border-radius: 12px;
+  }
+
+  .calendarHeader {
+    gap: 0.5rem;
+  }
+
+  .monthMeta {
+    font-size: 0.8rem;
+  }
+
+  .monthTitleRow h2 {
+    font-size: 1rem;
+  }
+
+  .monthBadge {
+    padding: 0.2rem 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  .navButton {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.8rem;
+    border-radius: 8px;
+  }
+
+  .legendRow {
+    font-size: 0.75rem;
+    gap: 0.35rem;
+  }
+
+  .legendDot {
+    width: 8px;
+    height: 8px;
+  }
+
+  .monthListCard {
+    padding: 0.8rem;
+  }
+
+  .monthListHeader {
+    gap: 0.6rem;
+  }
+
+  .monthListHeader h3 {
+    font-size: 1rem;
+  }
+
+  .chip {
+    padding: 0.3rem 0.55rem;
+    font-size: 0.75rem;
+  }
+
+  .eventCard {
+    padding: 0.7rem;
+    border-radius: 12px;
+  }
+
+  .typeBadge {
+    min-width: 60px;
+    padding: 0.3rem 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  .eventCardTitle {
+    font-size: 0.9rem;
+  }
+
+  .eventCardMeta {
+    font-size: 0.8rem;
+  }
+
+  .sideCard {
+    padding: 0.9rem 1rem;
+    border-radius: 15px;
+  }
+
+  .sideCard h3 {
+    font-size: 1rem;
+  }
+
+  .sideBadge {
+    padding: 0.25rem 0.55rem;
+    font-size: 0.8rem;
+  }
+
+  .sideItemCard {
+    padding: 0.7rem;
+    border-radius: 12px;
+  }
+
+  .sideTitle {
+    font-size: 0.9rem;
+  }
+
+  .sideMeta {
+    font-size: 0.85rem;
   }
 }
 

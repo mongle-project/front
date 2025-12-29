@@ -27,9 +27,9 @@ export const searchAddress = (address) => {
           address: coord.address_name || coord.road_address_name || address,
         });
       } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
-        reject(new Error("검색 결과가 없습니다. 다른 주소를 입력해주세요."));
+        reject(new Error("검색 결과가 없습니다. \n다른 주소를 입력해주세요."));
       } else {
-        reject(new Error("주소 검색에 실패했습니다. 다시 시도해주세요."));
+        reject(new Error("주소 검색에 실패했습니다. \n다시 시도해주세요."));
       }
     });
   });
