@@ -77,9 +77,11 @@ const CommunityListPage = () => {
     if (filterParam === "myPosts") {
       setShowMyPostsOnly(true);
       setShowBookmarkedOnly(false);
+      setActiveFilter("all"); // 내 글 모드에서는 카테고리를 전체로 고정
     } else if (filterParam === "bookmarked") {
       setShowMyPostsOnly(false);
       setShowBookmarkedOnly(true);
+      setActiveFilter("all"); // 북마크 모드에서도 카테고리를 전체로 고정
     } else {
       setShowMyPostsOnly(false);
       setShowBookmarkedOnly(false);
@@ -150,18 +152,38 @@ const CommunityListPage = () => {
     value.toString().replace(/\s+/g, "").toLowerCase();
 
   const formatArticleDate = (post) => {
-    const rawDate =
-      post.date ||
-      post.createdAt ||
-      post.created_at ||
-      post.updatedAt ||
-      post.updated_at;
-    if (!rawDate) return "";
-    const formatted = formatDateTimeCompact(rawDate);
-    return formatted || rawDate;
+    // 등록/수정 시점을 분리해서 보여주기 위해 각각 포맷한다.
+    const createdRaw = post.date || post.createdAt || post.created_at;
+    const updatedRaw = post.updatedAt || post.updated_at;
+    const createdDate = createdRaw ? new Date(createdRaw) : null;
+    const updatedDate = updatedRaw ? new Date(updatedRaw) : null;
+    const created =
+      createdRaw && (formatDateTimeCompact(createdRaw) || createdRaw);
+    const updated =
+      updatedRaw && (formatDateTimeCompact(updatedRaw) || updatedRaw);
+    const formattedSame = created && updated && created === updated;
+    const wasUpdated = Boolean(
+      updatedDate &&
+        createdDate &&
+        !Number.isNaN(createdDate.getTime()) &&
+        !Number.isNaN(updatedDate.getTime()) &&
+        createdDate.getTime() !== updatedDate.getTime() &&
+        !formattedSame
+    );
+
+    return {
+      created: created || "",
+      updated: updated || "",
+      display: wasUpdated && updated ? updated : created || "",
+      wasUpdated,
+    };
   };
 
-  const normalizedActiveFilter = activeFilter.replace(/\s+/g, "").toLowerCase();
+  const isCategoryLocked = showMyPostsOnly || showBookmarkedOnly;
+  const activeCategoryTab = isCategoryLocked ? "all" : activeFilter;
+  const normalizedActiveFilter = activeCategoryTab
+    .replace(/\s+/g, "")
+    .toLowerCase();
   const filteredPosts = useMemo(() => {
     const loweredKeyword = keyword.trim().toLowerCase();
     return posts.filter((post) => {
@@ -253,19 +275,25 @@ const CommunityListPage = () => {
                   key={tab.value}
                   type="button"
                   className={`${styles.filterButton} ${
-                    activeFilter === tab.value &&
-                    !showMyPostsOnly &&
-                    !showBookmarkedOnly
-                      ? styles.filterActive
+                    activeCategoryTab === tab.value ? styles.filterActive : ""
+                  } ${
+                    isCategoryLocked && tab.value !== "all"
+                      ? styles.filterLocked
                       : ""
                   }`}
                   onClick={() => {
+                    if (isCategoryLocked && tab.value !== "all") return;
                     setActiveFilter(tab.value);
                     setShowMyPostsOnly(false);
                     setShowBookmarkedOnly(false);
                     setSearchParams({});
                   }}
-                  disabled={showMyPostsOnly || showBookmarkedOnly}
+                  disabled={isCategoryLocked && tab.value !== "all"}
+                  title={
+                    isCategoryLocked && tab.value !== "all"
+                      ? "내 글/북마크 모드에서는 전체만 선택할 수 있습니다"
+                      : undefined
+                  }
                 >
                   <span className={styles.filterIcon}>{tab.icon}</span>
                   {tab.label}
@@ -306,6 +334,7 @@ const CommunityListPage = () => {
                 } else {
                   setShowMyPostsOnly(true);
                   setShowBookmarkedOnly(false);
+                  setActiveFilter("all"); // 카테고리를 전체로 고정
                   setSearchParams({ filter: "myPosts" });
                 }
               }}
@@ -326,11 +355,14 @@ const CommunityListPage = () => {
                 } else {
                   setShowBookmarkedOnly(true);
                   setShowMyPostsOnly(false);
+                  setActiveFilter("all"); // 카테고리를 전체로 고정
                   setSearchParams({ filter: "bookmarked" });
                 }
               }}
             >
-              <span>🔖 북마크한 글</span>
+              <span>
+                {showBookmarkedOnly ? "📋 전체 게시글 보기" : "🔖 북마크한 글"}
+              </span>
             </button>
           </div>
         </div>
@@ -374,7 +406,7 @@ const CommunityListPage = () => {
                 "익명";
               const summary =
                 post.summary || post.content || "내용이 없습니다.";
-              const displayDate = formatArticleDate(post);
+              const { created, updated } = formatArticleDate(post);
 
               return (
                 <article
@@ -401,7 +433,19 @@ const CommunityListPage = () => {
                       </div>
                       {authorName}
                     </div>
-                    <span>{displayDate}</span>
+                    <div className={styles.postDates}>
+                      <span className={styles.dateLabel}>등록 일시</span>
+                      <span className={styles.dateValue}>
+                        {created || updated || ""}
+                      </span>
+                      {updated && (
+                        <>
+                          <span className={styles.dateDivider}>·</span>
+                          <span className={styles.dateLabel}>수정 일시</span>
+                          <span className={styles.dateValue}>{updated}</span>
+                        </>
+                      )}
+                    </div>
                     <div className={styles.postStats}>
                       <span className={styles.statItem}>
                         ❤️{" "}

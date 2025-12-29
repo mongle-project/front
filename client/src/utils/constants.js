@@ -31,10 +31,10 @@ export const COMMUNITY_CATEGORIES = [
   { value: 'cat', label: '고양이', icon: '🐱' },
   { value: 'rabbit', label: '토끼', icon: '🐰' },
   { value: 'hamster', label: '햄스터', icon: '🐹' },
+  { value: 'guineapig', label: '기니피그', icon: '🐭' },
   { value: 'bird', label: '새', icon: '🦜' },
   { value: 'reptile', label: '파충류', icon: '🦎' },
   { value: 'fish', label: '어류', icon: '🐟' },
-  { value: 'etc', label: '기타', icon: '✨' },
 ];
 
 export const COMMUNITY_CATEGORY_LABEL_MAP = COMMUNITY_CATEGORIES.reduce(
@@ -48,6 +48,7 @@ export const COMMUNITY_CATEGORY_LABEL_MAP = COMMUNITY_CATEGORIES.reduce(
     guineapig: '기니피그',
     'guinea pig': '기니피그',
     turtle: '거북이',
+    etc: '기타',
   }
 );
 
@@ -58,6 +59,7 @@ export const COMMUNITY_CATEGORY_SET = new Set(
     'guineapig',
     'guinea pig',
     'turtle',
+    'etc',
   ])
 );
 

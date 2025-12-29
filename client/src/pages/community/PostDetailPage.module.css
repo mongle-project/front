@@ -125,6 +125,27 @@
   color: #2e7d32;
 }
 
+.dateRow {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.dateLabel {
+  font-weight: 700;
+  color: #2e7d32;
+}
+
+.dateValue {
+  color: #81c784;
+  font-size: 0.95rem;
+}
+
+.dateDivider {
+  color: #c8e6c9;
+}
+
 .date {
   color: #81c784;
   font-size: 0.95rem;
