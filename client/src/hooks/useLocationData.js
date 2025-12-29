@@ -38,8 +38,10 @@ const useLocationData = (activeTab, center, currentAddress = "") => {
   const [allData, setAllData] = useState([]); // 지도에 표시할 데이터
   const [listData, setListData] = useState([]); // 거리순 정렬 데이터 (리스트용)
   const [loading, setLoading] = useState(false);
+  const [listLoading, setListLoading] = useState(false); // 리스트 데이터 로딩 상태
   const [error, setError] = useState(null);
   const [count, setCount] = useState(0);
+  const [nearbyCount, setNearbyCount] = useState(0); // 3km 이내 데이터 개수
 
   // 지도 마커용 데이터 조회 (서울: 5km 반경, 그 외: 시/도 전체)
   const fetchAllData = useCallback(async () => {
@@ -112,6 +114,7 @@ const useLocationData = (activeTab, center, currentAddress = "") => {
       return;
     }
 
+    setListLoading(true);
     try {
       const { isSeoul } = parseAddress(currentAddress);
 
@@ -139,9 +142,18 @@ const useLocationData = (activeTab, center, currentAddress = "") => {
       );
 
       setListData(transformedData);
+
+      // 3km 이내 데이터 개수 계산
+      const nearby = transformedData.filter(
+        (item) => item.distanceInMeters && item.distanceInMeters <= 3000
+      );
+      setNearbyCount(nearby.length);
     } catch (err) {
       console.error("리스트 데이터 조회 실패:", err);
       setListData([]);
+      setNearbyCount(0);
+    } finally {
+      setListLoading(false);
     }
   }, [activeTab, center, currentAddress]);
 
@@ -159,9 +171,11 @@ const useLocationData = (activeTab, center, currentAddress = "") => {
     allData, // 지도 마커용 데이터 (서울: 5km 반경, 그 외: 시/도 전체, 보호소: 전국)
     listData, // 거리순 정렬 데이터 (사이드바 리스트용)
     loading,
+    listLoading, // 리스트 데이터 로딩 상태
     error,
     refetch: fetchAllData,
     count,
+    nearbyCount, // 3km 이내 데이터 개수
   };
 };
 
