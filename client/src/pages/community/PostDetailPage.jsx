@@ -36,6 +36,14 @@ const formatArticleDate = (value) => {
 
 const mapArticleResponse = (response) => {
   const data = response?.data ?? response; // 백엔드에서 { message, data } 형태를 반환하므로 언래핑
+  // 생성일과 수정일을 나눠서 화면에 표시하기 위해 둘 다 포맷한다.
+  const createdDate = data?.created_at ? new Date(data.created_at) : null;
+  const updatedDate = data?.updated_at ? new Date(data.updated_at) : null;
+  const isValidDate = (d) => d instanceof Date && !Number.isNaN(d.getTime());
+  const formattedCreated = formatArticleDate(data?.created_at);
+  const formattedUpdated = formatArticleDate(data?.updated_at);
+  const wasUpdated = isValidDate(updatedDate);
+
   return {
     id: data?.id,
     userId: data?.user_id,
@@ -43,8 +51,9 @@ const mapArticleResponse = (response) => {
     content: data?.content ?? "",
     category: data?.category ?? "",
     images: data?.img_url ? [data.img_url] : [],
-    createdAt: formatArticleDate(data?.created_at),
-    updatedAt: data?.updated_at,
+    createdAt: formattedCreated,
+    updatedAt: formattedUpdated,
+    wasUpdated,
     likeCount: data?.likesCount ?? 0,
     commentsCount: data?.commentsCount ?? 0,
     bookmarksCount: data?.bookmarksCount ?? 0,
@@ -251,15 +260,30 @@ const PostDetailPage = () => {
                   <div className={styles.avatar}>
                     {(article.userId || "익명").toString().slice(0, 1)}
                   </div>
-                    <div className={styles.authorInfo}>
-                      <div className={styles.authorName}>
-                        {article.userId || "익명"}
-                      </div>
-                    <div className={styles.date}>{article.createdAt || ""}</div>
+                  <div className={styles.authorInfo}>
+                    <div className={styles.authorName}>
+                      {article.userId || "익명"}
+                    </div>
+                    {/* 등록일과 수정일을 분리해서 노출 */}
+                    <div className={styles.dateRow}>
+                      <span className={styles.dateLabel}>등록</span>
+                      <span className={styles.dateValue}>
+                        {article.createdAt || "알 수 없음"}
+                      </span>
+                      {article.wasUpdated && article.updatedAt && (
+                        <>
+                          <span className={styles.dateDivider}>·</span>
+                          <span className={styles.dateLabel}>수정</span>
+                          <span className={styles.dateValue}>
+                            {article.updatedAt}
+                          </span>
+                        </>
+                      )}
                     </div>
                   </div>
-                  <div className={styles.stats}>
-                    <span>❤️ {likeCount}</span>
+                </div>
+                <div className={styles.stats}>
+                  <span>❤️ {likeCount}</span>
                 </div>
               </div>
             </header>
