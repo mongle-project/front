@@ -14,21 +14,21 @@ const transformProfileToCard = (profile, category, id) => {
   // 카테고리별 이미지 URL 매핑
   const imageMap = {
     // 강아지
-    "말티즈": "/images/animals/dogs/maltese.jpg.png",
+    말티즈: "/images/animals/dogs/maltese.jpg.png",
     "골든 리트리버": "/images/animals/dogs/goldenRetriever.jpg.png",
-    "푸들": "/images/animals/dogs/poodel.jpg.png",
-    "시추": "/images/animals/dogs/shihTzu.jpg",
-    "치와와": "/images/animals/dogs/chiguahua.jpg.png",
-    "포메라니안": "/images/animals/dogs/pomeranian.jpg",
+    푸들: "/images/animals/dogs/poodel.jpg.png",
+    시추: "/images/animals/dogs/shihTzu.jpg",
+    치와와: "/images/animals/dogs/chiguahua.jpg.png",
+    포메라니안: "/images/animals/dogs/pomeranian.jpg",
     "웰시 코기 펨브록": "/images/animals/dogs/welshCorgiPembroke.jpg",
     "시베리안 허스키": "/images/animals/dogs/siberianHusky.jpg.png",
 
     // 고양이
-    "먼치킨": "/images/animals/cats/munchkin.jpg",
-    "샴": "/images/animals/cats/siamese.jpg",
-    "스핑크스": "/images/animals/cats/sphynx.jpg",
-    "페르시안": "/images/animals/cats/persianCat.jpg.png",
-    "벵갈": "/images/animals/cats/bengal.jpg",
+    먼치킨: "/images/animals/cats/munchkin.jpg",
+    샴: "/images/animals/cats/siamese.jpg",
+    스핑크스: "/images/animals/cats/sphynx.jpg",
+    페르시안: "/images/animals/cats/persianCat.jpg.png",
+    벵갈: "/images/animals/cats/bengal.jpg",
     "러시안 블루": "/images/animals/cats/russianBlue.jpg",
 
     // 토끼
@@ -39,19 +39,22 @@ const transformProfileToCard = (profile, category, id) => {
 
     // 햄스터
     "시리아 햄스터 (골든 햄스터)": "/images/animals/hamsters/syrian.jpg",
-    "로보로브스키 햄스터 (로보 햄스터)": "/images/animals/hamsters/roborovski.jpg",
+    "로보로브스키 햄스터 (로보 햄스터)":
+      "/images/animals/hamsters/roborovski.jpg",
     "드워프 햄스터 – 윈터화이트": "/images/animals/hamsters/winterWhite.jpg",
 
     // 기니피그
-    "아메리칸 기니피그 (잉글리시 기니피그)": "/images/animals/guinealPig/american.jpg",
+    "아메리칸 기니피그 (잉글리시 기니피그)":
+      "/images/animals/guinealPig/american.jpg",
     "아비시니안 기니피그": "/images/animals/guinealPig/abyssinian.jpg",
-    "실키 / 셰틀랜드 (Silkie / Sheltie)": "/images/animals/guinealPig/silkie.jpg",
+    "실키 / 셰틀랜드 (Silkie / Sheltie)":
+      "/images/animals/guinealPig/silkie.jpg",
     "페루비안 기니피그": "/images/animals/guinealPig/peruvian.jpg",
 
     // 어류
-    "구피": "/images/animals/fish/guppy.jpg",
-    "엔젤피시": "/images/animals/fish/angelfish.jpg",
-    "금붕어": "/images/animals/fish/goldfish.jpg",
+    구피: "/images/animals/fish/guppy.jpg",
+    엔젤피시: "/images/animals/fish/angelfish.jpg",
+    금붕어: "/images/animals/fish/goldfish.jpg",
     "클라운피시 (니모, 흰동가리)": "/images/animals/fish/clownfish.jpg",
     "블루탱 (탱, 도리)": "/images/animals/fish/blueTang.jpg",
 
@@ -63,16 +66,17 @@ const transformProfileToCard = (profile, category, id) => {
     "머스크 터틀 (스틴크팟)": "/images/animals/turtles/commonMusk.jpg",
 
     // 파충류
-    "레오파드 게코 (표범무늬 도마뱀붙이)": "/images/animals/reptile/leopard.jpg",
+    "레오파드 게코 (표범무늬 도마뱀붙이)":
+      "/images/animals/reptile/leopard.jpg",
     "볼 파이톤": "/images/animals/reptile/ballPython.jpg",
     "비어디드 드래곤": "/images/animals/reptile/beardedDragon.jpg",
     "콘 스네이크 (옥수수뱀)": "/images/animals/reptile/corn.jpg",
 
     // 새
     "버저리거 (잉꼬)": "/images/animals/birds/budgerigar.jpg",
-    "코카틸": "/images/animals/birds/cockatiel.jpg",
-    "러브버드": "/images/animals/birds/lovebird.jpg",
-    "카나리아": "/images/animals/birds/canary.jpg",
+    코카틸: "/images/animals/birds/cockatiel.jpg",
+    러브버드: "/images/animals/birds/lovebird.jpg",
+    카나리아: "/images/animals/birds/canary.jpg",
     "피니치류 (제브라 피니치)": "/images/animals/birds/finch.jpg",
   };
 
@@ -158,7 +162,7 @@ export const animalData = [
     idCounter++
   ),
   transformProfileToCard(
-    hamstersProfile.roborovskiHamsterProfile,
+    hamstersProfile.winterWhiteDwarfHamsterProfile,
     "햄스터",
     idCounter++
   ),

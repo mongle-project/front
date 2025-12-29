@@ -131,7 +131,7 @@ const CalendarPage = () => {
   const getDaysRemaining = (dateString) => {
     const today = new Date();
     // YYYY-MM-DD 형식을 로컬 타임존으로 파싱
-    const [year, month, day] = dateString.split('-').map(Number);
+    const [year, month, day] = dateString.split("-").map(Number);
     const target = new Date(year, month - 1, day);
     const diff =
       (target.setHours(0, 0, 0, 0) - today.setHours(0, 0, 0, 0)) /
@@ -336,7 +336,8 @@ const CalendarPage = () => {
                             </p>
                             <p className={styles.eventCardMeta}>
                               {formatDateLabel(event.date)}
-                              {event.time && ` · ${formatTimeReadable(event.time)}`}
+                              {event.time &&
+                                ` · ${formatTimeReadable(event.time)}`}
                             </p>
                           </div>
                         </div>
@@ -470,9 +471,7 @@ const CalendarPage = () => {
               정말로 <strong>{eventToDelete?.title}</strong> 일정을
               삭제하시겠습니까?
             </p>
-            <p className={styles.deleteWarning}>
-              삭제 시 되돌릴 수 없어요.
-            </p>
+            <p className={styles.deleteWarning}>삭제 시 되돌릴 수 없어요.</p>
           </div>
 
           <div className={styles.deleteModalActions}>

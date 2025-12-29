@@ -105,12 +105,100 @@
 }
 
 @media (max-width: 768px) {
+  .alert {
+    padding: 1rem;
+    border-radius: 15px;
+  }
+
   .titleRow {
     flex-direction: column;
     align-items: flex-start;
+    gap: 0.5rem;
   }
 
   .petChip {
     align-self: flex-start;
+  }
+
+  .title {
+    font-size: 0.98rem;
+  }
+}
+
+@media (max-width: 540px) {
+  .alert {
+    padding: 0.9rem;
+    border-radius: 14px;
+    gap: 0.4rem;
+  }
+
+  .badge {
+    padding: 0.35rem 0.7rem;
+    font-size: 0.85rem;
+    border-radius: 10px;
+  }
+
+  .urgency {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.8rem;
+  }
+
+  .title {
+    font-size: 0.92rem;
+  }
+
+  .petChip {
+    padding: 0.25rem 0.65rem;
+    font-size: 0.85rem;
+  }
+
+  .dday {
+    padding: 0.3rem 0.65rem;
+    font-size: 0.85rem;
+    border-radius: 8px;
+  }
+
+  .date {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .alert {
+    padding: 0.8rem;
+    border-radius: 12px;
+  }
+
+  .alertTop {
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .badge {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.8rem;
+  }
+
+  .urgency {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  .title {
+    font-size: 0.88rem;
+  }
+
+  .metaRow {
+    gap: 0.4rem;
+    flex-wrap: wrap;
+  }
+
+  .dday {
+    padding: 0.25rem 0.55rem;
+    font-size: 0.8rem;
+  }
+
+  .date {
+    font-size: 0.85rem;
   }
 }
