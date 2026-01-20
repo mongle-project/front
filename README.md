@@ -8,29 +8,14 @@ Mongle은 반려동물의 건강 관리, 일정 관리, 커뮤니티 소통을 �
 [![Vite](https://img.shields.io/badge/Vite-7.2.4-646CFF?logo=vite)](https://vite.dev/)
 [![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?logo=javascript)](https://developer.mozilla.org/ko/docs/Web/JavaScript)
 
----
-
-## 📋 목차
-
-- [주요 기능](#-주요-기능)
-- [기술 스택](#-기술-스택)
-- [프로젝트 구조](#-프로젝트-구조)
-- [시작하기](#-시작하기)
-- [환경 변수 설정](#-환경-변수-설정)
-- [페이지 구조](#-페이지-구조)
-- [API 연동](#-api-연동)
-- [상태 관리](#-상태-관리)
-- [스타일링](#-스타일링)
-- [라우팅](#-라우팅)
-- [경로 별칭](#-경로-별칭)
-- [알려진 이슈](#-알려진-이슈)
-- [참고 자료](#-참고-자료)
+## ✔️ **백엔드 코드 소스 입니다.!**
+### => [BackEnd](https://github.com/mongle-project/back)
 
 ---
 
 ## ✨ 주요 기능
 
-### 🐾 반려동물 관리
+## 🐾 반려동물 관리
 
 <img src="./mongle-img/mypet.gif">
 
@@ -38,7 +23,7 @@ Mongle은 반려동물의 건강 관리, 일정 관리, 커뮤니티 소통을 �
 - 프로필 이미지 업로드 (AWS S3)
 - 나이 자동 계산 및 성별/종류 관리
 
-### 📅 캘린더 & 일정 관리
+## 📅 캘린더 & 일정 관리
 
 <img src="./mongle-img/calendar.gif">
 
@@ -46,7 +31,7 @@ Mongle은 반려동물의 건강 관리, 일정 관리, 커뮤니티 소통을 �
 - D-Day 알림 기능
 - 월별 일정 뷰
 
-### 💬 커뮤니티
+## 💬 커뮤니티
 
 <img src="./mongle-img/article.gif">
 
@@ -54,7 +39,7 @@ Mongle은 반려동물의 건강 관리, 일정 관리, 커뮤니티 소통을 �
 - 댓글 시스템
 - 카테고리별 게시글 필터링
 
-### 🏥 위치 기반 서비스
+## 🏥 위치 기반 서비스
 
 <img src="./mongle-img/location.gif">
 
@@ -62,21 +47,21 @@ Mongle은 반려동물의 건강 관리, 일정 관리, 커뮤니티 소통을 �
 - 보호소 위치 검색
 - 거리 기반 필터링
 
-### 🤖 AI 건강 상담
+## 🤖 AI 건강 상담
 
 <img src="./mongle-img/aisolution.gif">
 
 - GPT API 기반 반려동물 건강 상담
 - 증상 입력 및 AI 분석 결과 제공
 
-### 📰 뉴스 피드
+## 📰 뉴스 피드
 
 <img src="./mongle-img/news.gif">
 
 - 동물 관련 뉴스 크롤링
 - "가족이 되어주세요" 입양 뉴스 섹션
 
-### 📖 동물 도감
+## 📖 동물 도감
 
 <img src="./mongle-img/animalDictionary.gif">
 
@@ -335,24 +320,6 @@ const fetchMyPets = async () => {
 };
 ```
 
-### Axios 인스턴스 특징
-
-**자동 토큰 처리** ([src/api/axios.js](src/api/axios.js))
-
-- 모든 요청에 `Authorization: Bearer {token}` 헤더 자동 추가
-- localStorage에서 토큰 읽기
-- FormData 요청 시 `Content-Type` 자동 설정
-
-**에러 처리**
-
-- 401 (Unauthorized): 자동 로그아웃 + 로그인 페이지 리다이렉트
-- Toast 알림 통합
-
-**환경 설정**
-
-- Base URL: `config.js`에서 `VITE_API_URL` 환경 변수 사용
-- Timeout: 10초 (기본값)
-
 ### API 모듈 목록
 
 | 모듈     | 파일                                               | 주요 함수                                                                          |
@@ -446,82 +413,6 @@ const MyPetsComponent = () => {
 
 ---
 
-## 🎨 스타일링
-
-### 디자인 시스템
-
-**색상 팔레트** ([src/styles/theme.js](src/styles/theme.js))
-
-```javascript
-// 메인 컬러
-colors: {
-  main: '#66BB6A',        // 그린
-  mainLight: '#81C784',
-  mainDark: '#4CAF50',
-
-  // 카테고리별 색상
-  dog: '#FF9800',         // 주황
-  cat: '#9C27B0',         // 보라
-  smallAnimal: '#2196F3', // 파랑
-  bird: '#FFC107',        // 노랑
-  reptile: '#00BCD4',     // 청록
-  fish: '#03A9F4',        // 파랑
-
-  // 일정 카테고리
-  vaccination: '#F44336', // 빨강
-  hospital: '#2196F3',    // 파랑
-  grooming: '#9C27B0',    // 보라
-  medication: '#4CAF50'   // 초록
-}
-```
-
-**타이포그래피**
-
-- 기본 폰트: GyeonggiMillenniumTitle + Noto Sans KR
-- 폰트 크기: 0.75rem ~ 3rem (8단계)
-- 폰트 굵기: 400 (normal), 700 (bold)
-
-**간격 (Spacing)**
-
-- xs: 8px, sm: 16px, md: 24px, lg: 32px, xl: 48px
-
-**반응형 브레이크포인트**
-
-- mobile: 768px
-- tablet: 1024px
-- desktop: 1200px
-
-### 스타일링 방법
-
-**Styled-components** (권장)
-
-```javascript
-import styled from "styled-components";
-
-const Button = styled.button`
-  background-color: ${({ theme }) => theme.colors.main};
-  color: white;
-  padding: ${({ theme }) => theme.spacing.sm};
-  border-radius: ${({ theme }) => theme.borderRadius.md};
-
-  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
-    width: 100%;
-  }
-`;
-```
-
-**CSS Modules**
-
-```css
-/* Button.module.css */
-.button {
-  background-color: var(--color-main);
-  padding: 16px;
-}
-```
-
----
-
 ## 🚦 라우팅
 
 ### PrivateRoute (인증 필요)
@@ -555,38 +446,5 @@ const PublicRoute = ({ children }) => {
 **적용 경로**
 
 - `/login`, `/signup`, `/find-password`
-
----
-
-## 🔧 경로 별칭
-
-**jsconfig.json 설정**
-
-```json
-{
-  "compilerOptions": {
-    "paths": {
-      "@components/*": ["components/*"],
-      "@pages/*": ["pages/*"],
-      "@hooks/*": ["hooks/*"],
-      "@contexts/*": ["contexts/*"],
-      "@services/*": ["services/*"],
-      "@utils/*": ["utils/*"],
-      "@styles/*": ["styles/*"],
-      "@assets/*": ["assets/*"]
-    }
-  }
-}
-```
-
-**사용 예시**
-
-```javascript
-// ❌ 상대 경로
-import Button from "../../../components/common/Button";
-
-// ✅ 경로 별칭
-import Button from "@components/common/Button";
-```
 
 ---
