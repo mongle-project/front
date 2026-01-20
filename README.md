@@ -32,11 +32,15 @@ Mongle은 반려동물의 건강 관리, 일정 관리, 커뮤니티 소통을 �
 
 ### 🐾 반려동물 관리
 
+<img src="./mongle-img/mypet.gif">
+
 - 여러 반려동물 프로필 등록/수정/삭제
 - 프로필 이미지 업로드 (AWS S3)
 - 나이 자동 계산 및 성별/종류 관리
 
 ### 📅 캘린더 & 일정 관리
+
+<img src="./mongle-img/calendar.gif">
 
 - 예방접종, 병원 방문, 미용 일정 등록
 - D-Day 알림 기능
@@ -44,11 +48,15 @@ Mongle은 반려동물의 건강 관리, 일정 관리, 커뮤니티 소통을 �
 
 ### 💬 커뮤니티
 
+<img src="./mongle-img/article.gif">
+
 - 게시글 작성/조회/수정/삭제
 - 댓글 시스템
 - 카테고리별 게시글 필터링
 
 ### 🏥 위치 기반 서비스
+
+<img src="./mongle-img/location.gif">
 
 - Kakao Map 연동 동물병원 검색
 - 보호소 위치 검색
@@ -56,15 +64,21 @@ Mongle은 반려동물의 건강 관리, 일정 관리, 커뮤니티 소통을 �
 
 ### 🤖 AI 건강 상담
 
+<img src="./mongle-img/aisolution.gif">
+
 - GPT API 기반 반려동물 건강 상담
 - 증상 입력 및 AI 분석 결과 제공
 
 ### 📰 뉴스 피드
 
+<img src="./mongle-img/news.gif">
+
 - 동물 관련 뉴스 크롤링
 - "가족이 되어주세요" 입양 뉴스 섹션
 
 ### 📖 동물 도감
+
+<img src="./mongle-img/animalDictionary.gif">
 
 - 9개 카테고리 (강아지, 고양이, 토끼, 햄스터, 기니피그, 조류, 물고기, 파충류, 거북이)
 - 상세 특징 및 이미지 제공
